@@ -1,19 +1,43 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Login } from './src/views/Login/Login.js';
+import TabNavigator from './src/views/Menu/TabNavigator.js';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Penis!</Text>
-    </View>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { isLoggedIn: false };
+    this.changeState = this.changeState.bind(this);
+  }
+
+  changeState() {
+    this.setState({
+      isLoggedIn: true
+    })
+  }
+
+  render() {
+    if (!this.state.isLoggedIn)
+    {
+      return (
+        <View style={styles.container}>
+          <Login changeState={this.changeState}/>
+        </View>
+      );
+    }
+    
+    return (
+      <View style={styles.container}>
+          <TabNavigator/>
+        </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    flex: 1
+  }
 });
+
+export default App;
