@@ -1,2 +1,0 @@
-# CSE115
-CSE115 Project Fall 2019
