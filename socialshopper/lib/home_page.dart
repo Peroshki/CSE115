@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'list_views.dart';
+//ToDo: Waiting on someone to do home page.
 
 class HomePage extends StatelessWidget {
   static String tag = 'home-page';
@@ -16,6 +18,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final button = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed(ListViews.tag);
+        },
+        padding: EdgeInsets.all(12),
+        color: Colors.lightBlueAccent,
+        child: Text('Go to ListViews', style: TextStyle(color: Colors.white)),
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -46,6 +62,7 @@ class HomePage extends StatelessWidget {
             Text(
               'Hello World!',
             ),
+            button,
           ],
         ),
       ),
