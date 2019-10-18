@@ -14,6 +14,7 @@ class _ListViewsState extends State<ListViews> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Colors.blue,
         title: Text("List Name"),
       ),
       body: ListView(
@@ -40,6 +41,7 @@ class _ListViewsState extends State<ListViews> {
       floatingActionButton: new FloatingActionButton.extended(
         icon: Icon(Icons.check),
         label: Text('Pay Now'),
+        backgroundColor: Colors.black,
         onPressed: () {},
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(32),
