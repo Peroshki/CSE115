@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
 
-class Menu extends StatelessWidget {
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
+
+  @override
+  Menu createState() => Menu();
+}
+
+class Menu extends State<MyStatefulWidget> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold( //Scaffold is the main container for main page
@@ -32,28 +46,10 @@ class Menu extends StatelessWidget {
         ),
         BottomNavigationBarItem(
             icon: Icon(Icons.assignment_ind), title: Text('Profile'))
-      ]),
+      ],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,),
     );
   }
 }
 
-class Bottom extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar:
-          BottomNavigationBar(items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Home'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_shopping_cart),
-          title: Text('Shopping Cart'),
-        ),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.settings), title: Text('Settings'))
-      ]),
-    );
-  }
-}
