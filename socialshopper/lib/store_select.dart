@@ -109,6 +109,7 @@ class _StoreSelectState extends State<StoreSelect> {
 
         //Creates the grid of buttons
         body: Center(
+          heightFactor: 10,
           child: GridView.count(
             primary: false, 
             padding: const EdgeInsets.all(20),
