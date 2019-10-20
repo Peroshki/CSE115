@@ -19,18 +19,7 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold( //Scaffold is the main container for main page
-      appBar: AppBar( //title bar at the top of the page
-        centerTitle: true,
-        title: Text('Main Menu'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.search),
-          onPressed: null,),
-          IconButton(icon: Icon(Icons.add),
-          // color: Colors.red,
-          // iconSize: 24.0,
-          onPressed: null,),
-        ],
-      ),
+
       body: _getBody(_selectedIndex),
       bottomNavigationBar:
           BottomNavigationBar(
@@ -53,10 +42,33 @@ class _MenuPageState extends State<MenuPage> {
   }
   Widget _getBody(int index){
     switch(index){
-      case 0: return Center(child: Text("Settings"),);
-      case 1: return Center(child: Text("List"),);
-      case 2: return Center(child: Text("Profile"),);
+      case 0: return Scaffold( //Scaffold is the main container for main page
+        appBar: AppBar( //title bar at the top of the page
+          centerTitle: true,
+          title: Text('Settings'),
+          automaticallyImplyLeading: false,
+        ),
+      );
+      case 1: return Scaffold( //Scaffold is the main container for main page
+        appBar: AppBar( //title bar at the top of the page
+          centerTitle: true,
+          title: Text('Lists'),
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.search),
+              onPressed: null,),
+            IconButton(icon: Icon(Icons.add),
+              onPressed: null,),
+          ],
+          automaticallyImplyLeading: false,
+        ),
+      );
+      case 2: return Scaffold( //Scaffold is the main container for main page
+        appBar: AppBar( //title bar at the top of the page
+          centerTitle: true,
+          title: Text('Profile'),
+          automaticallyImplyLeading: false,
+        ),
+      );
     }
   }
 }
-
