@@ -16,7 +16,7 @@ class _StoreSelectState extends State<StoreSelect> {
 
   //Creates an alert to the user saying that these buttons aren't implemented.
   createAlert(BuildContext context){
-    return showDialog(context: context, builder: (context){
+    return showDialog<void>(context: context, builder: (context){
       return AlertDialog(
         title: Text('Not Implemented'),
         content: Text('Coming Soon!'),
