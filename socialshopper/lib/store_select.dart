@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socialshopper/home_page.dart';
 import 'main.dart';
 import 'login_page.dart';
+import 'menu.dart';
 
 class StoreSelect extends StatefulWidget {
   static String tag = 'store-select';
