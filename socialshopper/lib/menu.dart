@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'list_views.dart';
+import 'store_select.dart';
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -56,7 +57,9 @@ class _MenuPageState extends State<MenuPage> {
             IconButton(icon: Icon(Icons.search),
               onPressed: null,),
             IconButton(icon: Icon(Icons.add),
-              onPressed: null,),
+              onPressed:  () {
+                Navigator.of(context).pushNamed(StoreSelect.tag);
+              }),
           ],
           automaticallyImplyLeading: false,
         ),
@@ -69,6 +72,7 @@ class _MenuPageState extends State<MenuPage> {
         ),
       );
     }
+    return Center(child: Text("No body for selected tab"),);
   }
 }
 
