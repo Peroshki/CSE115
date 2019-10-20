@@ -25,9 +25,18 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+  String _textString = 'Hello There';
+
+  void _doSomething(String text){
+    setState(() {
+     _textString = text; 
+    });
+  }
+
  
   @override
   Widget build(BuildContext context) {
+
     return Scaffold( //Scaffold is the main container for main page
       body: _getBody(_selectedIndex),
       bottomNavigationBar:
@@ -72,25 +81,30 @@ class _MenuPageState extends State<MenuPage> {
           ],
           automaticallyImplyLeading: false,
         ),
-        body: ListView(
+        body: ListView(  //Creates a list of all elements in the list
           padding: const EdgeInsets.all(8),
           children: <Widget>[
+            TextField(onChanged: (text){ // Changes name of title, but looks strange
+              _doSomething(text);
+            }),
             Container( // Example of a single list on the main page
               height: 50,
               color: Colors.deepOrange[500],
+              
             child: ListTile(
-            // title: Text('List 1', 
-            // textAlign: TextAlign.center,
-            // style: TextStyle(fontWeight: 
-            // FontWeight.bold, 
-            // fontSize: 30,
-            // fontFamily: 'Open Sans'),
-            // ),
-            
+             title: Text(_textString,
+             style: TextStyle(fontSize: 30), 
+             ),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              Navigator.of(context).pushNamed(NewList.tag);
-            }),)
+              Navigator.of(context).pushNamed(NewList.tag);  //Linker to next page
+            },
+            // onLongPress: (){   //To change name of the list title
+            //   TextField(onChanged: (text){
+            //     _doSomething(text);
+            //   });
+            // },
+            ),)
             
           ],
         ),

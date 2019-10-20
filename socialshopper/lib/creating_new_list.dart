@@ -24,6 +24,7 @@ class _NewList extends State<NewList> {
           return ListTile(
             title: Text(shoppinglist[index]),
           );
+          
         },
       ),
     );
