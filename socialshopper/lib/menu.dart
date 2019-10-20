@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'store_select.dart';
 import 'main.dart';
+import 'app_settings.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({Key key}) : super(key: key);
@@ -178,7 +179,7 @@ class _Menu extends State<MenuPage> {
             ),
            IconButton(icon: Icon(Icons.add),
              onPressed:() {
-               Navigator.of(context).pushNamed(StoreSelect.tag);
+               Navigator.of(context).pushNamed(Settings.tag);
              },
            ),
           ],
