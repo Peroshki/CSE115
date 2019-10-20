@@ -7,10 +7,12 @@ import 'store_select.dart';
 import 'creating_new_list.dart';
 import 'package:flutter/src/material/page.dart';
 
-List<String> _random = ["hi", "asdf", "om", "sup", "test"
-,"hi", "asdf", "om", "sup", "test","hi", "asdf", "om", "sup", "test"
-,"hi", "asdf", "om", "sup", "test","hi", "asdf", "om", "sup", "test",
-"hi", "asdf", "om", "sup", "test","hi", "asdf", "om", "sup", "test"];
+List<String> _random = ["chicken", "rice", "milk", "eggs", "letuce"
+,"soda", "shrimp", "ceral", "napkins", "orange juice","apple juice", "Sprite", 
+"Ranch", "BBQ", "Ketchup"
+,"Tomates", "Bananas", "Avocado", "Celeray", "Brocoli","Oatmeal", "Lucky Charms", 
+"Egg Whites", "Corn Dogs", "Tamales",
+"Posole", "Tacos", "Wings", "Onions", "Salsa","Chips", "Coffee", "Almond Milk", "Cookies", "Mayo"];
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -49,11 +51,11 @@ List<String> _numList = []; //Array to hold the lists
   }
   }
 
-  void _getIndex(int index){
+  void _getIndex(int index){  //change state of list
      setState(() => _numList.elementAt(index));
   }
 
-  void _openList(int index){
+  void _openList(int index){ // Open up a single list
     Navigator.of(context).push(
       new MaterialPageRoute(builder: (context){
         return new Scaffold(
@@ -94,7 +96,6 @@ Widget _buildTodoItem(String listName, int index){  //Build one list
 }
 
 void _tapAddMoreItems(){
-  // Push this page onto the stack
   Navigator.of(context).push(
     // MaterialPageRoute will automatically animate the screen entry, as well
     // as adding a back button to close it
@@ -123,7 +124,6 @@ void _tapAddMoreItems(){
  
   @override
   Widget build(BuildContext context) {
-
     return Scaffold( //Scaffold is the main container for main page
       body: _getBody(_selectedIndex),
       bottomNavigationBar:
