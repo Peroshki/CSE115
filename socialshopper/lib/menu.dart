@@ -19,7 +19,6 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold( //Scaffold is the main container for main page
-
       body: _getBody(_selectedIndex),
       bottomNavigationBar:
           BottomNavigationBar(
@@ -72,3 +71,4 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 }
+
