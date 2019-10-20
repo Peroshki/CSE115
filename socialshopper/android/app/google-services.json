@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "197846942255",
+    "firebase_url": "https://socialshopper-37120.firebaseio.com",
+    "project_id": "socialshopper-37120",
+    "storage_bucket": "socialshopper-37120.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197846942255:android:d3c264d346c88e81d07cda",
+        "android_client_info": {
+          "package_name": "com.example.socialshopper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197846942255-vh6kacjpgrcmapqi1q9b01odqcgo4f1c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmsLocmIt-s1UatHRSFXkLUV4F_oaKJr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197846942255-vh6kacjpgrcmapqi1q9b01odqcgo4f1c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
