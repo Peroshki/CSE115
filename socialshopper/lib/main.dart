@@ -3,6 +3,7 @@ import 'package:socialshopper/store_select.dart';
 import 'login_page.dart';
 import 'menu.dart';
 import 'store_select.dart';
+import 'creating_new_list.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
     LoginPage.tag: (context) => LoginPage(),
     MenuPage.tag: (context) => MenuPage(),
     StoreSelect.tag: (context) => StoreSelect(),
+    NewList.tag: (context) => NewList(),
   };
 
   @override

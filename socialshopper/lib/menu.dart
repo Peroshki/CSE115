@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'list_views.dart';
 import 'store_select.dart';
+import 'creating_new_list.dart';
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -17,6 +18,14 @@ class _MenuPageState extends State<MenuPage> {
       _selectedIndex = index;
     });
   }
+
+  void listPress(int index){
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold( //Scaffold is the main container for main page
@@ -62,6 +71,26 @@ class _MenuPageState extends State<MenuPage> {
               }),
           ],
           automaticallyImplyLeading: false,
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(8),
+          children: <Widget>[
+            Container( // Example of a single list on the main page
+              height: 50,
+              color: Colors.deepOrange[500],
+            child: ListTile(title: Text('List 1', 
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: 
+            FontWeight.bold, 
+            fontSize: 30,
+            fontFamily: 'Open Sans'),
+            ),
+            trailing: Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              Navigator.of(context).pushNamed(NewList.tag);
+            }),)
+            
+          ],
         ),
       );
       case 2: return Scaffold( //Scaffold is the main container for main page
