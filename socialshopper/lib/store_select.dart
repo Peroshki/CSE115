@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socialshopper/home_page.dart';
+import 'menu.dart';
 import 'main.dart';
 import 'login_page.dart';
 
@@ -35,7 +35,7 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(HomePage.tag);
+          Navigator.of(context).pushNamed(MenuPage.tag);
         },
         padding: EdgeInsets.all(12),
         color: Colors.red[100],
@@ -51,7 +51,7 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(HomePage.tag);
+          Navigator.of(context).pushNamed(MenuPage.tag);
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlue[100],
