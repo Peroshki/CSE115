@@ -88,9 +88,12 @@ class _MenuPageState extends State<MenuPage> {
               _doSomething(text);
             }),
             Container( // Example of a single list on the main page
-              height: 50,
-              color: Colors.deepOrange[500],
-              
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: Colors.black38),
+              borderRadius: const BorderRadius.all(const Radius.circular(8))
+            ),
+              // height: 50,
+              // color: Colors.amber[500],
             child: ListTile(
              title: Text(_textString,
              style: TextStyle(fontSize: 30), 
