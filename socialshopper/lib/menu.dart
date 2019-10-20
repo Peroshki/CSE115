@@ -78,13 +78,15 @@ class _MenuPageState extends State<MenuPage> {
             Container( // Example of a single list on the main page
               height: 50,
               color: Colors.deepOrange[500],
-            child: ListTile(title: Text('List 1', 
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: 
-            FontWeight.bold, 
-            fontSize: 30,
-            fontFamily: 'Open Sans'),
-            ),
+            child: ListTile(
+            // title: Text('List 1', 
+            // textAlign: TextAlign.center,
+            // style: TextStyle(fontWeight: 
+            // FontWeight.bold, 
+            // fontSize: 30,
+            // fontFamily: 'Open Sans'),
+            // ),
+            
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               Navigator.of(context).pushNamed(NewList.tag);
