@@ -15,7 +15,7 @@ class _ListViewsState extends State<ListViews> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.blue,
-        title: Text("List Name"),
+        title: const Text('List Name'),
       ),
       body: ListView(
         children: ListTile.divideTiles(
@@ -33,18 +33,18 @@ class _ListViewsState extends State<ListViews> {
       ]
         ).toList()
       ),
-      bottomNavigationBar: new BottomAppBar(
-        child: new Row(
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
       ),
-      floatingActionButton: new FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.check),
-        label: Text('Pay Now'),
+        label: const Text('Pay Now'),
         backgroundColor: Colors.black,
         onPressed: () {},
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(32),
+        shape:  RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32),
         ),
       ),
       floatingActionButtonLocation:
