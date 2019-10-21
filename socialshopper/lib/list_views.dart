@@ -2,7 +2,45 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'menu.dart';
 
-class ListViews extends StatefulWidget{
+List<String> _random = [
+  'chicken',
+  'rice',
+  'milk',
+  'eggs',
+  'letuce',
+  'soda',
+  'shrimp',
+  'ceral',
+  'napkins',
+  'orange juice',
+  'apple juice',
+  'Sprite',
+  'Ranch',
+  'BBQ',
+  'Ketchup',
+  'Tomates',
+  'Bananas',
+  'Avocado',
+  'Celeray',
+  'Brocoli',
+  'Oatmeal',
+  'Lucky Charms',
+  'Egg Whites',
+  'Corn Dogs',
+  'Tamales',
+  'Posole', //LMAO
+  'Tacos',
+  'Wings',
+  'Onions',
+  'Salsa',
+  'Chips',
+  'Coffee',
+  'Almond Milk',
+  'Cookies',
+  'Mayo'
+];
+
+class ListViews extends StatefulWidget {
   static String tag = 'list_views';
   @override
   _ListViewsState createState() => new _ListViewsState();
@@ -12,26 +50,16 @@ class _ListViewsState extends State<ListViews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        title: const Text('List Name'),
-      ),
-      body: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: [
-          ListTile(
-            title: Text('Item 1'),
-          ),
-          ListTile(
-            title: Text('Item 2'),
-          ),
-          ListTile(
-            title: Text('Item 3'),
-          ),
-      ]
-        ).toList()
+      body: ListView.builder(
+        padding: const EdgeInsets.all(8),
+        itemCount: _random.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            height: 50,
+            color: Colors.amber[500],
+            child: Center(child: Text('${_random[index]}')),
+          );
+        },
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -43,12 +71,11 @@ class _ListViewsState extends State<ListViews> {
         label: const Text('Pay Now'),
         backgroundColor: Colors.black,
         onPressed: () {},
-        shape:  RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32),
         ),
       ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
