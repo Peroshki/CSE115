@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                         image: DecorationImage(
                             fit: BoxFit.fill,
                             image: NetworkImage(
-                                "https://i.imgur.com/BoN9kdC.png")))),
+                                'https://i.imgur.com/BoN9kdC.png')))),
                 SizedBox(height: 40.0),
                 email,
                 SizedBox(height: 8.0),

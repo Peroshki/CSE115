@@ -6,6 +6,7 @@ import 'list_views.dart';
 import 'store_select.dart';
 import 'creating_new_list.dart';
 import 'app_settings.dart';
+import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
 
 
@@ -154,15 +155,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
         );
       case 2:
-        return Scaffold(
-          //Scaffold is the main container for main page
-          appBar: AppBar(
-            //title bar at the top of the page
-            centerTitle: true,
-            title: const Text('Profile'),
-            automaticallyImplyLeading: false,
-          ),
-        );
+        return Profile();
     }
     return Center(
       child: const Text('No body for selected tab'),
