@@ -109,7 +109,7 @@ class _MenuPageState extends State<MenuPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            title: Text('Setting'),
+            title: Text('Settings'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu),
