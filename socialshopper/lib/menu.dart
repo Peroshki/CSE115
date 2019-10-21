@@ -17,7 +17,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
-
+  
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -109,7 +109,7 @@ class _MenuPageState extends State<MenuPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            title: Text('Setting'),
+            title: Text('Settings'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu),
