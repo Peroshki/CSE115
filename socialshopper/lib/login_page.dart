@@ -11,7 +11,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
@@ -63,11 +62,8 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
+            child: ListView(
+              children: <Widget>[ Container(
                     width: 200.0,
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -81,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 8.0),
                 password,
                 SizedBox(
-                  height: 24.0,
+                  height: 10.0,
                 ),
                 loginButton,
                 forgotLabel,
