@@ -17,7 +17,8 @@ class _NewList extends State<NewList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('new List')),
+
+      appBar: AppBar(centerTitle: true, title: const Text('new List')),
       body: ListView.builder(
         itemCount: shoppinglist.length,
         itemBuilder: (context, index){
