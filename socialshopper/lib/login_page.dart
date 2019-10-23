@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'home_page.dart';
 import 'menu.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,7 +11,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
@@ -59,20 +57,33 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24.0, right: 24.0),
-          children: <Widget>[
-            SizedBox(height: 48.0),
-            email,
-            SizedBox(height: 8.0),
-            password,
-            SizedBox(height: 24.0),
-            loginButton,
-            forgotLabel
-          ],
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(50),
+            child: ListView(
+              children: <Widget>[ Container(
+                    width: 200.0,
+                    height: 200.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(
+                                'https://i.imgur.com/BoN9kdC.png')))),
+                SizedBox(height: 40.0),
+                email,
+                SizedBox(height: 8.0),
+                password,
+                SizedBox(
+                  height: 10.0,
+                ),
+                loginButton,
+                forgotLabel,
+              ],
+            ),
+          ),
         ),
       ),
     );
