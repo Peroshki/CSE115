@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 import 'menu.dart';
+import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: EdgeInsets.symmetric(vertical: 0.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
@@ -56,12 +56,24 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {},
     );
 
+    final signUpButton = RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed(SignupPage.tag);
+        },
+        padding: EdgeInsets.all(12),
+        color: Colors.green,
+        child: Text('Sign Up', style: TextStyle(color: Colors.white)),
+      );
+
     return Scaffold(
       body: Center(
         child: Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.all(50),
+            padding: const EdgeInsets.all(60),
             child: ListView(
               children: <Widget>[ Container(
                     width: 200.0,
@@ -76,10 +88,9 @@ class _LoginPageState extends State<LoginPage> {
                 email,
                 SizedBox(height: 8.0),
                 password,
-                SizedBox(
-                  height: 10.0,
-                ),
+                SizedBox(height: 10.0),
                 loginButton,
+                signUpButton,
                 forgotLabel,
               ],
             ),
