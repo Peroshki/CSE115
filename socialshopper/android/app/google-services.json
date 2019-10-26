@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:197846942255:android:d3c264d346c88e81d07cda",
+        "mobilesdk_app_id": "1:197846942255:android:e83b74f951150384d07cda",
         "android_client_info": {
-          "package_name": "com.example.socialshopper"
+          "package_name": "com.kmsinc.socialshopper"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "197846942255-89rtu9016qp4j424q6lrbr19muas04sb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kmsinc.socialshopper",
+            "certificate_hash": "22d426ccb1e7bd6ce0047050d9585c9cb30a8b8c"
+          }
+        },
         {
           "client_id": "197846942255-vh6kacjpgrcmapqi1q9b01odqcgo4f1c.apps.googleusercontent.com",
           "client_type": 3

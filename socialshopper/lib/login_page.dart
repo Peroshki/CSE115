@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'signup_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
