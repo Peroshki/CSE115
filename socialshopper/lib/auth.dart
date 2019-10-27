@@ -8,8 +8,10 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
 
+  //Initialize Observable objects
   Observable<FirebaseUser> user;
   Observable<Map<String, dynamic>> profile;
+  //Status for listeners. Is it in process of signing in or not?
   PublishSubject loading = PublishSubject();
 
   AuthService() {
@@ -31,12 +33,16 @@ class AuthService {
     loading.add(true);
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    //Get credentials from googleAuth
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+    //Use credentials from before to login to Firebase
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
+    //Make sure fields entered/returned are not null
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
@@ -51,22 +57,24 @@ class AuthService {
     return user;
   }
 
+  //Store user's data
   void updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
-
+    //Map data to database fields
     return ref.setData({
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
       'displayName': user.displayName,
       'lastSeen': DateTime.now()
-    }, merge: true);
+    }, merge: true); //Merges data so old data isn't overwritten
   }
 
   void signOut() async {
+    //Wait for Firebase signout
     await _auth.signOut();
+    //Wait for Google Sign out
     await _googleSignIn.signOut();
   }
 }
-
 final AuthService authService = AuthService();
