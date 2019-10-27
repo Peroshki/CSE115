@@ -8,7 +8,10 @@ import 'creating_new_list.dart';
 import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+//FireBase stuff
+final databaseRef = Firestore.instance; //creating an instance of database
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -18,7 +21,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
-  
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -26,20 +29,61 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void listPress(int index) {
+    // click on list
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  String _textString = 'Hello There';
+  // String _textString = 'Hello There';
 
-  void _doSomething(String text) {
-    setState(() {
-      _textString = text;
-    });
-  }
+  // void _doSomething(String text) {
+  //   setState(() {
+  //     _textString = text;
+  //   });
+  // }
 
   final List<String> _numList = []; //Array to hold the lists
+
+  void putNamesOfListInAList() async { // this functions updates the app with list available
+    final QuerySnapshot results =
+        await Firestore.instance.collection('lists').getDocuments();
+    final List<DocumentSnapshot> docs = results.documents;
+
+    var i = 0;
+    var val = "";
+
+    if (_numList.length < docs.length) {
+      _numList.clear();
+      while (i < docs.length) {
+        val = docs.elementAt(i).documentID;
+        _addNewList(val);
+        i++;
+      }
+    }
+    //  docs.forEach((data) => _addNewList(data.documentID)); //
+    // docs.forEach((data) => print(data.documentID));
+  }
+
+  void createRecord(String listName) async {
+    // functions used to record user data -> database
+    await databaseRef
+        .collection("lists")
+        .document(listName)
+        .setData({'title': 'Mastering Firestore'});
+
+    // DocumentReference ref = await databaseRef.collection("lists")
+    // .add({
+    //   'title': 'FLutter in Action',
+    //   'description': 'Complete Programing'
+    // });
+    // print(ref.documentID);
+  }
+
+  void getDataFromDatabase() {
+    // Get Items and Price from DataBase
+    databaseRef.collection("lists");
+  }
 
   void _addNewList(String task) {
     //allows to change state of the list appearing
@@ -57,16 +101,17 @@ class _MenuPageState extends State<MenuPage> {
     // Open up a single list
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-          appBar: AppBar(
-            title: Text(_numList[index]),
-          ),
-          body: ListViews(),
+        appBar: AppBar(
+          title: Text(_numList[index]),
+        ),
+        body: ListViews(),
       );
     }));
   }
 
   Widget _buildList() {
     //This is the whole list
+    putNamesOfListInAList();
     return ListView.builder(itemBuilder: (context, index) {
       if (index < _numList.length) {
         return _buildTodoItem(_numList[index], index);
@@ -89,7 +134,9 @@ class _MenuPageState extends State<MenuPage> {
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              _addNewList(val);
+              //_addNewList(val);
+              //putNamesOfListInAList();
+              createRecord(val); // puts List in database
               Navigator.pop(context); // Close the add todo screen
             },
             decoration: InputDecoration(
