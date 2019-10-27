@@ -43,9 +43,10 @@ class _MenuPageState extends State<MenuPage> {
   //   });
   // }
 
-  final List<String> _numList = []; //Array to hold the lists
+  final List<String> _numList = []; //Array to hold the list names
 
-  void putNamesOfListInAList() async { // this functions updates the app with list available
+  void putNamesOfListInAList() async {
+    // updates the app with list in the database
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
     final List<DocumentSnapshot> docs = results.documents;
@@ -53,7 +54,7 @@ class _MenuPageState extends State<MenuPage> {
     var i = 0;
     var val = "";
 
-    if (_numList.length < docs.length) {
+    if (_numList.length < docs.length || _numList.length > docs.length) {
       _numList.clear();
       while (i < docs.length) {
         val = docs.elementAt(i).documentID;
@@ -85,6 +86,10 @@ class _MenuPageState extends State<MenuPage> {
     databaseRef.collection("lists");
   }
 
+  void deleteList(int index){  // Deletes list from database and updates array
+    databaseRef.collection('lists').document(_numList[index]).delete();
+    putNamesOfListInAList();
+  }
   void _addNewList(String task) {
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
@@ -121,7 +126,19 @@ class _MenuPageState extends State<MenuPage> {
 
   Widget _buildTodoItem(String listName, int index) {
     //Build one list
-    return ListTile(title: Text(listName), onTap: () => _openList(index));
+    return Card(
+        child: ListTile(
+            title: Text(listName),
+            onTap: () {
+              setState(() {
+                _openList(index);
+              });
+            },
+            onLongPress: (){
+              setState(() {
+               deleteList(index); 
+              });
+            },));
   }
 
   void _tapAddMoreItems() {
