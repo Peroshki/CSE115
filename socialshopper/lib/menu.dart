@@ -9,7 +9,6 @@ import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
 
-
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
   @override
@@ -18,7 +17,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
-  
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -57,10 +56,10 @@ class _MenuPageState extends State<MenuPage> {
     // Open up a single list
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-          appBar: AppBar(
-            title: Text(_numList[index]),
-          ),
-          body: ListViews(),
+        appBar: AppBar(
+          title: Text(_numList[index]),
+        ),
+        body: ListViews(),
       );
     }));
   }

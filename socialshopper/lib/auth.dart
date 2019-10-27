@@ -45,7 +45,7 @@ class AuthService {
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
     updateUserData(user);
-    print("Signed in " + user.displayName);
+    print('Signed in ' + user.displayName);
 
     loading.add(false);
     return user;
@@ -63,7 +63,7 @@ class AuthService {
     }, merge: true);
   }
 
-  void signOut() async{
+  void signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
   }

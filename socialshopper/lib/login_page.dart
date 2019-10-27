@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
-
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -48,7 +47,9 @@ class _LoginPageState extends State<LoginPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
-        onPressed: () {Navigator.of(context).pushNamed(MenuPage.tag);}, //
+        onPressed: () {
+          Navigator.of(context).pushNamed(MenuPage.tag);
+        }, //
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
         child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -64,19 +65,21 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final googleButton = GoogleSignInButton(
-      onPressed: () => authService.googleSignIn().whenComplete(() {Navigator.of(context).pushNamed(MenuPage.tag);}), 
+      onPressed: () => authService.googleSignIn().whenComplete(() {
+        Navigator.of(context).pushNamed(MenuPage.tag);
+      }),
     );
     final signUpButton = RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed(SignupPage.tag);
-        },
-        padding: EdgeInsets.all(12),
-        color: Colors.green,
-        child: Text('Sign Up', style: TextStyle(color: Colors.white)),
-      );
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      onPressed: () {
+        Navigator.of(context).pushNamed(SignupPage.tag);
+      },
+      padding: EdgeInsets.all(12),
+      color: Colors.green,
+      child: Text('Sign Up', style: TextStyle(color: Colors.white)),
+    );
 
     return Scaffold(
       body: Center(
@@ -86,7 +89,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Padding(
             padding: const EdgeInsets.all(50),
             child: ListView(
-              children: <Widget>[ Container(
+              children: <Widget>[
+                Container(
                     width: 200.0,
                     height: 200.0,
                     decoration: BoxDecoration(
