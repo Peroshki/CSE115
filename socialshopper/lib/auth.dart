@@ -1,6 +1,12 @@
+//This .dart file handles all of the sign ins to Google and Firebase, the latter so that user's data can be stored.
+//This data can then be used to attach the shopping lists to the users, such as the UID.
+//This file also handles sign outs for both Firebase and Google Accounts.
+
+//Necessary packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//The following is a real time dart package. Documentation here: https://pub.dev/packages/rxdart
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
@@ -77,4 +83,5 @@ class AuthService {
     await _googleSignIn.signOut();
   }
 }
+
 final AuthService authService = AuthService();
