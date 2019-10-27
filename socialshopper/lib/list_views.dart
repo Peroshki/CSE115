@@ -43,7 +43,7 @@ List<String> _random = [
 class ListViews extends StatefulWidget {
   static String tag = 'list_views';
   @override
-  _ListViewsState createState() => new _ListViewsState();
+  _ListViewsState createState() => _ListViewsState();
 }
 
 class _ListViewsState extends State<ListViews> {
