@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socialshopper/store_select.dart';
 import 'main.dart';
+import 'auth.dart';
+import 'login_page.dart';
 
 class Profile extends StatefulWidget{
   static String tag = 'Profile';
@@ -48,9 +50,9 @@ class _ProfileState extends State<Profile>{
                       'Logout',
                       style: TextStyle(fontSize: 20.0),
                     ),
-                    onPressed: (){
-                      print('Been pressed!');
-                    },
+                    onPressed: () {
+                      authService.signOut();
+                      Navigator.of(context).pushNamed(LoginPage.tag);},
                   ),
 
                   //counter for how many lists have
