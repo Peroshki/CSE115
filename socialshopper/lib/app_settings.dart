@@ -11,7 +11,7 @@ class _Settings extends State<Settings> {
   bool _dmSelect = false;
 
 //Creates an alert to the user saying that these buttons aren't implemented.
-  createAlert(BuildContext context) {
+  /*createAlert(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -20,7 +20,7 @@ class _Settings extends State<Settings> {
             content: const Text('Coming Soon!'),
           );
         });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +69,21 @@ class _Settings extends State<Settings> {
           value: false,
           title: const Text('Push Notifications enabled:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
         SwitchListTile(
           value: false,
           title: const Text('Email Notifications enabled:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
         SwitchListTile(
           value: false,
           title: const Text('Reminder to go shopping:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
 
@@ -102,28 +102,28 @@ class _Settings extends State<Settings> {
           value: false,
           title: const Text('Allow access to the Downloads Folder:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
         SwitchListTile(
           value: false,
           title: const Text('Allow access to Venmo:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
         SwitchListTile(
           value: false,
           title: const Text('Allow access to Facebook:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
         SwitchListTile(
           value: true,
           title: const Text('Give devs your first born child:'),
           onChanged: (value) {
-            createAlert(context);
+            //createAlert(context);
           },
         ),
       ])),

@@ -9,7 +9,6 @@ import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
 
-
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
   @override
@@ -18,7 +17,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
-  
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -55,12 +54,12 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index) {
     // Open up a single list
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(
-            title: Text(_numList[index]),
-          ),
-          body: ListViews(),
+        appBar: AppBar(
+          title: Text(_numList[index]),
+        ),
+        body: ListViews(),
       );
     }));
   }
@@ -81,22 +80,22 @@ class _MenuPageState extends State<MenuPage> {
 
   void _tapAddMoreItems() {
     Navigator.of(context).push(
-        // MaterialPageRoute will automatically animate the screen entry, as well
-        // as adding a back button to close it
-        MaterialPageRoute(builder: (context) {
-      return Scaffold(
-          appBar: AppBar(title: const Text('Add a new task')),
-          body: TextField(
-            autofocus: true,
-            onSubmitted: (val) {
-              _addNewList(val);
-              Navigator.pop(context); // Close the add todo screen
-            },
-            decoration: InputDecoration(
-                hintText: 'Enter List Name',
-                contentPadding: const EdgeInsets.all(16.0)),
-          ));
-    }));
+      // MaterialPageRoute will automatically animate the screen entry, as well
+      // as adding a back button to close it
+        MaterialPageRoute<void>(builder: (context) {
+          return Scaffold(
+              appBar: AppBar(title: const Text('Add a new task')),
+              body: TextField(
+                autofocus: true,
+                onSubmitted: (val) {
+                  _addNewList(val);
+                  Navigator.pop(context); // Close the add todo screen
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter List Name',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ));
+        }));
   }
 
   @override
