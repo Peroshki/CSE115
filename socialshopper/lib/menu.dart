@@ -124,19 +124,48 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+  void alertBoxForList(int index) { // Displays an alert box before deleting list
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Delete List?"),
+          content: new Text("This will permanelty delete the list."),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Cancel"), // Cancel button
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Accept"), // Deletes list
+              onPressed: () {
+                setState(() {
+               deleteList(index); 
+               Navigator.of(context).pop();
+              });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildTodoItem(String listName, int index) {
     //Build one list
     return Card(
         child: ListTile(
             title: Text(listName),
-            onTap: () {
+            onTap: () { // opens the list
               setState(() {
                 _openList(index);
               });
             },
-            onLongPress: (){
+            onLongPress: (){ // this deletes item from list view and from database
               setState(() {
-               deleteList(index); 
+              alertBoxForList(index); 
               });
             },));
   }
