@@ -10,6 +10,7 @@ import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 
@@ -90,6 +91,7 @@ class _MenuPageState extends State<MenuPage> {
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
+
   void _addNewList(String task) {
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
