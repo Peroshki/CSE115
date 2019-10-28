@@ -81,7 +81,7 @@ class _MenuPageState extends State<MenuPage> {
     // print(ref.documentID);
   }
 
-  void getDataFromDatabase() {
+  void getDataFromDatabase() { // This doesn't work yet
     // Get Items and Price from DataBase
     databaseRef.collection("lists");
   }
