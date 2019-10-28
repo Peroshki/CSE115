@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 import 'menu.dart';
+import 'signup_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -11,7 +16,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
@@ -35,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: EdgeInsets.symmetric(vertical: 0.0),
       child: RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
@@ -57,17 +61,26 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {},
     );
 
+    final signUpButton = RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed(SignupPage.tag);
+        },
+        padding: EdgeInsets.all(12),
+        color: Colors.green,
+        child: Text('Sign Up', style: TextStyle(color: Colors.white)),
+      );
+
     return Scaffold(
       body: Center(
         child: Container(
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
+            padding: const EdgeInsets.all(60),
+            child: ListView(
+              children: <Widget>[ Container(
                     width: 200.0,
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -75,15 +88,14 @@ class _LoginPageState extends State<LoginPage> {
                         image: DecorationImage(
                             fit: BoxFit.fill,
                             image: NetworkImage(
-                                "https://i.imgur.com/BoN9kdC.png")))),
+                                'https://i.imgur.com/BoN9kdC.png')))),
                 SizedBox(height: 40.0),
                 email,
                 SizedBox(height: 8.0),
                 password,
-                SizedBox(
-                  height: 24.0,
-                ),
+                SizedBox(height: 10.0),
                 loginButton,
+                signUpButton,
                 forgotLabel,
               ],
             ),
