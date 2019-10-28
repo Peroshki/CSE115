@@ -8,10 +8,6 @@ import 'creating_new_list.dart';
 import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-//FireBase stuff
-final databaseRef = Firestore.instance; //creating an instance of database
 
 class MenuPage extends StatefulWidget { // Changes state of menupage
   static String tag = 'menu-page';
@@ -30,6 +26,7 @@ class _MenuPageState extends State<MenuPage> {
 
   void listPress(int index) { 
     // click on list
+
     setState(() {
       _selectedIndex = index;
     });
@@ -70,12 +67,11 @@ class _MenuPageState extends State<MenuPage> {
         .document(listName) // name of the list
         .setData({'title': 'Mastering Firestore'}); // These are test, later will add the items to the list
 
-    // DocumentReference ref = await databaseRef.collection("lists")
-    // .add({
-    //   'title': 'FLutter in Action',
-    //   'description': 'Complete Programing'
-    // });
-    // print(ref.documentID);
+
+  void _doSomething(String text) {
+    setState(() {
+      _textString = text;
+    });
   }
 
   void getDataFromDatabase() { // This doesn't work yet
@@ -88,6 +84,7 @@ class _MenuPageState extends State<MenuPage> {
     putNamesOfListInAList();
   }
   void _addNewList(String task) { // Adds List name to array
+
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
       setState(() => _numList.add(task));
@@ -110,6 +107,7 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
+
   Widget _buildList() { // This builds list of all the lists
     putNamesOfListInAList();
     return ListView.builder(itemBuilder: (context, index) {
@@ -118,6 +116,7 @@ class _MenuPageState extends State<MenuPage> {
       }
     });
   }
+
 
   void alertBoxForList(int index) { // Displays an alert box before deleting list
     showDialog(
@@ -162,6 +161,7 @@ class _MenuPageState extends State<MenuPage> {
               alertBoxForList(index); 
               });
             },));
+
   }
 
   void _tapAddMoreItems() { // This opens up a new page to add name of new list and creats list
@@ -175,6 +175,7 @@ class _MenuPageState extends State<MenuPage> {
             autofocus: true,
             onSubmitted: (val) {
               createRecord(val); // puts List in database
+
               Navigator.pop(context); // Close the add todo screen
             },
             decoration: InputDecoration(
