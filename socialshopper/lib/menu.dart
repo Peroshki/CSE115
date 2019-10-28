@@ -8,10 +8,6 @@ import 'creating_new_list.dart';
 import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-//FireBase stuff
-final databaseRef = Firestore.instance; //creating an instance of database
 
 class MenuPage extends StatefulWidget {
   // Changes state of menupage
@@ -31,6 +27,7 @@ class _MenuPageState extends State<MenuPage> {
 
   void listPress(int index) {
     // click on list
+
     setState(() {
       _selectedIndex = index;
     });
@@ -74,12 +71,11 @@ class _MenuPageState extends State<MenuPage> {
       'title': 'Mastering Firestore'
     }); // These are test, later will add the items to the list
 
-    // DocumentReference ref = await databaseRef.collection("lists")
-    // .add({
-    //   'title': 'FLutter in Action',
-    //   'description': 'Complete Programing'
-    // });
-    // print(ref.documentID);
+
+  void _doSomething(String text) {
+    setState(() {
+      _textString = text;
+    });
   }
 
   void getDataFromDatabase() {
@@ -93,9 +89,14 @@ class _MenuPageState extends State<MenuPage> {
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
+<<<<<<< HEAD
 
   void _addNewList(String task) {
     // Adds List name to array
+=======
+  void _addNewList(String task) { // Adds List name to array
+
+>>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
       setState(() => _numList.add(task));
@@ -119,8 +120,13 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
+<<<<<<< HEAD
   Widget _buildList() {
     // This builds list of all the lists
+=======
+
+  Widget _buildList() { // This builds list of all the lists
+>>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
     putNamesOfListInAList();
     return ListView.builder(itemBuilder: (context, index) {
       if (index < _numList.length) {
@@ -129,8 +135,13 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+<<<<<<< HEAD
   void alertBoxForList(int index) {
     // Displays an alert box before deleting list
+=======
+
+  void alertBoxForList(int index) { // Displays an alert box before deleting list
+>>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -163,6 +174,7 @@ class _MenuPageState extends State<MenuPage> {
     // Interaction with lists
     return Card(
         child: ListTile(
+<<<<<<< HEAD
       title: Text(listName),
       onTap: () {
         // opens the list
@@ -177,6 +189,20 @@ class _MenuPageState extends State<MenuPage> {
         });
       },
     ));
+=======
+            title: Text(listName),
+            onTap: () { // opens the list
+              setState(() {
+                _openList(index);
+              });
+            },
+            onLongPress: (){ // this deletes item from list view and from database
+              setState(() {
+              alertBoxForList(index); 
+              });
+            },));
+
+>>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
   }
 
   void _tapAddMoreItems() {
@@ -191,6 +217,7 @@ class _MenuPageState extends State<MenuPage> {
             autofocus: true,
             onSubmitted: (val) {
               createRecord(val); // puts List in database
+
               Navigator.pop(context); // Close the add todo screen
             },
             decoration: InputDecoration(
