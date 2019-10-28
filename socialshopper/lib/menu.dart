@@ -8,8 +8,12 @@ import 'creating_new_list.dart';
 import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MenuPage extends StatefulWidget { // Changes state of menupage
+//FireBase stuff
+final databaseRef = Firestore.instance; //creating an instance of database
+
+class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
   @override
   _MenuPageState createState() => _MenuPageState();
@@ -24,9 +28,8 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  void listPress(int index) { 
+  void listPress(int index) {
     // click on list
-
     setState(() {
       _selectedIndex = index;
     });
@@ -42,7 +45,8 @@ class _MenuPageState extends State<MenuPage> {
 
   final List<String> _numList = []; //Array to hold the list names
 
-  void putNamesOfListInAList() async { // Updates array with the lists in database
+  void putNamesOfListInAList() async {
+    // updates the app with list in the database
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
     final List<DocumentSnapshot> docs = results.documents;
@@ -58,23 +62,26 @@ class _MenuPageState extends State<MenuPage> {
         i++;
       }
     }
+    //  docs.forEach((data) => _addNewList(data.documentID)); //
+    // docs.forEach((data) => print(data.documentID));
   }
 
   void createRecord(String listName) async {
     // functions used to record user data -> database
     await databaseRef
-        .collection("lists") // In Collection 'lists'
-        .document(listName) // name of the list
-        .setData({'title': 'Mastering Firestore'}); // These are test, later will add the items to the list
+        .collection("lists")
+        .document(listName)
+        .setData({'title': 'Mastering Firestore'});
 
-
-  void _doSomething(String text) {
-    setState(() {
-      _textString = text;
-    });
+    // DocumentReference ref = await databaseRef.collection("lists")
+    // .add({
+    //   'title': 'FLutter in Action',
+    //   'description': 'Complete Programing'
+    // });
+    // print(ref.documentID);
   }
 
-  void getDataFromDatabase() { // This doesn't work yet
+  void getDataFromDatabase() {
     // Get Items and Price from DataBase
     databaseRef.collection("lists");
   }
@@ -83,30 +90,20 @@ class _MenuPageState extends State<MenuPage> {
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-
   void _addNewList(String task) {
-    // Adds List name to array
-=======
-  void _addNewList(String task) { // Adds List name to array
-
->>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
-=======
-  void _addNewList(String task) { // Adds List name to array
->>>>>>> parent of 1a8e51b... Fixed format going to try and merge again
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
       setState(() => _numList.add(task));
     }
   }
 
-  // void _getIndex(int index) {
-  //   //change state of list
-  //   setState(() => _numList.elementAt(index));
-  // }
+  void _getIndex(int index) {
+    //change state of list
+    setState(() => _numList.elementAt(index));
+  }
 
-  void _openList(int index) { // Opens up a single list
+  void _openList(int index) {
+    // Open up a single list
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
@@ -117,17 +114,8 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   Widget _buildList() {
-    // This builds list of all the lists
-=======
-
-  Widget _buildList() { // This builds list of all the lists
->>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
-=======
-  Widget _buildList() { // This builds list of all the lists
->>>>>>> parent of 1a8e51b... Fixed format going to try and merge again
+    //This is the whole list
     putNamesOfListInAList();
     return ListView.builder(itemBuilder: (context, index) {
       if (index < _numList.length) {
@@ -136,17 +124,7 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  void alertBoxForList(int index) {
-    // Displays an alert box before deleting list
-=======
-
   void alertBoxForList(int index) { // Displays an alert box before deleting list
->>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
-=======
-  void alertBoxForList(int index) { // Displays an alert box before deleting list
->>>>>>> parent of 1a8e51b... Fixed format going to try and merge again
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -175,28 +153,10 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  Widget _buildTodoItem(String listName, int index) { // Interaction with lists
+  Widget _buildTodoItem(String listName, int index) {
+    //Build one list
     return Card(
         child: ListTile(
-<<<<<<< HEAD
-<<<<<<< HEAD
-      title: Text(listName),
-      onTap: () {
-        // opens the list
-        setState(() {
-          _openList(index);
-        });
-      },
-      onLongPress: () {
-        // this deletes item from list view and from database
-        setState(() {
-          alertBoxForList(index);
-        });
-      },
-    ));
-=======
-=======
->>>>>>> parent of 1a8e51b... Fixed format going to try and merge again
             title: Text(listName),
             onTap: () { // opens the list
               setState(() {
@@ -208,14 +168,9 @@ class _MenuPageState extends State<MenuPage> {
               alertBoxForList(index); 
               });
             },));
-<<<<<<< HEAD
-
->>>>>>> b14507a0fc967735d4e8c2d4cb835ba198d548b6
-=======
->>>>>>> parent of 1a8e51b... Fixed format going to try and merge again
   }
 
-  void _tapAddMoreItems() { // This opens up a new page to add name of new list and creats list
+  void _tapAddMoreItems() {
     Navigator.of(context).push(
         // MaterialPageRoute will automatically animate the screen entry, as well
         // as adding a back button to close it
@@ -225,8 +180,9 @@ class _MenuPageState extends State<MenuPage> {
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
+              //_addNewList(val);
+              //putNamesOfListInAList();
               createRecord(val); // puts List in database
-
               Navigator.pop(context); // Close the add todo screen
             },
             decoration: InputDecoration(
@@ -237,7 +193,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return Scaffold(
       //Scaffold is the main container for main page
       body: _getBody(_selectedIndex),
