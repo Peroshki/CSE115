@@ -13,7 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 
-class MenuPage extends StatefulWidget {
+class MenuPage extends StatefulWidget { // Changes state of menupage
   static String tag = 'menu-page';
   @override
   _MenuPageState createState() => _MenuPageState();
@@ -28,7 +28,7 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  void listPress(int index) {
+  void listPress(int index) { 
     // click on list
     setState(() {
       _selectedIndex = index;
@@ -45,8 +45,7 @@ class _MenuPageState extends State<MenuPage> {
 
   final List<String> _numList = []; //Array to hold the list names
 
-  void putNamesOfListInAList() async {
-    // updates the app with list in the database
+  void putNamesOfListInAList() async { // Updates array with the lists in database
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
     final List<DocumentSnapshot> docs = results.documents;
@@ -62,16 +61,14 @@ class _MenuPageState extends State<MenuPage> {
         i++;
       }
     }
-    //  docs.forEach((data) => _addNewList(data.documentID)); //
-    // docs.forEach((data) => print(data.documentID));
   }
 
   void createRecord(String listName) async {
     // functions used to record user data -> database
     await databaseRef
-        .collection("lists")
-        .document(listName)
-        .setData({'title': 'Mastering Firestore'});
+        .collection("lists") // In Collection 'lists'
+        .document(listName) // name of the list
+        .setData({'title': 'Mastering Firestore'}); // These are test, later will add the items to the list
 
     // DocumentReference ref = await databaseRef.collection("lists")
     // .add({
@@ -90,20 +87,19 @@ class _MenuPageState extends State<MenuPage> {
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
-  void _addNewList(String task) {
+  void _addNewList(String task) { // Adds List name to array
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
       setState(() => _numList.add(task));
     }
   }
 
-  void _getIndex(int index) {
-    //change state of list
-    setState(() => _numList.elementAt(index));
-  }
+  // void _getIndex(int index) {
+  //   //change state of list
+  //   setState(() => _numList.elementAt(index));
+  // }
 
-  void _openList(int index) {
-    // Open up a single list
+  void _openList(int index) { // Opens up a single list
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
@@ -114,8 +110,7 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-  Widget _buildList() {
-    //This is the whole list
+  Widget _buildList() { // This builds list of all the lists
     putNamesOfListInAList();
     return ListView.builder(itemBuilder: (context, index) {
       if (index < _numList.length) {
@@ -153,8 +148,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  Widget _buildTodoItem(String listName, int index) {
-    //Build one list
+  Widget _buildTodoItem(String listName, int index) { // Interaction with lists
     return Card(
         child: ListTile(
             title: Text(listName),
@@ -170,7 +164,7 @@ class _MenuPageState extends State<MenuPage> {
             },));
   }
 
-  void _tapAddMoreItems() {
+  void _tapAddMoreItems() { // This opens up a new page to add name of new list and creats list
     Navigator.of(context).push(
         // MaterialPageRoute will automatically animate the screen entry, as well
         // as adding a back button to close it
@@ -180,8 +174,6 @@ class _MenuPageState extends State<MenuPage> {
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              //_addNewList(val);
-              //putNamesOfListInAList();
               createRecord(val); // puts List in database
               Navigator.pop(context); // Close the add todo screen
             },
@@ -193,7 +185,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
       //Scaffold is the main container for main page
       body: _getBody(_selectedIndex),
