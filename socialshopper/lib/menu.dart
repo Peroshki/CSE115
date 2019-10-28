@@ -8,10 +8,7 @@ import 'creating_new_list.dart';
 import 'app_settings.dart';
 import 'profile.dart';
 import 'package:flutter/src/material/page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-//FireBase stuff
-final databaseRef = Firestore.instance; //creating an instance of database
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -21,7 +18,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
-
+  
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -29,67 +26,21 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void listPress(int index) {
-    // click on list
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  // String _textString = 'Hello There';
+  String _textString = 'Hello There';
 
-  // void _doSomething(String text) {
-  //   setState(() {
-  //     _textString = text;
-  //   });
-  // }
-
-  final List<String> _numList = []; //Array to hold the list names
-
-  void putNamesOfListInAList() async {
-    // updates the app with list in the database
-    final QuerySnapshot results =
-        await Firestore.instance.collection('lists').getDocuments();
-    final List<DocumentSnapshot> docs = results.documents;
-
-    var i = 0;
-    var val = "";
-
-    if (_numList.length < docs.length || _numList.length > docs.length) {
-      _numList.clear();
-      while (i < docs.length) {
-        val = docs.elementAt(i).documentID;
-        _addNewList(val);
-        i++;
-      }
-    }
-    //  docs.forEach((data) => _addNewList(data.documentID)); //
-    // docs.forEach((data) => print(data.documentID));
+  void _doSomething(String text) {
+    setState(() {
+      _textString = text;
+    });
   }
 
-  void createRecord(String listName) async {
-    // functions used to record user data -> database
-    await databaseRef
-        .collection("lists")
-        .document(listName)
-        .setData({'title': 'Mastering Firestore'});
+  final List<String> _numList = []; //Array to hold the lists
 
-    // DocumentReference ref = await databaseRef.collection("lists")
-    // .add({
-    //   'title': 'FLutter in Action',
-    //   'description': 'Complete Programing'
-    // });
-    // print(ref.documentID);
-  }
-
-  void getDataFromDatabase() {
-    // Get Items and Price from DataBase
-    databaseRef.collection("lists");
-  }
-
-  void deleteList(int index){  // Deletes list from database and updates array
-    databaseRef.collection('lists').document(_numList[index]).delete();
-    putNamesOfListInAList();
-  }
   void _addNewList(String task) {
     //allows to change state of the list appearing
     if (task.isNotEmpty) {
@@ -106,17 +57,16 @@ class _MenuPageState extends State<MenuPage> {
     // Open up a single list
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(_numList[index]),
-        ),
-        body: ListViews(),
+          appBar: AppBar(
+            title: Text(_numList[index]),
+          ),
+          body: ListViews(),
       );
     }));
   }
 
   Widget _buildList() {
     //This is the whole list
-    putNamesOfListInAList();
     return ListView.builder(itemBuilder: (context, index) {
       if (index < _numList.length) {
         return _buildTodoItem(_numList[index], index);
@@ -124,50 +74,9 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  void alertBoxForList(int index) { // Displays an alert box before deleting list
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Delete List?"),
-          content: new Text("This will permanelty delete the list."),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Cancel"), // Cancel button
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("Accept"), // Deletes list
-              onPressed: () {
-                setState(() {
-               deleteList(index); 
-               Navigator.of(context).pop();
-              });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildTodoItem(String listName, int index) {
     //Build one list
-    return Card(
-        child: ListTile(
-            title: Text(listName),
-            onTap: () { // opens the list
-              setState(() {
-                _openList(index);
-              });
-            },
-            onLongPress: (){ // this deletes item from list view and from database
-              setState(() {
-              alertBoxForList(index); 
-              });
-            },));
+    return ListTile(title: Text(listName), onTap: () => _openList(index));
   }
 
   void _tapAddMoreItems() {
@@ -180,9 +89,7 @@ class _MenuPageState extends State<MenuPage> {
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              //_addNewList(val);
-              //putNamesOfListInAList();
-              createRecord(val); // puts List in database
+              _addNewList(val);
               Navigator.pop(context); // Close the add todo screen
             },
             decoration: InputDecoration(
