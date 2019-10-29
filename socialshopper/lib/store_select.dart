@@ -6,26 +6,25 @@ import 'login_page.dart';
 class StoreSelect extends StatefulWidget {
   static String tag = 'store-select';
   @override
-  _StoreSelectState createState() => new _StoreSelectState();
+  _StoreSelectState createState() => _StoreSelectState();
 }
 
-
-
 class _StoreSelectState extends State<StoreSelect> {
-
   //Creates an alert to the user saying that these buttons aren't implemented.
-  Future<void> createAlert(BuildContext context){
-    return showDialog<void>(context: context, builder: (context){
-      return AlertDialog(
-        title: Text('Not Implemented'),
-        content: Text('Coming Soon!'),
-      );
-    });
+  Future<void> createAlert(BuildContext context) {
+    return showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Not Implemented'),
+            content: const Text('Coming Soon!'),
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    final title = 'Store Select';
+    const String title = 'Store Select';
 
     //Creates the Safeway Button
     final safewayButton = Padding(
@@ -97,48 +96,43 @@ class _StoreSelectState extends State<StoreSelect> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("Store Select Screen"),
+            title: const Text('Store Select Screen'),
 
-          //Allows for the page to have a "go back" button
-          automaticallyImplyLeading: true,
-          leading: IconButton(
-            icon:Icon(Icons.arrow_back),
-            onPressed:() => Navigator.pop(context, false),
-          )
-        ),
+            //Allows for the page to have a "go back" button
+            automaticallyImplyLeading: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context, false),
+            )),
 
         //Creates the grid of buttons
         body: Center(
           heightFactor: 10,
           child: GridView.count(
-            primary: false, 
+            primary: false,
             padding: const EdgeInsets.all(20),
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
             crossAxisCount: 2,
-
-            children: <Widget> [
+            children: <Widget>[
               Container(
-               padding: const EdgeInsets.all(8),
-               child: safewayButton,
+                padding: const EdgeInsets.all(8),
+                child: safewayButton,
               ),
-
               Container(
                 padding: const EdgeInsets.all(8),
                 child: bestbuyButton,
               ),
-
               Container(
-               padding: const EdgeInsets.all(8),
-               child: homeDepotButton,
+                padding: const EdgeInsets.all(8),
+                child: homeDepotButton,
               ),
-              
               Container(
                 padding: const EdgeInsets.all(8),
                 child: partyCityButton,
               ),
             ],
-          ),  
+          ),
         ),
       ),
     );
