@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'main.dart';
 import 'menu.dart';
+
 
 List<String> _random = [
   'chicken',
@@ -42,6 +44,10 @@ List<String> _random = [
 
 class ListViews extends StatefulWidget {
   static String tag = 'list_views';
+  final String listName;
+
+  ListViews({Key key, @required this.listName}) : super(key: key);
+
   @override
   _ListViewsState createState() => _ListViewsState();
 }
@@ -50,22 +56,36 @@ class _ListViewsState extends State<ListViews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: _random.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            height: 50,
-            color: Colors.amber[500],
-            child: Center(child: Text('${_random[index]}')),
+      body: StreamBuilder(
+        stream: Firestore.instance.collection('lists').document(widget.listName).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Text('Loading data... Please wait.');
+
+          if (snapshot.data['items'] == null)
+            return Center(child: Text('List is empty.'));
+
+          return ListView.builder(
+                  itemCount: snapshot.data['items'].length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 50,
+                      color: Colors.blue,
+                      child: Center(
+                          child: Text(snapshot.data['items'][index]['name'] + ': ' + snapshot.data['items'][index]['price'].toString())
+                      )
+                    );
+                  }
           );
         },
       ),
+
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
       ),
+
       floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.check),
         label: const Text('Pay Now'),
@@ -75,6 +95,7 @@ class _ListViewsState extends State<ListViews> {
           borderRadius: BorderRadius.circular(32),
         ),
       ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
