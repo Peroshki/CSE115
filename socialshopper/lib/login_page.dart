@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:socialshopper/auth.dart';
 import 'menu.dart';
+import 'auth.dart';
 import 'signup_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -46,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         onPressed: () {
           Navigator.of(context).pushNamed(MenuPage.tag);
-        },
+        }, //
         padding: EdgeInsets.all(12),
         color: Colors.lightBlueAccent,
         child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -61,26 +64,33 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {},
     );
 
+    final googleButton = GoogleSignInButton(
+      onPressed: () => authService.googleSignIn().whenComplete(() {
+        Navigator.of(context).pushNamed(MenuPage.tag);
+      }),
+    );
     final signUpButton = RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed(SignupPage.tag);
-        },
-        padding: EdgeInsets.all(12),
-        color: Colors.green,
-        child: Text('Sign Up', style: TextStyle(color: Colors.white)),
-      );
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      onPressed: () {
+        Navigator.of(context).pushNamed(SignupPage.tag);
+      },
+      padding: EdgeInsets.all(12),
+      color: Colors.green,
+      child: Text('Sign Up', style: TextStyle(color: Colors.white)),
+    );
 
     return Scaffold(
       body: Center(
         child: Container(
-          color: Colors.white,
+          margin: EdgeInsets.fromLTRB(30.0, 5.0, 30.0, 5.0),
+          color: Colors.transparent,
           child: Padding(
-            padding: const EdgeInsets.all(60),
+            padding: const EdgeInsets.all(50),
             child: ListView(
-              children: <Widget>[ Container(
+              children: <Widget>[
+                Container(
                     width: 200.0,
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -95,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                 password,
                 SizedBox(height: 10.0),
                 loginButton,
+                googleButton,
                 signUpButton,
                 forgotLabel,
               ],
