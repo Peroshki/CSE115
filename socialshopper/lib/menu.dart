@@ -1,13 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
-import 'list_views.dart';
-import 'store_select.dart';
-import 'creating_new_list.dart';
 import 'app_settings.dart';
+import 'list_views.dart';
 import 'profile.dart';
-import 'package:flutter/src/material/page.dart';
+import 'store_select.dart';
 
 
 class MenuPage extends StatefulWidget {
@@ -31,14 +27,6 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  String _textString = 'Hello There';
-
-  void _doSomething(String text) {
-    setState(() {
-      _textString = text;
-    });
-  }
-
   final List<String> _numList = []; //Array to hold the lists
 
   void _addNewList(String task) {
@@ -55,19 +43,23 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index) {
     // Open up a single list
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return Scaffold(
-          appBar: AppBar(
-            title: Text(_numList[index]),
-          ),
-          body: ListViews(),
-      );
-    }));
+    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
+      builder: (context) {
+        return Scaffold(
+           appBar: AppBar(
+             title: Text(_numList[index]),
+            ),
+            body: ListViews(),
+          );
+        }
+      ) 
+    );
   }
 
   Widget _buildList() {
     //This is the whole list
-    return ListView.builder(itemBuilder: (context, index) {
+    return ListView.builder(
+      itemBuilder: (context, index) {
       if (index < _numList.length) {
         return _buildTodoItem(_numList[index], index);
       }
@@ -80,10 +72,10 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _tapAddMoreItems() {
-    Navigator.of(context).push(
+    Navigator.of(context).push<dynamic>(
         // MaterialPageRoute will automatically animate the screen entry, as well
         // as adding a back button to close it
-        MaterialPageRoute(builder: (context) {
+        MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
           appBar: AppBar(title: const Text('Add a new task')),
           body: TextField(
@@ -149,7 +141,9 @@ class _MenuPageState extends State<MenuPage> {
           ),
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
-            onPressed: _tapAddMoreItems,
+            onPressed:() { 
+              Navigator.of(context).pushNamed(StoreSelect.tag);
+            },
             tooltip: 'Name List',
             child: Icon(Icons.add),
           ),
