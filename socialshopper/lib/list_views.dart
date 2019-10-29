@@ -1,10 +1,21 @@
+/*
+*   list_views.dart:
+*
+*   Contains the view for an individual shopping list. Items are displayed in
+*   a list with each item containing a description of its name and price.
+*
+*   constructor: ListViews(listName: String)
+*   arguments:
+*     listName: The name of the shopping list you wish to view
+*/
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListViews extends StatefulWidget {
   static String tag = 'list_views';
 
-  // Stores the name of the list which you wish to view, obtained from the constructor
+  // Obtained from the constructor
   final String listName;
 
   // Constructor
@@ -44,7 +55,7 @@ class _ListViewsState extends State<ListViews> {
                       )
                     );
                   }
-                  
+
           );
         },
       ),
