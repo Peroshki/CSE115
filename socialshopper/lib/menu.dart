@@ -111,7 +111,7 @@ class _MenuPageState extends State<MenuPage> {
         appBar: AppBar(
           title: Text(_numList[index]),
         ),
-        body: ListViews(),
+        body: ListViews(listName: _numList[index]),
       );
     }));
   }
