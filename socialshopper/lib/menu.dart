@@ -7,7 +7,7 @@ import 'store_select.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
+var temp ='';
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 
@@ -19,6 +19,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -57,6 +58,7 @@ class _MenuPageState extends State<MenuPage> {
       _numList.clear();
       while (i < docs.length) {
         val = docs.elementAt(i).documentID;
+        temp = docs.elementAt(i).documentID;
         _addNewList(val);
         i++;
       }
@@ -69,21 +71,46 @@ class _MenuPageState extends State<MenuPage> {
     // functions used to record user data -> database
     await databaseRef
         .collection("lists")
-        .document(listName)
-        .setData({'title': 'Mastering Firestore'});
-
-    // DocumentReference ref = await databaseRef.collection("lists")
-    // .add({
-    //   'title': 'FLutter in Action',
-    //   'description': 'Complete Programing'
-    // });
-    // print(ref.documentID);
+        .document(listName);
   }
 
-  void getDataFromDatabase() {
-    // Get Items and Price from DataBase
-    databaseRef.collection("lists");
+// This functions populates a list with new items and updates database
+  void addItemsToList(String name, String item, String price) async{ 
+    DocumentReference ref = Firestore.instance.collection('lists').document(name);
+    DocumentSnapshot doc = await ref.get();
+    List tags = doc.data['items'];
+    ref.updateData({
+      'items': FieldValue.arrayUnion([{'name': item, 'price': price}])
+    });
   }
+
+  void getNameAndPrice(int index){
+    Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
+      return Scaffold(
+          appBar: AppBar(title: const Text('Enter Item & Price')),
+          body: new TextField(
+            autofocus: true,
+            onSubmitted: (newItem) {
+              //_addNewList(val);
+              //putNamesOfListInAList();
+              //createRecord(newItem); // puts List in database
+              var string = newItem;
+              var newList = string.split(" "); // Tokenize Enetered value
+              addItemsToList(_numList[index], newList[0], newList[1]); //Adds value to the list
+              Navigator.pop(context); // Close the add todo screen
+            },
+            
+            decoration: InputDecoration(
+                hintText: 'Ex. Orange 2.50',
+                contentPadding: const EdgeInsets.all(16.0)),
+          ));
+    }));
+  }
+
+  // void getDataFromDatabase() {
+  //   // Get Items and Price from DataBase
+  //   databaseRef.collection("lists");
+  // }
 
   void deleteList(int index){  // Deletes list from database and updates array
     databaseRef.collection('lists').document(_numList[index]).delete();
@@ -104,10 +131,17 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index) {
     // Open up a single list
+    temp = _numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
           title: Text(_numList[index]),
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.add_circle),
+            onPressed: () {
+             getNameAndPrice(index); // Allows user to enter item and price
+            },)
+          ],
         ),
         body: ListViews(listName: _numList[index]),
       );
