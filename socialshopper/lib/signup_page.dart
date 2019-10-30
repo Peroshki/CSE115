@@ -1,86 +1,154 @@
+//Creates the sign up page, including its sign up form.
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'menu.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:socialshopper/menu.dart';
+import 'auth.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class SignupPage extends StatefulWidget {
   static String tag = 'signup-page';
   @override
-  _SignupPageState createState() => new _SignupPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //These notify listeners of change in text input.
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _success;
+  String _userEmail;
   @override
   Widget build(BuildContext context) {
-    final email = TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      initialValue: '',
-      decoration: InputDecoration(
-        hintText: 'Email',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0)),
-      ),
-    );
-
-    final password = TextFormField(
-      autofocus: false,
-      initialValue: '',
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0)),
-      ),
-    );
-
-    final confirmPassword = TextFormField(
-      autofocus: false,
-      initialValue: '',
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Confirm Password',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(6.0)),
-      ),
-    );
-
-    final CreateAccountButton = OutlineButton(
-      highlightedBorderColor: Colors.black,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      onPressed: () {
-        Navigator.of(context).pushNamed(MenuPage.tag);
-      },
-      padding: EdgeInsets.all(12),
-      color: Colors.green,
-      child: Text('Create Account'),
-    );
-
     return Scaffold(
-      body: Center(
-        child: Container(
-          margin: new EdgeInsets.all(50.0),
+      appBar: AppBar(
+        title: const Text('Register'),
+        centerTitle: true,
+      ),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(50.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 40.0),
-              email,
-              SizedBox(height: 15.0),
-              password,
-              SizedBox(height: 15.0),
-              confirmPassword,
-              SizedBox(height: 16.0),
-              Row(
-                children: <Widget>[
-                  const Spacer(),
-                  CreateAccountButton,
-                ],
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                alignment: Alignment.center,
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      _register();
+                    }
+                  },
+                  color: Colors.blue,
+                  child: const Text('Submit',
+                      style: TextStyle(color: Colors.white)),
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+//Creates an alert depending on the error caught which is stored in String reason
+  dynamic createAlert(BuildContext context, String reason) {
+    return showDialog<dynamic>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(reason),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('Continue'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the Widget is disposed
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+//Here, it is attempted to actually register an account. Email and password are taken from their respective controllers.
+//Additionally, if registration is successful, then data is saved in database.
+//Then, MenuPage is shown
+//If registration is not successful, then an error is caught and passed to createAlert
+  void _register() async {
+    String reason;
+    try {
+      final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ))
+          .user;
+      if (user != null) {
+        setState(() {
+          _success = true;
+          _userEmail = user.email;
+        });
+        authService.updateUserData(user);
+        Navigator.of(context).pushNamed(MenuPage.tag);
+      } else {
+        _success = false;
+      }
+    } on PlatformException catch (e) {
+      print(e.code);
+      switch (e.code) {
+        case 'ERROR_INVALID_EMAIL':
+          reason = 'Invalid Email';
+          createAlert(context, reason);
+          break;
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          reason = 'Email is already connected to an account.';
+          createAlert(context, reason);
+          break;
+        case 'ERROR_WEAK_PASSWORD':
+          reason = 'Password must be at least 6 characters in length.';
+          createAlert(context, reason);
+          break;
+        default:
+          reason = 'Error';
+          createAlert(context, reason);
+          break;
+      }
+    }
   }
 }
