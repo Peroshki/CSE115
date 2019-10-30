@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
-import 'list_views.dart';
-import 'store_select.dart';
-import 'creating_new_list.dart';
 import 'app_settings.dart';
+import 'list_views.dart';
 import 'profile.dart';
+import 'store_select.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -35,6 +32,7 @@ class _MenuPageState extends State<MenuPage> {
       _selectedIndex = index;
     });
   }
+
 
   // String _textString = 'Hello There';
 
@@ -173,10 +171,10 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _tapAddMoreItems() {
-    Navigator.of(context).push(
+    Navigator.of(context).push<dynamic>(
         // MaterialPageRoute will automatically animate the screen entry, as well
         // as adding a back button to close it
-        MaterialPageRoute(builder: (context) {
+        MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
           appBar: AppBar(title: const Text('Add a new task')),
           body: TextField(
@@ -244,7 +242,9 @@ class _MenuPageState extends State<MenuPage> {
           ),
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
-            onPressed: _tapAddMoreItems,
+            onPressed:() { 
+              Navigator.of(context).pushNamed(StoreSelect.tag);
+            },
             tooltip: 'Name List',
             child: Icon(Icons.add),
           ),
