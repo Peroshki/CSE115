@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:socialshopper/auth.dart';
-import 'menu.dart';
-import 'auth.dart';
-import 'signup_page.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'auth.dart';
+import 'menu.dart';
+import 'signup_page.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,62 +13,19 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    final email = TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      initialValue: '',
-      decoration: InputDecoration(
-        hintText: 'Email',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
-    );
-
-    final password = TextFormField(
-      autofocus: false,
-      initialValue: '',
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
-    );
-
-    final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 0.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed(MenuPage.tag);
-        }, //
-        padding: EdgeInsets.all(12),
-        color: Colors.lightBlueAccent,
-        child: Text('Log In', style: TextStyle(color: Colors.white)),
-      ),
-    );
-
-    final forgotLabel = FlatButton(
-      child: Text(
-        'Forgot password?',
-        style: TextStyle(color: Colors.black54),
-      ),
-      onPressed: () {},
-    );
-
     final googleButton = GoogleSignInButton(
+      borderRadius: 24,
       onPressed: () => authService.googleSignIn().whenComplete(() {
         Navigator.of(context).pushNamed(MenuPage.tag);
       }),
     );
+
     final signUpButton = RaisedButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
@@ -80,6 +37,14 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.green,
       child: Text('Sign Up', style: TextStyle(color: Colors.white)),
     );
+    final image = Container(
+        width: 200.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                fit: BoxFit.fill,
+                image: NetworkImage('https://i.imgur.com/BoN9kdC.png'))));
 
     return Scaffold(
       body: Center(
@@ -90,29 +55,154 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(50),
             child: ListView(
               children: <Widget>[
-                Container(
-                    width: 200.0,
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(
-                                'https://i.imgur.com/BoN9kdC.png')))),
+                image,
                 SizedBox(height: 40.0),
-                email,
-                SizedBox(height: 8.0),
-                password,
-                SizedBox(height: 10.0),
-                loginButton,
+                _EmailPasswordForm(),
                 googleButton,
                 signUpButton,
-                forgotLabel,
               ],
             ),
           ),
         ),
       ),
     );
+  }
+}
+//Make the form which has email and password fields. This part of the login_page handles loging in with an email and password
+//, as opposed to signing in with a Google Account
+class _EmailPasswordForm extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _EmailPasswordFormState();
+}
+
+class _EmailPasswordFormState extends State<_EmailPasswordForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //These notify listeners of change in text input.
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _success;
+  String _userEmail;
+  @override
+  Widget build(BuildContext context) {
+    final loginButton = ButtonTheme(
+        minWidth: 250,
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          onPressed: () async {
+            if (_formKey.currentState.validate()) {
+              _signInWithEmailAndPassword();
+            }
+          },
+          padding: EdgeInsets.all(12),
+          color: Colors.blue,
+          child: Text('Login', style: TextStyle(color: Colors.white)),
+        ));
+    final email = TextFormField(
+      controller: _emailController,
+      decoration: const InputDecoration(labelText: 'Email'),
+      keyboardType: TextInputType.emailAddress,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Please enter email';
+        }
+        return null;
+      },
+    );
+    final password = TextFormField(
+      controller: _passwordController,
+      decoration: const InputDecoration(labelText: 'Password'),
+      obscureText: true,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Please enter password';
+        }
+        return null;
+      },
+    );
+    //Returns the actual form built from the above elements.
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          email,
+          password,
+          SizedBox(height: 20.0),
+          loginButton,
+        ],
+      ),
+    );
+  }
+//Creates an alert depending on the error caught which is stored in String reason
+  dynamic createAlert(BuildContext context, String reason) {
+    return showDialog<dynamic>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(reason),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('Continue'),
+                //Remove alert
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+//Here, it is attempted to login into account. Email and password are taken from their respective controllers.
+//Additionally, if login is successful, then data is merged with existing data in database.
+//Then, MenuPage is shown
+//If registration is not successful, then an error is caught and passed to createAlert
+  void _signInWithEmailAndPassword() async {
+    String reason;
+    //Try the following. Throws PlatformException error if invalid email, wrong password, or nonexisting account. 
+    try {
+      final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ))
+          .user;
+      if (user != null) {
+        setState(() {
+          _success = true;
+          _userEmail = user.email;
+        });
+        authService.updateUserData(user);
+        Navigator.of(context).pushNamed(MenuPage.tag);
+      } else {
+        _success = false;
+      }
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case 'ERROR_INVALID_EMAIL':
+          reason = 'Invalid Email';
+          createAlert(context, reason);
+          break;
+        case 'ERROR_USER_NOT_FOUND':
+          reason = 'User Not Found';
+          createAlert(context, reason);
+          break;
+        case 'ERROR_WRONG_PASSWORD':
+          reason = 'Wrong Password';
+          createAlert(context, reason);
+          break;
+        default:
+          reason = 'Error';
+          createAlert(context, reason);
+          break;
+      }
+    }
   }
 }
