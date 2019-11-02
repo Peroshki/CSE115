@@ -103,7 +103,9 @@ class _MenuPageState extends State<MenuPage> {
             decoration: InputDecoration(
                 hintText: 'Ex. Orange 2.50',
                 contentPadding: const EdgeInsets.all(16.0)),
-          ));
+          ),
+          
+      );
     }));
   }
 
