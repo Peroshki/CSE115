@@ -52,8 +52,11 @@ class _ListViewsState extends State<ListViews> {
                       //height: 50,
                       //color: Colors.blue,
                       //key: Key(index)
-                      onDismissed: 
-                       ,
+                      onDismissed: (direction){
+                        setState(() {
+                          
+                        });
+                      },
                       child: Center(
                           child: Text(snapshot.data['items'][index]['name'] + ': ' + snapshot.data['items'][index]['price'].toString())
                       )
