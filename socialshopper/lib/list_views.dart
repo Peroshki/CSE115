@@ -26,6 +26,7 @@ class ListViews extends StatefulWidget {
 }
 
 class _ListViewsState extends State<ListViews> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,22 +47,20 @@ class _ListViewsState extends State<ListViews> {
                   itemCount: snapshot.data['items'].length,
                   // Each item is currently formatted as 'Name': 'Price'
                   itemBuilder: (BuildContext context, int index) {
-                    //final item = snapshot.
-                    return Dismissible(
-                    //return Container(
-                      //height: 50,
+                    return Card(
+                     // height: 50,
                       //color: Colors.blue,
-                      //key: Key(index)
-                      onDismissed: (direction){
-                        setState(() {
-                          
-                        });
-                      },
-                      child: Center(
-                          child: Text(snapshot.data['items'][index]['name'] + ': ' + snapshot.data['items'][index]['price'].toString())
+                      child: ListTile(
+                        title: Text(snapshot.data['items'][index]['name'] + ': ' 
+                        + snapshot.data['items'][index]['price'].toString(), textAlign: TextAlign.center,),
+                        trailing: Icon(Icons.delete_forever),
                       )
-                    //);
-                 );
+                      // child: Center(
+                      //     child: Text(snapshot.data['items'][index]['name'] + ': ' + snapshot.data['items'][index]['price'].toString())
+                      // ),
+                    );
+
+                 
                   }
 
           );
@@ -88,3 +87,12 @@ class _ListViewsState extends State<ListViews> {
     );
   }
 }
+
+// void removeField()async{
+//   DocumentReference ref = Firestore.instance.collection('lists').document(globals.temp);
+//   DocumentSnapshot doc = await ref.get();
+//   List tags = doc.data['items'];
+//   ref.updateData({
+//     'items': FieldValue.arrayRemove('name': FieldValue.delete());
+//   });
+// }
