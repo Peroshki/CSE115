@@ -1,3 +1,17 @@
+/*
+* In this folder you can create a new list and at it to the database.
+* You can delete a list from the database; it warns you if you want to fully
+* delete or cancel.
+* You can open a new list.
+* You can add an item to a new list. 
+* Specifing the item name, price, and quanitity. 
+*/ 
+
+
+
+
+
+
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'app_settings.dart';
@@ -33,13 +47,6 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  // String _textString = 'Hello There';
-
-  // void _doSomething(String text) {
-  //   setState(() {
-  //     _textString = text;
-  //   });
-  // }
 
   final List<String> _numList = []; //Array to hold the list names
 
@@ -61,8 +68,6 @@ class _MenuPageState extends State<MenuPage> {
         i++;
       }
     }
-    //  docs.forEach((data) => _addNewList(data.documentID)); //
-    // docs.forEach((data) => print(data.documentID));
   }
 
   void createRecord(String listName) async {
