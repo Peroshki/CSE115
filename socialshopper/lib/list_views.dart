@@ -94,7 +94,7 @@ class _ListViewsState extends State<ListViews> {
 }
 
 void removeField(int index)async{ // removes items from database
-  DocumentReference ref = Firestore.instance.collection('lists').document(globals.temp);
+  DocumentReference ref = Firestore.instance.collection('lists').document(globals.documentName);
   DocumentSnapshot doc = await ref.get();
   List tags = doc.data['items'];
   final hold = tags.elementAt(index); // holds an instance of item trying to delete

@@ -13,7 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
-var temp = "";
+var documentName = "";
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -107,7 +107,7 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index) {
     // Open up a single list
-    temp = _numList[index];
+    documentName = _numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
