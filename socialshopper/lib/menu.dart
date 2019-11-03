@@ -7,11 +7,6 @@
 * Specifing the item name, price, and quanitity. 
 */ 
 
-
-
-
-
-
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'app_settings.dart';
