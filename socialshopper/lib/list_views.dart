@@ -3,6 +3,8 @@
 *
 *   Contains the view for an individual shopping list. Items are displayed in
 *   a list with each item containing a description of its name and price.
+*   It also allows for the user to delete items from their shopping list and 
+*   update the database. 
 *
 *   constructor: ListViews(listName: String)
 *   arguments:
@@ -50,14 +52,17 @@ class _ListViewsState extends State<ListViews> {
                     return Card(
                      // height: 50,
                       //color: Colors.blue,
+                      color: Colors.blue,
+                      elevation:10,
                       child: ListTile(
                         title: Text(snapshot.data['items'][index]['name'] + ': ' 
                         + snapshot.data['items'][index]['price'].toString(), textAlign: TextAlign.center,),
                         trailing: Icon(Icons.delete_forever),
+
+                        onLongPress: (){
+                          removeField(index); // Removes item from database
+                        },
                       )
-                      // child: Center(
-                      //     child: Text(snapshot.data['items'][index]['name'] + ': ' + snapshot.data['items'][index]['price'].toString())
-                      // ),
                     );
 
                  
@@ -88,11 +93,14 @@ class _ListViewsState extends State<ListViews> {
   }
 }
 
-// void removeField()async{
-//   DocumentReference ref = Firestore.instance.collection('lists').document(globals.temp);
-//   DocumentSnapshot doc = await ref.get();
-//   List tags = doc.data['items'];
-//   ref.updateData({
-//     'items': FieldValue.arrayRemove('name': FieldValue.delete());
-//   });
-// }
+void removeField(int index)async{ // removes items from database
+  DocumentReference ref = Firestore.instance.collection('lists').document(globals.temp);
+  DocumentSnapshot doc = await ref.get();
+  List tags = doc.data['items'];
+  final hold = tags.elementAt(index); // holds an instance of item trying to delete
+  print(hold);
+  
+  ref.updateData({
+    'items': FieldValue.arrayRemove([hold]),// does the deleting
+  });
+}
