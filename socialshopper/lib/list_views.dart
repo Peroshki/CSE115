@@ -50,22 +50,11 @@ class _ListViewsState extends State<ListViews> {
                       child: Card(
                       //height: 50,
                       //color: Colors.blue,
-                      //alignment: Alignment.center,
-                      // child: Stack(
-                      //   children: <Widget>[
-                      //     Text(snapshot.data['items'][index]['name'] + ': ' 
-                      //     + snapshot.data['items'][index]['price'].toString(),),
-                      //     IconButton(icon: Icon(Icons.ac_unit), alignment: Alignment.bottomRight, onPressed: () {},)
-                          
-                      //   ],
-                      // )
-
                       child: ListTile(
                           title: Text(snapshot.data['items'][index]['name'] + ': ' 
                           + snapshot.data['items'][index]['price'].toString()),
                           
                       ),
-                        //IconButton(icon: Icons.ac_unit, onPressed: () {},)
                       ),
                     );
                   }

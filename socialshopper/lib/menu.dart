@@ -7,7 +7,7 @@ import 'store_select.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-var temp ='';
+var temp = '';
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 
@@ -19,7 +19,6 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
-
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,7 +32,6 @@ class _MenuPageState extends State<MenuPage> {
       _selectedIndex = index;
     });
   }
-
 
   // String _textString = 'Hello There';
 
@@ -69,42 +67,76 @@ class _MenuPageState extends State<MenuPage> {
 
   void createRecord(String listName) async {
     // functions used to record user data -> database
-    await databaseRef
-        .collection("lists")
-        .document(listName);
+    await databaseRef.collection("lists").document(listName);
   }
 
 // This functions populates a list with new items and updates database
-  void addItemsToList(String name, String item, String price) async{ 
-    DocumentReference ref = Firestore.instance.collection('lists').document(name);
+  void addItemsToList(String name, String item, String price) async {
+    DocumentReference ref =
+        Firestore.instance.collection('lists').document(name);
     DocumentSnapshot doc = await ref.get();
     List tags = doc.data['items'];
     ref.updateData({
-      'items': FieldValue.arrayUnion([{'name': item, 'price': price}])
+      'items': FieldValue.arrayUnion([
+        {'name': item, 'price': price}
+      ])
     });
   }
 
-  void getNameAndPrice(int index){
+// Gets the Item and Price and adds it to database
+  void getNameAndPrice(int index) { 
+    final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
+    var newItem;
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(title: const Text('Enter Item & Price')),
-          body: new TextField(
-            autofocus: true,
-            onSubmitted: (newItem) {
-              //_addNewList(val);
-              //putNamesOfListInAList();
-              //createRecord(newItem); // puts List in database
-              var string = newItem;
-              var newList = string.split(" "); // Tokenize Enetered value
-              addItemsToList(_numList[index], newList[0], newList[1]); //Adds value to the list
-              Navigator.pop(context); // Close the add todo screen
-            },
-            
-            decoration: InputDecoration(
-                hintText: 'Ex. Orange 2.50',
-                contentPadding: const EdgeInsets.all(16.0)),
-          ),
-          
+        appBar: AppBar(title: const Text('Enter Item & Price')),
+        body: new Container(
+            child: Column(
+          children: <Widget>[
+            Flexible(
+              child: TextField(
+                autofocus: true,
+                maxLength: 30,
+                maxLengthEnforced: true,
+                onSubmitted: (userItem) {
+                  //var string = newItem;
+                  //var newList = string.split(" "); // Tokenize Enetered value
+                  //addItemsToList(_numList[index], newList[0],
+                      //newList[1]); //Adds value to the list
+                  //Navigator.pop(context); // Close the add todo screen
+                  newItem = userItem;
+                  FocusScope.of(context).requestFocus(nodeTwo);
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Item Name',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+            Flexible(
+              child: TextField(
+                focusNode: nodeTwo,
+                maxLength: 10,
+                maxLengthEnforced: true,
+                onSubmitted: (Price) {
+                  //_addNewList(val);
+                  //putNamesOfListInAList();
+                  //createRecord(newItem); // puts List in database
+                  nodeTwo;
+                  //var string = newItem;
+                  //var newList = string.split(" "); // Tokenize Enetered value
+                  addItemsToList(_numList[index], newItem, Price); //Adds value to the list
+                  Navigator.pop(context); // Close the add todo screen
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Price Of Item',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+          ],
+        )
+
+            //child: TextField()
+            ),
       );
     }));
   }
@@ -114,7 +146,8 @@ class _MenuPageState extends State<MenuPage> {
   //   databaseRef.collection("lists");
   // }
 
-  void deleteList(int index){  // Deletes list from database and updates array
+  void deleteList(int index) {
+    // Deletes list from database and updates array
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
@@ -139,10 +172,12 @@ class _MenuPageState extends State<MenuPage> {
         appBar: AppBar(
           title: Text(_numList[index]),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.add_circle),
-            onPressed: () {
-             getNameAndPrice(index); // Allows user to enter item and price
-            },)
+            IconButton(
+              icon: Icon(Icons.add_circle),
+              onPressed: () {
+                getNameAndPrice(index); // Allows user to enter item and price
+              },
+            )
           ],
         ),
         body: ListViews(listName: _numList[index]),
@@ -160,7 +195,8 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  void alertBoxForList(int index) { // Displays an alert box before deleting list
+  void alertBoxForList(int index) {
+    // Displays an alert box before deleting list
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -170,7 +206,7 @@ class _MenuPageState extends State<MenuPage> {
           actions: <Widget>[
             new FlatButton(
               child: new Text("Cancel"), // Cancel button
-              onPressed: (){
+              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
@@ -178,9 +214,9 @@ class _MenuPageState extends State<MenuPage> {
               child: new Text("Accept"), // Deletes list
               onPressed: () {
                 setState(() {
-               deleteList(index); 
-               Navigator.of(context).pop();
-              });
+                  deleteList(index);
+                  Navigator.of(context).pop();
+                });
               },
             ),
           ],
@@ -193,17 +229,20 @@ class _MenuPageState extends State<MenuPage> {
     //Build one list
     return Card(
         child: ListTile(
-            title: Text(listName),
-            onTap: () { // opens the list
-              setState(() {
-                _openList(index);
-              });
-            },
-            onLongPress: (){ // this deletes item from list view and from database
-              setState(() {
-              alertBoxForList(index); 
-              });
-            },));
+      title: Text(listName),
+      onTap: () {
+        // opens the list
+        setState(() {
+          _openList(index);
+        });
+      },
+      onLongPress: () {
+        // this deletes item from list view and from database
+        setState(() {
+          alertBoxForList(index);
+        });
+      },
+    ));
   }
 
   void _tapAddMoreItems() {
@@ -278,7 +317,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
-            onPressed:() { 
+            onPressed: () {
               Navigator.of(context).pushNamed(StoreSelect.tag);
             },
             tooltip: 'Name List',
