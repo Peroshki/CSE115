@@ -71,22 +71,24 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // This functions populates a list with new items and updates database
-  void addItemsToList(String name, String item, String price) async {
+  void addItemsToList(String name, String item, String price, String quantity) async {
     DocumentReference ref =
         Firestore.instance.collection('lists').document(name);
     DocumentSnapshot doc = await ref.get();
     List tags = doc.data['items'];
     ref.updateData({
       'items': FieldValue.arrayUnion([
-        {'name': item, 'price': price}
+        {'name': item, 'price': price, 'quantity': quantity}
       ])
     });
   }
 
 // Gets the Item and Price and adds it to database
-  void getNameAndPrice(int index) { 
+  void getNameAndPrice(int index) {
     final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
+    final FocusNode nodeThree = FocusNode();
     var newItem;
+    var price;
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
         appBar: AppBar(title: const Text('Enter Item & Price')),
@@ -94,18 +96,15 @@ class _MenuPageState extends State<MenuPage> {
             child: Column(
           children: <Widget>[
             Flexible(
+              // Textfield for Item name
               child: TextField(
                 autofocus: true,
                 maxLength: 30,
                 maxLengthEnforced: true,
                 onSubmitted: (userItem) {
-                  //var string = newItem;
-                  //var newList = string.split(" "); // Tokenize Enetered value
-                  //addItemsToList(_numList[index], newList[0],
-                      //newList[1]); //Adds value to the list
-                  //Navigator.pop(context); // Close the add todo screen
                   newItem = userItem;
-                  FocusScope.of(context).requestFocus(nodeTwo);
+                  FocusScope.of(context)
+                      .requestFocus(nodeTwo); // This jumps to the other textbox
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Item Name',
@@ -113,30 +112,39 @@ class _MenuPageState extends State<MenuPage> {
               ),
             ),
             Flexible(
+              // Textfield for price
               child: TextField(
+                autofocus: false,
                 focusNode: nodeTwo,
                 maxLength: 10,
                 maxLengthEnforced: true,
-                onSubmitted: (Price) {
-                  //_addNewList(val);
-                  //putNamesOfListInAList();
-                  //createRecord(newItem); // puts List in database
-                  nodeTwo;
-                  //var string = newItem;
-                  //var newList = string.split(" "); // Tokenize Enetered value
-                  addItemsToList(_numList[index], newItem, Price); //Adds value to the list
-                  Navigator.pop(context); // Close the add todo screen
+                onSubmitted: (new_Price) {
+                  price = new_Price;
+                  FocusScope.of(context).requestFocus(nodeThree);
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Price Of Item',
                     contentPadding: const EdgeInsets.all(16.0)),
               ),
             ),
+            Flexible(
+              //Text field for quanity
+              child: TextField(
+                autofocus: false,
+                focusNode: nodeThree,
+                maxLength: 10,
+                maxLengthEnforced: true,
+                onSubmitted: (Amount) {
+                  addItemsToList(_numList[index], newItem, price, Amount);//Adds value to the list
+                  Navigator.pop(context); // Close the add todo screen
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Quantity',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            )
           ],
-        )
-
-            //child: TextField()
-            ),
+        )),
       );
     }));
   }
