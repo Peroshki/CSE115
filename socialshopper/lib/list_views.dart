@@ -214,33 +214,33 @@ Widget createFinishWidget(double groupTotal, Map<String, double> indTotals, doub
   );
 }
 
-Widget createItemCardWidget(Item item) {
-  double totalPrice = item.price * item.quantity;
+List<Widget> createItemCardWidget(Item item) {
+  final double totalPrice = item.price * item.quantity;
 
-  return Center(
-    child: ExpansionTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(item.name),
-          Text('\$${totalPrice.toString()}')
-        ],
-      ),
+  final List<Widget> widgets = [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text('Price: \$${item.price}'),
-        Text('Quantity: ${item.quantity}'),
-        Padding(
-          padding: const EdgeInsets.only(
-            bottom: 5.0
-          ),
-          child: Text('Shoppers: ${item.users.toString()}')
-        )
+        Text(item.name),
+        Text('\$${totalPrice.toString()}')
       ],
     ),
-  );
+    Text('Price: \$${item.price}'),
+    Text('Quantity: ${item.quantity}'),
+    Padding(
+        padding: const EdgeInsets.only(
+            bottom: 5.0
+        ),
+        child: Text('Shoppers: ${item.users.toString()}')
+    )
+  ];
+
+  return widgets;
 }
 
 /*** END WIDGET GENERATORS ***/
+
+
 
 class ListViews extends StatefulWidget {
   static String tag = 'list_views';
@@ -256,15 +256,61 @@ class ListViews extends StatefulWidget {
 }
 
 class _ListViewsState extends State<ListViews> {
-  Stream shoppingList;
+  /*** BEGIN DATABASE METHODS ***/
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  void removeFromDatabase(int index){
+    Firestore.instance.runTransaction((Transaction tx) async {
+      final DocumentReference postRef = Firestore.instance.collection('lists').document(widget.listName);
+      final DocumentSnapshot postSnapshot = await tx.get(postRef);
+      if (postSnapshot.exists) {
+        var doc = postSnapshot.data;
 
-    shoppingList = getShoppingList(widget.listName);
+        List<dynamic> itemsList = List();
+        itemsList = doc['items'].toList();
+        for(var i in itemsList) {
+          print(i['name']);
+        }
+        itemsList.removeAt(index);
+        for(var i in itemsList) {
+          print(i['name']);
+        }
+
+        await postRef.updateData({
+          'items' : itemsList
+        });
+      }
+    });
   }
+
+  void deleteItem(int index) {
+   showDialog(
+     context: context,
+     builder: (BuildContext context) {
+       return AlertDialog(
+         title: Text('Are you sure you want to delete this item?'),
+         content: Text('This action is permanent.'),
+         actions: <Widget>[
+           // usually buttons at the bottom of the dialog
+           FlatButton(
+             child: Text('YES'),
+             onPressed: () async {
+               removeFromDatabase(index);
+               Navigator.of(context).pop();
+             }
+           ),
+           FlatButton(
+             child: Text('NO'),
+             onPressed: () {
+               Navigator.of(context).pop();
+             },
+           ),
+         ],
+       );
+     }
+   );
+  }
+
+  /*** END DATABASE METHODS ***/
 
   @override
   Widget build(BuildContext context) {
@@ -288,7 +334,17 @@ class _ListViewsState extends State<ListViews> {
 
             // Each item is currently formatted as 'Name': 'Price'
             itemBuilder: (BuildContext context, int index) {
-              return createItemCardWidget(s.items[index]);
+              List<Widget> widgets = createItemCardWidget(s.items[index]);
+              return Center(
+                child: ExpansionTile(
+                  trailing: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () => deleteItem(index),
+                  ),
+                  title: widgets.first,
+                  children: widgets.sublist(1)
+                ),
+              );
             }
           );
         },
@@ -327,22 +383,7 @@ class _ListViewsState extends State<ListViews> {
           )
         )
       ),
-
-//      floatingActionButton: FloatingActionButton.extended(
-//        icon: Icon(Icons.keyboard_arrow_down),
-//        label: const Text('Finish'),
-//        backgroundColor: Colors.black,
-//        onPressed: () {
-//
-//        },
-//        shape: RoundedRectangleBorder(
-//          borderRadius: BorderRadius.circular(32),
-//        ),
-//      ),
-//
-//      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
-
   }
 
   void activateBottomSheet() {
@@ -351,7 +392,7 @@ class _ListViewsState extends State<ListViews> {
       builder: (context) => StreamBuilder<ShoppingList>(
         stream: getShoppingList(widget.listName),
         builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
-          if (list?.data == null) return Text("Error");
+          if (list?.data == null) return Container(height: 0);
 
           final ShoppingList s = list.data;
 
