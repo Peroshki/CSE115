@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'list_setup.dart';
 import 'menu.dart';
-import 'main.dart';
-import 'login_page.dart';
 
 class StoreSelect extends StatefulWidget {
   static String tag = 'store-select';
@@ -34,7 +33,7 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(MenuPage.tag);
+          Navigator.of(context).pushNamed(ListSetup.tag);
         },
         padding: EdgeInsets.all(12),
         color: Colors.red[100],
@@ -50,7 +49,7 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(MenuPage.tag);
+          Navigator.of(context).pushNamed(ListSetup.tag);
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlue[100],

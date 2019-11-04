@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socialshopper/store_select.dart';
+import 'list_setup.dart';
 import 'login_page.dart';
 import 'menu.dart';
 import 'store_select.dart';
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
     MenuPage.tag: (context) => MenuPage(),
     StoreSelect.tag: (context) => StoreSelect(),
     SignupPage.tag: (context) => SignupPage(),
+    ListSetup.tag: (context) => ListSetup(),
   };
 
   @override

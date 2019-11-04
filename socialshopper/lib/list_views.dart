@@ -11,6 +11,7 @@
 *     listName: The name of the shopping list you wish to view
 */
 import 'menu.dart' as globals;
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -63,6 +64,7 @@ class _ListViewsState extends State<ListViews> {
                           removeField(index); // Removes item from database
                         },
                       )
+
                     );
 
                  
@@ -90,8 +92,8 @@ class _ListViewsState extends State<ListViews> {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+
   }
-}
 
 void removeField(int index)async{ // removes items from database
   DocumentReference ref = Firestore.instance.collection('lists').document(globals.documentName);
