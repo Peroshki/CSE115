@@ -214,6 +214,32 @@ Widget createFinishWidget(double groupTotal, Map<String, double> indTotals, doub
   );
 }
 
+Widget createItemCardWidget(Item item) {
+  double totalPrice = item.price * item.quantity;
+
+  return Center(
+    child: ExpansionTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(item.name),
+          Text('\$${totalPrice.toString()}')
+        ],
+      ),
+      children: <Widget>[
+        Text('Price: \$${item.price}'),
+        Text('Quantity: ${item.quantity}'),
+        Padding(
+          padding: const EdgeInsets.only(
+            bottom: 5.0
+          ),
+          child: Text('Shoppers: ${item.users.toString()}')
+        )
+      ],
+    ),
+  );
+}
+
 /*** END WIDGET GENERATORS ***/
 
 class ListViews extends StatefulWidget {
@@ -247,28 +273,22 @@ class _ListViewsState extends State<ListViews> {
         // Input stream: A document from the database under the 'lists' collection
         stream: getShoppingList(widget.listName),
         builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
-
           // If the list has not yet loaded data, notify the user to wait
           if (!list.hasData)
             return Text('Loading data... Please wait.');
 
+          ShoppingList s = list.data;
+
           // If the list has no items, notify the user that the list is empty
-          if (list.data.items == null)
+          if (s.items == null)
             return Center(child: Text('List is empty.'));
 
           return ListView.builder(
-            itemCount: list.data.items.length,
+            itemCount: s.items.length,
 
             // Each item is currently formatted as 'Name': 'Price'
             itemBuilder: (BuildContext context, int index) {
-              return Center(
-                child: Card(
-                  child: ListTile(
-                    title: Text(list.data.items[index].name + ': '
-                    + list.data.items[index].price.toString()),
-                  ),
-                ),
-              );
+              return createItemCardWidget(s.items[index]);
             }
           );
         },
@@ -276,77 +296,92 @@ class _ListViewsState extends State<ListViews> {
 
       bottomNavigationBar: BottomAppBar(
         child: Container(
-          child: StreamBuilder<ShoppingList>(
-            stream: getShoppingList(widget.listName),
-            builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
-              if (list?.data == null) return Text("Error");
+          color: Colors.blueGrey,
+          width: double.infinity,
+          child: FlatButton(
+            onPressed: activateBottomSheet,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                StreamBuilder<ShoppingList>(
+                  stream: getShoppingList(widget.listName),
+                  builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
+                    if (list?.data == null) return Text("Error");
 
-              final ShoppingList s = list.data;
+                    final ShoppingList s = list.data;
 
-              double total = 0.0;
-              for (Item i in s.items) {
-                total += i.price;
-              }
-
-              final double budget = s.metadata.budget;
-              final double difference = budget - total;
-
-              return createDetailsWidget(total, budget, difference);
-            },
-          ),
-        ),
-      ),
-
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.keyboard_arrow_down),
-        label: const Text('Finish'),
-        backgroundColor: Colors.black,
-        onPressed: () {
-          showBottomSheet(
-            context: context,
-            builder: (context) => StreamBuilder<ShoppingList>(
-              stream: getShoppingList(widget.listName),
-              builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
-                if (list?.data == null) return Text("Error");
-
-                final ShoppingList s = list.data;
-
-                double groupTotal = 0.0;
-                double indTotal = 0.0;
-                String name = '';
-                Map<String, double> indTotals = <String,double>{};
-
-                for (User user in s.metadata.users) {
-                  name = user.name;
-                  indTotal = 0.0;
-
-                  for (Item i in list.data.items) {
-                    if (i.users.contains(name)) {
-                      indTotal += i.price.toDouble() / i.users.length;
+                    double total = 0.0;
+                    for (Item i in s.items) {
+                      total += i.price * i.quantity;
                     }
-                  }
 
-                  indTotals[name] = indTotal;
-                }
+                    final double budget = s.metadata.budget;
+                    final double difference = budget - total;
 
-                for (Item i in list.data.items) {
-                  groupTotal += i.price;
-                }
-
-                final double budget = s.metadata.budget;
-
-                return createFinishWidget(groupTotal, indTotals, budget);
-              },
+                    return createDetailsWidget(total, budget, difference);
+                  },
+                ),
+                Icon(Icons.keyboard_arrow_down)
+              ]
             )
-          );
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32),
-        ),
+          )
+        )
       ),
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//      floatingActionButton: FloatingActionButton.extended(
+//        icon: Icon(Icons.keyboard_arrow_down),
+//        label: const Text('Finish'),
+//        backgroundColor: Colors.black,
+//        onPressed: () {
+//
+//        },
+//        shape: RoundedRectangleBorder(
+//          borderRadius: BorderRadius.circular(32),
+//        ),
+//      ),
+//
+//      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
 
+  }
+
+  void activateBottomSheet() {
+    showBottomSheet(
+      context: context,
+      builder: (context) => StreamBuilder<ShoppingList>(
+        stream: getShoppingList(widget.listName),
+        builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
+          if (list?.data == null) return Text("Error");
+
+          final ShoppingList s = list.data;
+
+          double groupTotal = 0.0;
+          double indTotal = 0.0;
+          String name = '';
+          Map<String, double> indTotals = <String,double>{};
+
+          for (User user in s.metadata.users) {
+            name = user.name;
+            indTotal = 0.0;
+
+            for (Item i in list.data.items) {
+              if (i.users.contains(name)) {
+                indTotal += (i.price.toDouble() * i.quantity) / i.users.length;
+              }
+            }
+
+            indTotals[name] = indTotal;
+          }
+
+          for (Item i in list.data.items) {
+            groupTotal += i.price * i.quantity;
+          }
+
+          final double budget = s.metadata.budget;
+
+          return createFinishWidget(groupTotal, indTotals, budget);
+        },
+      )
+    );
   }
 }
