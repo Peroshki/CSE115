@@ -111,7 +111,7 @@ Widget createDifferenceWidget(double difference) {
   String text;
   Color textColor;
   if (difference < 0) {
-    text = '-(\$$difference)';
+    text = '-(\$${difference.toString().substring(1)})';
     textColor = Colors.red;
   }
   else {
@@ -147,11 +147,19 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
   List<Widget> indTotalWidgets = List<Widget>();
 
   for (var indTotal in indTotals.entries) {
-    Widget indTotalWidget = Container(
-      height: 25,
+    Widget indTotalWidget = Padding(
+      padding: const EdgeInsets.only(
+        top: 10.0,
+        bottom: 10.0,
+        left: 30.0
+      ),
       child: Text(
-        "${indTotal.key}'s total: ${(indTotal.value * 100).roundToDouble() / 100}"
-      )
+        "${indTotal.key}'s Total: ${(indTotal.value * 100).roundToDouble() / 100}",
+        textScaleFactor: 1.2,
+        style: TextStyle(
+          color: Colors.white
+        ),
+      ),
     );
 
     indTotalWidgets.add(indTotalWidget);
@@ -161,12 +169,47 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
 }
 
 Widget createFinishWidget(double groupTotal, Map<String, double> indTotals, double budget) {
+  List<Widget> colWidgets = createIndividualTotalWidget(indTotals);
+
+  final Widget totalWidget = Padding(
+    padding: const EdgeInsets.only(
+      bottom: 10.0,
+      top: 15.0
+    ),
+    child: createTotalWidget(groupTotal),
+  );
+  colWidgets.insert(0, totalWidget);
+
+  final Widget divider = Divider(
+    thickness: 5.0,
+    color: Colors.grey,
+  );
+  colWidgets.insert(1, divider);
+  colWidgets.add(divider);
+
+  final Widget payButton = Padding(
+    padding: EdgeInsets.only(
+      bottom: 5.0
+    ),
+    child: FlatButton(
+      child: Text(
+        'Pay Now',
+        textScaleFactor: 1.2,
+        style: TextStyle(
+          color: Colors.white
+        ),
+      ),
+      onPressed: () {},
+    )
+  );
+  colWidgets.add(payButton);
+
   return Container(
-    height: 200,
+    color: Colors.blueGrey,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: createIndividualTotalWidget(indTotals)
+      mainAxisSize: MainAxisSize.min,
+      children: colWidgets,
     ),
   );
 }
@@ -285,8 +328,6 @@ class _ListViewsState extends State<ListViews> {
 
                   indTotals[name] = indTotal;
                 }
-
-                print(indTotals);
 
                 for (Item i in list.data.items) {
                   groupTotal += i.price;
