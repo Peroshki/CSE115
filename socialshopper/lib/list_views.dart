@@ -3,11 +3,14 @@
 *
 *   Contains the view for an individual shopping list. Items are displayed in
 *   a list with each item containing a description of its name and price.
+*   It also allows for the user to delete items from their shopping list and 
+*   update the database. 
 *
 *   constructor: ListViews(listName: String)
 *   arguments:
 *     listName: The name of the shopping list you wish to view
 */
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -309,7 +312,7 @@ class _ListViewsState extends State<ListViews> {
      }
    );
   }
-
+  
   /*** END DATABASE METHODS ***/
 
   @override
@@ -385,7 +388,7 @@ class _ListViewsState extends State<ListViews> {
       ),
     );
   }
-
+  
   void activateBottomSheet() {
     showBottomSheet(
       context: context,
