@@ -87,8 +87,8 @@ class _MenuPageState extends State<MenuPage> {
   void getNameAndPrice(int index) {
     final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
     final FocusNode nodeThree = FocusNode();
-    var newItem;
-    var price;
+    var newItem = "item";
+    var price = "0";
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
         appBar: AppBar(title: const Text('Enter Item & Price')),
