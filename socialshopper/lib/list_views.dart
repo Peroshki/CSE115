@@ -11,6 +11,43 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class Item {
+  String name;
+  double price;
+  int quantity;
+  List<String> users;
+
+  Item.fromMap(Map<dynamic, dynamic> data)
+      : name = data['name'],
+        price = data['price'] * 1.0,
+        quantity = data['quantity'],
+        users = List.from(data['users']);
+}
+
+class ShoppingList {
+  String documentID;
+  List<Item> items;
+
+  ShoppingList.fromSnapshot(DocumentSnapshot snapshot)
+      : documentID = snapshot.documentID,
+        items = List.from(snapshot['items'].map((item) => item = Item.fromMap(item)));
+}
+
+Stream<ShoppingList> getShoppingList(String documentName) {
+  return Firestore.instance
+      .collection('lists')
+      .document(documentName)
+      .get()
+      .then((snapshot) {
+    try {
+      return ShoppingList.fromSnapshot(snapshot);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }).asStream();
+}
+
 class ListViews extends StatefulWidget {
   static String tag = 'list_views';
 
@@ -25,6 +62,16 @@ class ListViews extends StatefulWidget {
 }
 
 class _ListViewsState extends State<ListViews> {
+  Stream shoppingList;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    shoppingList = getShoppingList(widget.listName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,8 +111,17 @@ class _ListViewsState extends State<ListViews> {
       ),
 
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Container(
+          child: StreamBuilder<ShoppingList>(
+            stream: getShoppingList(widget.listName),
+            builder: (BuildContext c, AsyncSnapshot<ShoppingList> data) {
+              if (data?.data == null) return Text("Error");
+
+              ShoppingList s = data.data;
+
+              return Text("${s.documentID}");
+            },
+          ),
         ),
       ),
 
