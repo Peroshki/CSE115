@@ -8,7 +8,6 @@
 *   arguments:
 *     listName: The name of the shopping list you wish to view
 */
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -47,12 +46,16 @@ class _ListViewsState extends State<ListViews> {
 
                   // Each item is currently formatted as 'Name': 'Price'
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 50,
-                      color: Colors.blue,
-                      child: Center(
-                          child: Text(snapshot.data['items'][index]['name'] + ': ' + snapshot.data['items'][index]['price'].toString())
-                      )
+                    return Center(
+                      child: Card(
+                      //height: 50,
+                      //color: Colors.blue,
+                      child: ListTile(
+                          title: Text(snapshot.data['items'][index]['name'] + ': ' 
+                          + snapshot.data['items'][index]['price'].toString()),
+                          
+                      ),
+                      ),
                     );
                   }
 
@@ -78,5 +81,6 @@ class _ListViewsState extends State<ListViews> {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+
   }
 }
