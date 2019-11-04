@@ -94,6 +94,7 @@ class _ListViewsState extends State<ListViews> {
     );
 
   }
+}
 
 void removeField(int index)async{ // removes items from database
   DocumentReference ref = Firestore.instance.collection('lists').document(globals.documentName);
