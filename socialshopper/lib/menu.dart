@@ -19,6 +19,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 var temp = '';
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
+var documentName = "";
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
@@ -87,8 +88,8 @@ class _MenuPageState extends State<MenuPage> {
   void getNameAndPrice(int index) {
     final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
     final FocusNode nodeThree = FocusNode();
-    var newItem;
-    var price;
+    var newItem = "item";
+    var price = "0";
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
         appBar: AppBar(title: const Text('Enter Item & Price')),
@@ -135,13 +136,6 @@ class _MenuPageState extends State<MenuPage> {
                 maxLength: 10,
                 maxLengthEnforced: true,
                 onSubmitted: (Amount) {
-                  if(price == ""){
-                    price = "1";
-                  }
-                  if(newItem == ""){
-                    newItem = "item";
-                  }
-                  
                   addItemsToList(_numList[index], newItem, price, Amount);//Adds value to the list
                   Navigator.pop(context); // Close the add todo screen
                 },
@@ -181,7 +175,7 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index) {
     // Open up a single list
-    temp = _numList[index];
+    documentName = _numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
