@@ -27,6 +27,20 @@ class MenuPage extends StatefulWidget {
   _MenuPageState createState() => _MenuPageState();
 }
 
+class CheckboxWidget extends StatefulWidget{ // State for checkboxes
+    @override
+    CheckboxWidgetState createState() => new CheckboxWidgetState();
+}
+    
+class CheckboxWidgetState extends State{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
+  }
+  
+}
+
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
 
@@ -72,14 +86,17 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // This functions populates a list with new items and updates database
-  void addItemsToList(String name, String item, String price, String quantity) async {
+  void addItemsToList(String name, String item, String price, String quantity, List<String> users) async {
     DocumentReference ref =
         Firestore.instance.collection('lists').document(name);
     DocumentSnapshot doc = await ref.get();
     List tags = doc.data['items'];
+    var nPrice = int.parse(price);
+    var nQuan  = int.parse(quantity);
+    //List <String> p= ['one', 'two', 'three'];
     ref.updateData({
       'items': FieldValue.arrayUnion([
-        {'name': item, 'price': price, 'quantity': quantity}
+        {'name': item, 'price': nPrice, 'quantity': nQuan, 'users': users}
       ])
     });
   }
@@ -88,11 +105,13 @@ class _MenuPageState extends State<MenuPage> {
   void getNameAndPrice(int index) {
     final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
     final FocusNode nodeThree = FocusNode();
+    final FocusNode nodeFour  = FocusNode();
     var newItem = "item";
     var price = "0";
+    var quan = "0";
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Enter Item & Price')),
+        appBar: AppBar(title: const Text('Item, Price, Amount, & People Buying Item')),
         body: new Container(
             child: Column(
           children: <Widget>[
@@ -136,14 +155,31 @@ class _MenuPageState extends State<MenuPage> {
                 maxLength: 10,
                 maxLengthEnforced: true,
                 onSubmitted: (Amount) {
-                  addItemsToList(_numList[index], newItem, price, Amount);//Adds value to the list
-                  Navigator.pop(context); // Close the add todo screen
+                  quan = Amount;
+                  FocusScope.of(context).requestFocus(nodeFour);
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Quantity',
                     contentPadding: const EdgeInsets.all(16.0)),
               ),
-            )
+            ),
+             Flexible(
+               child: TextField(
+                autofocus: false,
+                focusNode: nodeFour,
+                maxLength: 100,
+                maxLengthEnforced: true,
+                onSubmitted: (allUsers) {
+                  var list = allUsers.split(' ');
+                  print(list);
+                  addItemsToList(_numList[index], newItem, price, quan, list);//Adds value to the list
+                  Navigator.of(context).pop();
+                },
+                decoration: InputDecoration(
+                    hintText: 'Names: Ex. Maria Rex Alex',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
           ],
         )),
       );
