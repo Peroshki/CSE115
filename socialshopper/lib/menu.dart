@@ -135,6 +135,13 @@ class _MenuPageState extends State<MenuPage> {
                 maxLength: 10,
                 maxLengthEnforced: true,
                 onSubmitted: (Amount) {
+                  if(price == ""){
+                    price = "1";
+                  }
+                  if(newItem == ""){
+                    newItem = "item";
+                  }
+                  
                   addItemsToList(_numList[index], newItem, price, Amount);//Adds value to the list
                   Navigator.pop(context); // Close the add todo screen
                 },
