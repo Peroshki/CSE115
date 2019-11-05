@@ -18,7 +18,7 @@ class AuthService {
   Observable<FirebaseUser> user;
   Observable<Map<String, dynamic>> profile;
   //Status for listeners. Is it in process of signing in or not?
-  PublishSubject loading = PublishSubject();
+  PublishSubject loading = PublishSubject<dynamic>();
 
   AuthService() {
     user = Observable(_auth.onAuthStateChanged);
@@ -30,7 +30,7 @@ class AuthService {
             .snapshots()
             .map((snap) => snap.data);
       } else {
-        return Observable.just({});
+        return Observable.empty();
       }
     });
   }
