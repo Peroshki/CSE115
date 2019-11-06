@@ -20,7 +20,8 @@
 
 analyzer:
   strong-mode:
-    implicit-dynamic: false
+    #This allows us to have nested mapping which we need for the metadata
+    implicit-dynamic: true 
   errors:
     # treat missing required parameters as a warning (not a hint)
     missing_required_param: warning

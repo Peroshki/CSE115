@@ -1,23 +1,44 @@
-import 'dart:ffi';
+/*
+* In this folder you can create a new list and at it to the database.
+* You can delete a list from the database; it warns you if you want to fully
+* delete or cancel.
+* You can open a new list.
+* You can add an item to a new list. 
+* Specifing the item name, price, and quanitity. 
+*/ 
 
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
-import 'list_views.dart';
-import 'store_select.dart';
-import 'creating_new_list.dart';
 import 'app_settings.dart';
+import 'list_views.dart';
 import 'profile.dart';
+import 'store_select.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
+var temp = '';
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
+var documentName = "";
 
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
   @override
   _MenuPageState createState() => _MenuPageState();
+}
+
+class CheckboxWidget extends StatefulWidget{ // State for checkboxes
+    @override
+    CheckboxWidgetState createState() => new CheckboxWidgetState();
+}
+    
+class CheckboxWidgetState extends State{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
+  }
+  
 }
 
 class _MenuPageState extends State<MenuPage> {
@@ -36,13 +57,6 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  // String _textString = 'Hello There';
-
-  // void _doSomething(String text) {
-  //   setState(() {
-  //     _textString = text;
-  //   });
-  // }
 
   final List<String> _numList = []; //Array to hold the list names
 
@@ -59,35 +73,126 @@ class _MenuPageState extends State<MenuPage> {
       _numList.clear();
       while (i < docs.length) {
         val = docs.elementAt(i).documentID;
+        temp = docs.elementAt(i).documentID;
         _addNewList(val);
         i++;
       }
     }
-    //  docs.forEach((data) => _addNewList(data.documentID)); //
-    // docs.forEach((data) => print(data.documentID));
   }
 
   void createRecord(String listName) async {
     // functions used to record user data -> database
-    await databaseRef
-        .collection("lists")
-        .document(listName)
-        .setData({'title': 'Mastering Firestore'});
-
-    // DocumentReference ref = await databaseRef.collection("lists")
-    // .add({
-    //   'title': 'FLutter in Action',
-    //   'description': 'Complete Programing'
-    // });
-    // print(ref.documentID);
+    await databaseRef.collection("lists").document(listName);
   }
 
-  void getDataFromDatabase() {
-    // Get Items and Price from DataBase
-    databaseRef.collection("lists");
+// This functions populates a list with new items and updates database
+  void addItemsToList(String name, String item, String price, String quantity, List<String> users) async {
+    DocumentReference ref =
+        Firestore.instance.collection('lists').document(name);
+    DocumentSnapshot doc = await ref.get();
+    List tags = doc.data['items'];
+    var nPrice = int.parse(price);
+    var nQuan  = int.parse(quantity);
+    //List <String> p= ['one', 'two', 'three'];
+    ref.updateData({
+      'items': FieldValue.arrayUnion([
+        {'name': item, 'price': nPrice, 'quantity': nQuan, 'users': users}
+      ])
+    });
   }
 
-  void deleteList(int index){  // Deletes list from database and updates array
+// Gets the Item and Price and adds it to database
+  void getNameAndPrice(int index) {
+    final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
+    final FocusNode nodeThree = FocusNode();
+    final FocusNode nodeFour  = FocusNode();
+    var newItem = "item";
+    var price = "0";
+    var quan = "0";
+    Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Item, Price, Amount, & People Buying Item')),
+        body: new Container(
+            child: Column(
+          children: <Widget>[
+            Flexible(
+              // Textfield for Item name
+              child: TextField(
+                autofocus: true,
+                maxLength: 30,
+                maxLengthEnforced: true,
+                onSubmitted: (userItem) {
+                  newItem = userItem;
+                  FocusScope.of(context)
+                      .requestFocus(nodeTwo); // This jumps to the other textbox
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Item Name',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+            Flexible(
+              // Textfield for price
+              child: TextField(
+                autofocus: false,
+                focusNode: nodeTwo,
+                maxLength: 10,
+                maxLengthEnforced: true,
+                onSubmitted: (new_Price) {
+                  price = new_Price;
+                  FocusScope.of(context).requestFocus(nodeThree);
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Price Of Item',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+            Flexible(
+              //Text field for quanity
+              child: TextField(
+                autofocus: false,
+                focusNode: nodeThree,
+                maxLength: 10,
+                maxLengthEnforced: true,
+                onSubmitted: (Amount) {
+                  quan = Amount;
+                  FocusScope.of(context).requestFocus(nodeFour);
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Quantity',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+             Flexible(
+               child: TextField(
+                autofocus: false,
+                focusNode: nodeFour,
+                maxLength: 100,
+                maxLengthEnforced: true,
+                onSubmitted: (allUsers) {
+                  var list = allUsers.split(' ');
+                  print(list);
+                  addItemsToList(_numList[index], newItem, price, quan, list);//Adds value to the list
+                  Navigator.of(context).pop();
+                },
+                decoration: InputDecoration(
+                    hintText: 'Names: Ex. Maria Rex Alex',
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+          ],
+        )),
+      );
+    }));
+  }
+
+  // void getDataFromDatabase() {
+  //   // Get Items and Price from DataBase
+  //   databaseRef.collection("lists");
+  // }
+
+  void deleteList(int index) {
+    // Deletes list from database and updates array
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
@@ -106,12 +211,21 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index) {
     // Open up a single list
+    documentName = _numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
           title: Text(_numList[index]),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add_circle),
+              onPressed: () {
+                getNameAndPrice(index); // Allows user to enter item and price
+              },
+            )
+          ],
         ),
-        body: ListViews(),
+        body: ListViews(listName: _numList[index]),
       );
     }));
   }
@@ -126,7 +240,8 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  void alertBoxForList(int index) { // Displays an alert box before deleting list
+  void alertBoxForList(int index) {
+    // Displays an alert box before deleting list
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -136,7 +251,7 @@ class _MenuPageState extends State<MenuPage> {
           actions: <Widget>[
             new FlatButton(
               child: new Text("Cancel"), // Cancel button
-              onPressed: (){
+              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
@@ -144,9 +259,9 @@ class _MenuPageState extends State<MenuPage> {
               child: new Text("Accept"), // Deletes list
               onPressed: () {
                 setState(() {
-               deleteList(index); 
-               Navigator.of(context).pop();
-              });
+                  deleteList(index);
+                  Navigator.of(context).pop();
+                });
               },
             ),
           ],
@@ -159,24 +274,27 @@ class _MenuPageState extends State<MenuPage> {
     //Build one list
     return Card(
         child: ListTile(
-            title: Text(listName),
-            onTap: () { // opens the list
-              setState(() {
-                _openList(index);
-              });
-            },
-            onLongPress: (){ // this deletes item from list view and from database
-              setState(() {
-              alertBoxForList(index); 
-              });
-            },));
+      title: Text(listName),
+      onTap: () {
+        // opens the list
+        setState(() {
+          _openList(index);
+        });
+      },
+      onLongPress: () {
+        // this deletes item from list view and from database
+        setState(() {
+          alertBoxForList(index);
+        });
+      },
+    ));
   }
 
   void _tapAddMoreItems() {
-    Navigator.of(context).push(
+    Navigator.of(context).push<dynamic>(
         // MaterialPageRoute will automatically animate the screen entry, as well
         // as adding a back button to close it
-        MaterialPageRoute(builder: (context) {
+        MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
           appBar: AppBar(title: const Text('Add a new task')),
           body: TextField(
@@ -244,7 +362,9 @@ class _MenuPageState extends State<MenuPage> {
           ),
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
-            onPressed: _tapAddMoreItems,
+            onPressed: () {
+              Navigator.of(context).pushNamed(StoreSelect.tag);
+            },
             tooltip: 'Name List',
             child: Icon(Icons.add),
           ),
