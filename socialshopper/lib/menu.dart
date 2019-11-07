@@ -24,7 +24,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 var temp = '';
 final List<String> _numList = []; //Array to hold the list names
-final List<String> userNames = new List();
+ List<String> userNames = new List();
+ List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
+
+ 
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = "";
@@ -35,37 +38,15 @@ class UserCheckBox extends StatefulWidget {
   //final String title;
   @override
   _UserCheckBox createState() => _UserCheckBox();
+  
 }
 
-class Metadata {
-  double budget;
-  String store;
-  Timestamp timeCreated;
-  String uid;
-  List<User> users;
-
-  Metadata.fromMap(Map<dynamic, dynamic> data)
-      : budget = data['budget'] * 1.0,
-        store = data['store'],
-        timeCreated = data['timeCreated'],
-        uid = data['uid'],
-        users =
-            List.from(data['users'].map((user) => user = User.fromMap(user)));
-}
-
-class ShoppingList {
-  String documentID;
-  List<Item> items;
-  Metadata metadata;
-
-  ShoppingList.fromSnapshot(DocumentSnapshot snapshot)
-      : documentID = snapshot.documentID,
-        items = List.from(snapshot['items'].map((item) => item = Item.fromMap(item))),
-        metadata = Metadata.fromMap(snapshot['metadata']);
-}
-
+// Gets users from MetaData to display 
+// When users want to add people to an item
 void getUsersOfList() async {
-  DocumentReference ref =
+  userNames.clear();
+  List<String> test = new List();
+  final DocumentReference ref =
       Firestore.instance.collection('lists').document(documentName);
   DocumentSnapshot doc = await ref.get();
   Map<dynamic, dynamic> tags = doc.data['metadata'];
@@ -73,32 +54,25 @@ void getUsersOfList() async {
   tags.remove('timeCreated');
   tags.remove('store');
   tags.remove('budget');
-  tags.forEach((Key, value) => userNames.add(value.toString()));
-  print(userNames[0]);
-  String n = userNames[0];
-  List k = n.split(new RegExp(r'(\W+)'));
-  //print(n.split(new RegExp(r'(\W+)')));
-  userNames.removeLast();
-  for(int i=0; i<k.length; i++){
-    if(k.elementAt(i) == ' '){
-    }
-    else if(k.elementAt(i) == 'name')
-  }
+  tags.forEach((Key, value) => test.add(value.toString()));
+  String n = test[0];
+  List<String> k = n.split(new RegExp(r'(\W+)'));
 
-  for(int j=0; j<userNames.length; j++){
-    print(userNames.elementAt(j));
+  for(int i=0; i<k.length; i++){
+    if(i>0 && i<k.length -1 && k.elementAt(i) != 'name'){
+       userNames.add(k.elementAt(i));
+    }
   }
-  //Map<dynamic, dynamic> a = tags.cast();
+  print(userNames.length);
 }
 
 // Creates Checkbox to Select Users Who Are Buying Item
 class _UserCheckBox extends State<UserCheckBox> {
-  List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
-
   @override
-  Future initState() {
+  void initState() {
+    inputs.clear();
     setState(() {
-      for (int i = 0; i < 8; i++) {
+      for (int i = 0; i < 12; i++) {
         inputs.add(false);
       }
     });
@@ -112,7 +86,7 @@ class _UserCheckBox extends State<UserCheckBox> {
 
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: inputs.length,
+      itemCount: userNames.length,
       itemBuilder: (BuildContext context, int index) {
         return new Card(
             child: new Container(
@@ -121,8 +95,8 @@ class _UserCheckBox extends State<UserCheckBox> {
                   children: <Widget>[
                     new CheckboxListTile(
                       value: inputs[index],
-                      title: new Text('item ${inputs}'),
-                      //controlAffinity: ListTileControlAffinity.platform,
+                      title: new Text('${userNames.elementAt(index)}', textAlign: TextAlign.center,),
+                      controlAffinity: ListTileControlAffinity.platform,
                       onChanged: (bool val) {
                         ChangeVal(val, index);
                       },
@@ -177,7 +151,7 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
-// functions used to record user data -> database
+// Add a new list to the database created by user
   void createRecord(String listName) async {
     await databaseRef.collection("lists").document(listName);
   }
@@ -197,12 +171,13 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-// Gets the Item and Price and adds it to database
+// Opens a new page
+// Allows user to manually enter
+// Item name, Price, Quantity, and select shoppers
   void getNameAndPrice(int old_Index) {
-    final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
+    final FocusNode nodeTwo = FocusNode(); 
     final FocusNode nodeThree = FocusNode();
-    final FocusNode nodeFour = FocusNode();
-    List<String> users = new List();
+    //final FocusNode nodeFour = FocusNode();
 
     var newItem = "item";
     var price = 0;
@@ -210,7 +185,6 @@ class _MenuPageState extends State<MenuPage> {
     var p = 'Omar';
 
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
-      TextEditingController controler;
       return Scaffold(
         appBar: AppBar(title: const Text('Add Item To Shopping List')),
         body: new Container(
@@ -228,7 +202,6 @@ class _MenuPageState extends State<MenuPage> {
                     onChanged: (userItem) {
                       print(userItem);
                       newItem = userItem;
-                      //FocusScope.of(context).requestFocus(nodeTwo); // This jumps to the other textbox
                     },
                     onSubmitted: (v) {
                       FocusScope.of(context).requestFocus(nodeTwo);
@@ -293,8 +266,12 @@ class _MenuPageState extends State<MenuPage> {
                   icon: Icon(Icons.save),
                   label: Text("Save"),
                   onPressed: () {
-                    //addItemsToList(_numList[old_Index], newItem, price, quan, users);
-                    getUsersOfList();
+                    List<String> shoppingUsers = new List();
+                    for(int i=0; i<userNames.length; i++){
+                      if(inputs.elementAt(i) == true)
+                          {shoppingUsers.add(userNames.elementAt(i)); print(userNames.elementAt(i));}
+                    }
+                    addItemsToList(_numList[old_Index], newItem, price, quan, shoppingUsers);
                     Navigator.of(context).pop();
                   },
                   backgroundColor: Colors.green,
@@ -308,31 +285,21 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-  // void getDataFromDatabase() {
-  //   // Get Items and Price from DataBase
-  //   databaseRef.collection("lists");
-  // }
-
+// Deletes list from database and updates array
   void deleteList(int index) {
-    // Deletes list from database and updates array
     databaseRef.collection('lists').document(_numList[index]).delete();
     putNamesOfListInAList();
   }
 
+//allows to change state of the list appearing
   void _addNewList(String task) {
-    //allows to change state of the list appearing
     if (task.isNotEmpty) {
       setState(() => _numList.add(task));
     }
   }
 
-  // void _getIndex(int index) {
-  //   //change state of list
-  //   setState(() => _numList.elementAt(index));
-  // }
-
+// Open up a single list
   void _openList(int index) {
-    // Open up a single list
     documentName = _numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
@@ -342,7 +309,8 @@ class _MenuPageState extends State<MenuPage> {
             IconButton(
               icon: Icon(Icons.add_circle),
               onPressed: () {
-                getNameAndPrice(index); // Allows user to enter item and price
+                getUsersOfList();
+                getNameAndPrice(index);
               },
             )
           ],
@@ -362,8 +330,8 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+// Displays an alert box before deleting list
   void alertBoxForList(int index) {
-    // Displays an alert box before deleting list
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -412,20 +380,17 @@ class _MenuPageState extends State<MenuPage> {
     ));
   }
 
+//Button to create a new list
   void _tapAddMoreItems() {
     Navigator.of(context).push<dynamic>(
-        // MaterialPageRoute will automatically animate the screen entry, as well
-        // as adding a back button to close it
         MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
           appBar: AppBar(title: const Text('Add a new task')),
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              //_addNewList(val);
-              //putNamesOfListInAList();
-              createRecord(val); // puts List in database
-              Navigator.pop(context); // Close the add todo screen
+              createRecord(val); 
+              Navigator.pop(context);
             },
             decoration: InputDecoration(
                 hintText: 'Enter List Name',
@@ -434,10 +399,10 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
+//Scaffold is the main container for main page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Scaffold is the main container for main page
       body: _getBody(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -458,15 +423,14 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+//Menu Page
   Widget _getBody(int index) {
     switch (index) {
       case 0:
         return Settings();
       case 1:
         return Scaffold(
-          //Scaffold is the main container for main page
           appBar: AppBar(
-            //title bar at the top of the page
             centerTitle: true,
             title: const Text('Lists'),
             actions: <Widget>[
