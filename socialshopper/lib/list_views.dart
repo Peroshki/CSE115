@@ -33,8 +33,8 @@ class User {
   String uid;
 
   User.fromMap(Map<dynamic, dynamic> data)
-    : name = data['name'],
-      uid = data['uid'];
+      : name = data['name'],
+        uid = data['uid'];
 }
 
 class Metadata {
@@ -45,11 +45,12 @@ class Metadata {
   List<User> users;
 
   Metadata.fromMap(Map<dynamic, dynamic> data)
-    : budget = data['budget'] * 1.0,
-      store = data['store'],
-      timeCreated = data['timeCreated'],
-      uid = data['uid'],
-      users = List.from(data['users'].map((user) => user = User.fromMap(user)));
+      : budget = data['budget'] * 1.0,
+        store = data['store'],
+        timeCreated = data['timeCreated'],
+        uid = data['uid'],
+        users =
+            List.from(data['users'].map((user) => user = User.fromMap(user)));
 }
 
 class ShoppingList {
@@ -59,7 +60,8 @@ class ShoppingList {
 
   ShoppingList.fromSnapshot(DocumentSnapshot snapshot)
       : documentID = snapshot.documentID,
-        items = List.from(snapshot['items'].map((item) => item = Item.fromMap(item))),
+        items = List.from(
+            snapshot['items'].map((item) => item = Item.fromMap(item))),
         metadata = Metadata.fromMap(snapshot['metadata']);
 }
 
@@ -82,30 +84,22 @@ Stream<ShoppingList> getShoppingList(String documentName) {
 
 Widget createTotalWidget(double total) {
   return Padding(
-    padding: const EdgeInsets.only(
-      left: 10.0
-    ),
+    padding: const EdgeInsets.only(left: 10.0),
     child: Text(
       'Total: \$$total',
       textScaleFactor: 1.2,
-      style: TextStyle(
-        color: Colors.white
-      ),
+      style: TextStyle(color: Colors.white),
     ),
   );
 }
 
 Widget createBudgetWidget(double budget) {
   return Padding(
-    padding: const EdgeInsets.only(
-        right: 10.0
-    ),
+    padding: const EdgeInsets.only(right: 10.0),
     child: Text(
       'Budget: \$$budget',
       textScaleFactor: 1.2,
-      style: TextStyle(
-          color: Colors.white
-      ),
+      style: TextStyle(color: Colors.white),
     ),
   );
 }
@@ -116,8 +110,7 @@ Widget createDifferenceWidget(double difference) {
   if (difference < 0) {
     text = '-(\$${difference.toString().substring(1)})';
     textColor = Colors.red;
-  }
-  else {
+  } else {
     text = '(\$$difference)';
     textColor = Colors.green;
   }
@@ -125,9 +118,7 @@ Widget createDifferenceWidget(double difference) {
   return Text(
     text,
     textScaleFactor: 1.2,
-    style: TextStyle(
-        color: textColor
-    ),
+    style: TextStyle(color: textColor),
   );
 }
 
@@ -151,17 +142,11 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
 
   for (var indTotal in indTotals.entries) {
     Widget indTotalWidget = Padding(
-      padding: const EdgeInsets.only(
-        top: 10.0,
-        bottom: 10.0,
-        left: 30.0
-      ),
+      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 30.0),
       child: Text(
         "${indTotal.key}'s Total: ${(indTotal.value * 100).roundToDouble() / 100}",
         textScaleFactor: 1.2,
-        style: TextStyle(
-          color: Colors.white
-        ),
+        style: TextStyle(color: Colors.white),
       ),
     );
 
@@ -171,14 +156,12 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
   return indTotalWidgets;
 }
 
-Widget createFinishWidget(double groupTotal, Map<String, double> indTotals, double budget) {
+Widget createFinishWidget(
+    double groupTotal, Map<String, double> indTotals, double budget) {
   List<Widget> colWidgets = createIndividualTotalWidget(indTotals);
 
   final Widget totalWidget = Padding(
-    padding: const EdgeInsets.only(
-      bottom: 10.0,
-      top: 15.0
-    ),
+    padding: const EdgeInsets.only(bottom: 10.0, top: 15.0),
     child: createTotalWidget(groupTotal),
   );
   colWidgets.insert(0, totalWidget);
@@ -191,20 +174,15 @@ Widget createFinishWidget(double groupTotal, Map<String, double> indTotals, doub
   colWidgets.add(divider);
 
   final Widget payButton = Padding(
-    padding: EdgeInsets.only(
-      bottom: 5.0
-    ),
-    child: FlatButton(
-      child: Text(
-        'Pay Now',
-        textScaleFactor: 1.2,
-        style: TextStyle(
-          color: Colors.white
+      padding: EdgeInsets.only(bottom: 5.0),
+      child: FlatButton(
+        child: Text(
+          'Pay Now',
+          textScaleFactor: 1.2,
+          style: TextStyle(color: Colors.white),
         ),
-      ),
-      onPressed: () {},
-    )
-  );
+        onPressed: () {},
+      ));
   colWidgets.add(payButton);
 
   return Container(
@@ -223,27 +201,19 @@ List<Widget> createItemCardWidget(Item item) {
   final List<Widget> widgets = [
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(item.name),
-        Text('\$${totalPrice.toString()}')
-      ],
+      children: <Widget>[Text(item.name), Text('\$${totalPrice.toString()}')],
     ),
     Text('Price: \$${item.price}'),
     Text('Quantity: ${item.quantity}'),
     Padding(
-        padding: const EdgeInsets.only(
-            bottom: 5.0
-        ),
-        child: Text('Shoppers: ${item.users.toString()}')
-    )
+        padding: const EdgeInsets.only(bottom: 5.0),
+        child: Text('Shoppers: ${item.users.toString()}'))
   ];
 
   return widgets;
 }
 
 /*** END WIDGET GENERATORS ***/
-
-
 
 class ListViews extends StatefulWidget {
   static String tag = 'list_views';
@@ -261,58 +231,55 @@ class ListViews extends StatefulWidget {
 class _ListViewsState extends State<ListViews> {
   /*** BEGIN DATABASE METHODS ***/
 
-  void removeFromDatabase(int index){
+  void removeFromDatabase(int index) {
     Firestore.instance.runTransaction((Transaction tx) async {
-      final DocumentReference postRef = Firestore.instance.collection('lists').document(widget.listName);
+      final DocumentReference postRef =
+          Firestore.instance.collection('lists').document(widget.listName);
       final DocumentSnapshot postSnapshot = await tx.get(postRef);
       if (postSnapshot.exists) {
         var doc = postSnapshot.data;
 
         List<dynamic> itemsList = List();
         itemsList = doc['items'].toList();
-        for(var i in itemsList) {
+        for (var i in itemsList) {
           print(i['name']);
         }
         itemsList.removeAt(index);
-        for(var i in itemsList) {
+        for (var i in itemsList) {
           print(i['name']);
         }
 
-        await postRef.updateData({
-          'items' : itemsList
-        });
+        await postRef.updateData({'items': itemsList});
       }
     });
   }
 
   void deleteItem(int index) {
-   showDialog(
-     context: context,
-     builder: (BuildContext context) {
-       return AlertDialog(
-         title: Text('Are you sure you want to delete this item?'),
-         content: Text('This action is permanent.'),
-         actions: <Widget>[
-           // usually buttons at the bottom of the dialog
-           FlatButton(
-             child: Text('YES'),
-             onPressed: () async {
-               removeFromDatabase(index);
-               Navigator.of(context).pop();
-             }
-           ),
-           FlatButton(
-             child: Text('NO'),
-             onPressed: () {
-               Navigator.of(context).pop();
-             },
-           ),
-         ],
-       );
-     }
-   );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure you want to delete this item?'),
+            content: Text('This action is permanent.'),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              FlatButton(
+                  child: Text('YES'),
+                  onPressed: () async {
+                    removeFromDatabase(index);
+                    Navigator.of(context).pop();
+                  }),
+              FlatButton(
+                child: Text('NO'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
-  
+
   /*** END DATABASE METHODS ***/
 
   @override
@@ -323,109 +290,100 @@ class _ListViewsState extends State<ListViews> {
         stream: getShoppingList(widget.listName),
         builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
           // If the list has not yet loaded data, notify the user to wait
-          if (!list.hasData)
-            return Text('Loading data... Please wait.');
+          if (!list.hasData) return Text('Loading data... Please wait.');
 
           ShoppingList s = list.data;
 
           // If the list has no items, notify the user that the list is empty
-          if (s.items == null)
-            return Center(child: Text('List is empty.'));
+          if (s.items == null) return Center(child: Text('List is empty.'));
 
           return ListView.builder(
-            itemCount: s.items.length,
+              itemCount: s.items.length,
 
-            // Each item is currently formatted as 'Name': 'Price'
-            itemBuilder: (BuildContext context, int index) {
-              List<Widget> widgets = createItemCardWidget(s.items[index]);
-              return Center(
-                child: ExpansionTile(
-                  trailing: IconButton(
-                    icon: Icon(Icons.cancel),
-                    onPressed: () => deleteItem(index),
-                  ),
-                  title: widgets.first,
-                  children: widgets.sublist(1)
-                ),
-              );
-            }
-          );
+              // Each item is currently formatted as 'Name': 'Price'
+              itemBuilder: (BuildContext context, int index) {
+                List<Widget> widgets = createItemCardWidget(s.items[index]);
+                return Center(
+                  child: ExpansionTile(
+                      trailing: IconButton(
+                        icon: Icon(Icons.cancel),
+                        onPressed: () => deleteItem(index),
+                      ),
+                      title: widgets.first,
+                      children: widgets.sublist(1)),
+                );
+              });
         },
       ),
-
       bottomNavigationBar: BottomAppBar(
-        child: Container(
-          color: Colors.blueGrey,
-          width: double.infinity,
-          child: FlatButton(
-            onPressed: activateBottomSheet,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                StreamBuilder<ShoppingList>(
-                  stream: getShoppingList(widget.listName),
-                  builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
-                    if (list?.data == null) return Text("Error");
+          child: Container(
+              color: Colors.blueGrey,
+              width: double.infinity,
+              child: FlatButton(
+                  onPressed: activateBottomSheet,
+                  child:
+                      Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    StreamBuilder<ShoppingList>(
+                      stream: getShoppingList(widget.listName),
+                      builder:
+                          (BuildContext c, AsyncSnapshot<ShoppingList> list) {
+                        if (list?.data == null) return Text("Error");
 
-                    final ShoppingList s = list.data;
+                        final ShoppingList s = list.data;
 
-                    double total = 0.0;
-                    for (Item i in s.items) {
-                      total += i.price * i.quantity;
-                    }
+                        double total = 0.0;
+                        for (Item i in s.items) {
+                          total += i.price * i.quantity;
+                        }
 
-                    final double budget = s.metadata.budget;
-                    final double difference = budget - total;
+                        final double budget = s.metadata.budget;
+                        final double difference = budget - total;
 
-                    return createDetailsWidget(total, budget, difference);
-                  },
-                ),
-                Icon(Icons.keyboard_arrow_down)
-              ]
-            )
-          )
-        )
-      ),
+                        return createDetailsWidget(total, budget, difference);
+                      },
+                    ),
+                    Icon(Icons.keyboard_arrow_down)
+                  ])))),
     );
   }
-  
+
   void activateBottomSheet() {
     showBottomSheet(
-      context: context,
-      builder: (context) => StreamBuilder<ShoppingList>(
-        stream: getShoppingList(widget.listName),
-        builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
-          if (list?.data == null) return Container(height: 0);
+        context: context,
+        builder: (context) => StreamBuilder<ShoppingList>(
+              stream: getShoppingList(widget.listName),
+              builder: (BuildContext c, AsyncSnapshot<ShoppingList> list) {
+                if (list?.data == null) return Container(height: 0);
 
-          final ShoppingList s = list.data;
+                final ShoppingList s = list.data;
 
-          double groupTotal = 0.0;
-          double indTotal = 0.0;
-          String name = '';
-          Map<String, double> indTotals = <String,double>{};
+                double groupTotal = 0.0;
+                double indTotal = 0.0;
+                String name = '';
+                Map<String, double> indTotals = <String, double>{};
 
-          for (User user in s.metadata.users) {
-            name = user.name;
-            indTotal = 0.0;
+                for (User user in s.metadata.users) {
+                  name = user.name;
+                  indTotal = 0.0;
 
-            for (Item i in list.data.items) {
-              if (i.users.contains(name)) {
-                indTotal += (i.price.toDouble() * i.quantity) / i.users.length;
-              }
-            }
+                  for (Item i in list.data.items) {
+                    if (i.users.contains(name)) {
+                      indTotal +=
+                          (i.price.toDouble() * i.quantity) / i.users.length;
+                    }
+                  }
 
-            indTotals[name] = indTotal;
-          }
+                  indTotals[name] = indTotal;
+                }
 
-          for (Item i in list.data.items) {
-            groupTotal += i.price * i.quantity;
-          }
+                for (Item i in list.data.items) {
+                  groupTotal += i.price * i.quantity;
+                }
 
-          final double budget = s.metadata.budget;
+                final double budget = s.metadata.budget;
 
-          return createFinishWidget(groupTotal, indTotals, budget);
-        },
-      )
-    );
+                return createFinishWidget(groupTotal, indTotals, budget);
+              },
+            ));
   }
 }
