@@ -44,7 +44,10 @@ class _LoginPageState extends State<LoginPage> {
             shape: BoxShape.circle,
             image: DecorationImage(
                 fit: BoxFit.fill,
-                image: NetworkImage('https://i.imgur.com/BoN9kdC.png'))));
+                image: const AssetImage('assets/images/Logo(1).png'),
+            )
+        )
+    );
 
     return Scaffold(
       body: Center(
