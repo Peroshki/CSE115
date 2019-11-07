@@ -12,7 +12,7 @@
 /// * The files time stamp looks strange, and I don't know how to parse it to become a timestamp in firebase.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-import 'dart:math';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'menu.dart';
@@ -22,13 +22,13 @@ import 'menu.dart';
 final databaseRef = Firestore.instance;
 
 // functions used to record user data -> database
-void createRecord(String listName, int budget, List<String> people, int id) async {
+void createRecord(String listName, int budget, List<String> people, String id) async {
   await databaseRef
     .collection('lists')
     .document(id.toString())
     .setData({'metadata': {'ID' : id, 
                             //Gets the timestamp
-                           'time' : DateTime.now().millisecondsSinceEpoch,
+                           'time' : DateTime.now(),        // Change this. We don't need the precision of milliseconds since epoch
                            'store' : 'Safeway',            // I don't know how to pass in the store select input
                            'name' : listName,
                            'budget' : budget,
@@ -84,7 +84,7 @@ class _ListSetup extends State<ListSetup> {
       builder: (context){
         return AlertDialog(
           content: Container(
-            padding: new EdgeInsets.all(32.0),
+            padding: const EdgeInsets.all(32.0),
             height: 175.0,
             child: Center(
               child: Column(
@@ -96,7 +96,7 @@ class _ListSetup extends State<ListSetup> {
                       getPeople(value);
                     },
                     autocorrect: true,
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Enter Participant\'s Name',
                     ),
                   ),
@@ -110,7 +110,7 @@ class _ListSetup extends State<ListSetup> {
                       onPressed(part);
                       Navigator.of(context).pop();
                     },
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     color: Colors.lightBlueAccent,
                     child: Text('Add Member', style: TextStyle(color: Colors.white)),
                   )
@@ -125,6 +125,7 @@ class _ListSetup extends State<ListSetup> {
   
   @override
   Widget build(BuildContext context) {
+    final Uuid uuid =  Uuid();
     return Scaffold(
       //Top bar of the app
       appBar: AppBar(
@@ -133,10 +134,10 @@ class _ListSetup extends State<ListSetup> {
         automaticallyImplyLeading: true,
       ), 
 
-      body: new Container(
-        padding: new EdgeInsets.all(32.0),
-        child: new Center(
-          child: new Column(
+      body: Container(
+        padding: const EdgeInsets.all(32.0),
+        child: Center(
+          child: Column(
             children: <Widget>[
               ListTile(
                 title: Text('List Name',
@@ -150,12 +151,12 @@ class _ListSetup extends State<ListSetup> {
 
               //Allows the user to enter the name of the list.
               Container(
-                child: new TextField(
+                child: TextField(
                   onChanged: (String value){
                     getName(value);
                   },
                   autocorrect: true,
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                   hintText: 'Name the List',
                   ),
                 ),
@@ -173,12 +174,12 @@ class _ListSetup extends State<ListSetup> {
 
               // Allows user to set the budget.
               Container(
-                child: new TextField(
+                child: TextField(
                   keyboardType: TextInputType.number,
                   onChanged: (String value){
                     getBudget(value);
                   },
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                   hintText: '0',
                   ),
                 ),
@@ -213,7 +214,7 @@ class _ListSetup extends State<ListSetup> {
                             },
                             child: Align(
                               alignment: Alignment.centerRight,
-                              child: Text("Remove",
+                              child: const Text('Remove',
                                 style: TextStyle(
                                   fontSize: 15.0,
                                   color: Colors.red
@@ -243,7 +244,7 @@ class _ListSetup extends State<ListSetup> {
                 onPressed: () {
                   createAlert(context);
                 },
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 color: Colors.lightBlueAccent,
                 child: Text('Add New Member', style: TextStyle(color: Colors.white)),
               ),
@@ -255,7 +256,7 @@ class _ListSetup extends State<ListSetup> {
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
         onPressed:() { 
-          createRecord(name, budget, people, Random().nextInt(1000));
+          createRecord(name, budget, people, uuid.v4());  // Instead of a random number, create a uid for the list.
           Navigator.of(context).pushNamed(MenuPage.tag);
         },
         tooltip: 'New List',
