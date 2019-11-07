@@ -5,7 +5,7 @@
 * You can open a new list.
 * You can add an item to a new list. 
 * Specifing the item name, price, and quanitity. 
-*/ 
+*/
 
 import 'package:flutter/material.dart';
 //import 'package:flutter/src/material/bottom_navigation_bar.dart';
@@ -27,18 +27,21 @@ class MenuPage extends StatefulWidget {
   _MenuPageState createState() => _MenuPageState();
 }
 
-class CheckboxWidget extends StatefulWidget{ // State for checkboxes
-    @override
-    CheckboxWidgetState createState() => new CheckboxWidgetState();
+TextEditingController controller =
+    TextEditingController(); // To control text of user
+
+class CheckboxWidget extends StatefulWidget {
+  // State for checkboxes
+  @override
+  CheckboxWidgetState createState() => new CheckboxWidgetState();
 }
-    
-class CheckboxWidgetState extends State{
+
+class CheckboxWidgetState extends State {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return null;
   }
-  
 }
 
 class _MenuPageState extends State<MenuPage> {
@@ -56,7 +59,6 @@ class _MenuPageState extends State<MenuPage> {
       _selectedIndex = index;
     });
   }
-
 
   final List<String> _numList = []; //Array to hold the list names
 
@@ -86,17 +88,16 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // This functions populates a list with new items and updates database
-  void addItemsToList(String name, String item, String price, String quantity, List<String> users) async {
+  void addItemsToList(String name, String item, int price, int quantity,
+      List<String> users) async {
     DocumentReference ref =
         Firestore.instance.collection('lists').document(name);
     DocumentSnapshot doc = await ref.get();
     List tags = doc.data['items'];
-    var nPrice = int.parse(price);
-    var nQuan  = int.parse(quantity);
     //List <String> p= ['one', 'two', 'three'];
     ref.updateData({
       'items': FieldValue.arrayUnion([
-        {'name': item, 'price': nPrice, 'quantity': nQuan, 'users': users}
+        {'name': item, 'price': price, 'quantity': quantity, 'users': users}
       ])
     });
   }
@@ -105,29 +106,37 @@ class _MenuPageState extends State<MenuPage> {
   void getNameAndPrice(int index) {
     final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
     final FocusNode nodeThree = FocusNode();
-    final FocusNode nodeFour  = FocusNode();
+    final FocusNode nodeFour = FocusNode();
     var newItem = "item";
-    var price = "0";
-    var quan = "0";
+    var price = 0;
+    var quan = 0;
+    var p = 'Omar';
     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
+      TextEditingController controler;
       return Scaffold(
-        appBar: AppBar(title: const Text('Item, Price, Amount, & People Buying Item')),
+        appBar: AppBar(title: const Text('Add Item To Shopping List')),
         body: new Container(
             child: Column(
           children: <Widget>[
             Flexible(
               // Textfield for Item name
               child: TextField(
+                textCapitalization: TextCapitalization.words,
                 autofocus: true,
                 maxLength: 30,
                 maxLengthEnforced: true,
-                onSubmitted: (userItem) {
+                textInputAction: TextInputAction.next,
+                onChanged: (userItem) {
+                  print(userItem);
                   newItem = userItem;
-                  FocusScope.of(context)
-                      .requestFocus(nodeTwo); // This jumps to the other textbox
+                  //FocusScope.of(context).requestFocus(nodeTwo); // This jumps to the other textbox
+                },
+                onSubmitted: (v){
+                  FocusScope.of(context).requestFocus(nodeTwo);
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Item Name',
+                    prefixIcon: Icon(Icons.add_shopping_cart),
                     contentPadding: const EdgeInsets.all(16.0)),
               ),
             ),
@@ -138,12 +147,19 @@ class _MenuPageState extends State<MenuPage> {
                 focusNode: nodeTwo,
                 maxLength: 10,
                 maxLengthEnforced: true,
-                onSubmitted: (new_Price) {
-                  price = new_Price;
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                //textInputAction: TextInputAction.send,
+                onChanged: (newPrice) {
+                  price = int.parse(newPrice);
+                  //FocusScope.of(context).requestFocus(nodeThree);
+                },
+                onSubmitted: (v){
                   FocusScope.of(context).requestFocus(nodeThree);
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Price Of Item',
+                    prefixIcon: Icon(Icons.monetization_on),
                     contentPadding: const EdgeInsets.all(16.0)),
               ),
             ),
@@ -154,31 +170,62 @@ class _MenuPageState extends State<MenuPage> {
                 focusNode: nodeThree,
                 maxLength: 10,
                 maxLengthEnforced: true,
-                onSubmitted: (Amount) {
-                  quan = Amount;
-                  FocusScope.of(context).requestFocus(nodeFour);
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                onChanged: (Amount) {
+                  quan = int.parse(Amount);
+                  //FocusScope.of(context).requestFocus(nodeFour);
                 },
-                decoration: InputDecoration(
-                    hintText: 'Enter Quantity',
-                    contentPadding: const EdgeInsets.all(16.0)),
-              ),
-            ),
-             Flexible(
-               child: TextField(
-                autofocus: false,
-                focusNode: nodeFour,
-                maxLength: 100,
-                maxLengthEnforced: true,
-                onSubmitted: (allUsers) {
-                  var list = allUsers.split(' ');
-                  print(list);
-                  addItemsToList(_numList[index], newItem, price, quan, list);//Adds value to the list
+                onSubmitted: (v){
+                  //FocusScope.of(context).requestFocus(nodeFour);
                   Navigator.of(context).pop();
                 },
                 decoration: InputDecoration(
-                    hintText: 'Names: Ex. Maria Rex Alex',
+                    hintText: 'Enter Quantity',
+                    prefixIcon: Icon(Icons.add_box),
                     contentPadding: const EdgeInsets.all(16.0)),
               ),
+            ),
+            Flexible(
+                child: DropdownButton<String>(
+                  value: p,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      p = newValue;
+                    });
+                  },
+                  items: <String>['One', 'Two', 'Free', 'Four']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+
+              //  child: TextField(
+              //   autofocus: false,
+              //   focusNode: nodeFour,
+              //   maxLength: 100,
+              //   maxLengthEnforced: true,
+              //   onSubmitted: (allUsers) {
+              //     var list = allUsers.split(' ');
+              //     print(list);
+              //     addItemsToList(_numList[index], newItem, price, quan, list);//Adds value to the list
+              //     Navigator.of(context).pop();
+              //   },
+              //   decoration: InputDecoration(
+              //       hintText: 'Names: Ex. Maria Rex Alex',
+              //       contentPadding: const EdgeInsets.all(16.0)),
+              // ),
             ),
           ],
         )),
