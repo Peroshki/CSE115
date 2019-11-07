@@ -22,7 +22,8 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   //Two password controllers in order to assure that user is correctly entering desired password.
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordControllerRedux = TextEditingController();
+  final TextEditingController _passwordControllerRedux =
+      TextEditingController();
 
   bool _success;
   String _userEmail;
@@ -73,7 +74,8 @@ class _SignupPageState extends State<SignupPage> {
               ),
               TextFormField(
                 controller: _passwordControllerRedux,
-                decoration: const InputDecoration(labelText: 'Confirm Password'),
+                decoration:
+                    const InputDecoration(labelText: 'Confirm Password'),
                 obscureText: true,
                 validator: (String value) {
                   if (value.isEmpty) {
@@ -142,9 +144,9 @@ class _SignupPageState extends State<SignupPage> {
   void _register() async {
     String reason;
     try {
-      if(_passwordControllerRedux.text != _passwordController.text){
+      if (_passwordControllerRedux.text != _passwordController.text) {
         throw PlatformException(code: 'Passwords do not match.');
-    }
+      }
       final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
@@ -155,7 +157,7 @@ class _SignupPageState extends State<SignupPage> {
           _success = true;
           _userEmail = user.email;
         });
-        signUpUpdateUserData(user);   // Yucky workaround
+        signUpUpdateUserData(user); // Yucky workaround
 
         Navigator.of(context).pushNamed(MenuPage.tag);
       } else {
@@ -187,6 +189,7 @@ class _SignupPageState extends State<SignupPage> {
       }
     }
   }
+
   void signUpUpdateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
@@ -194,7 +197,8 @@ class _SignupPageState extends State<SignupPage> {
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
-      'displayName': _nameController.text,    //This is the yucky workaround. Name is forced to be updated using text from controller.
+      'displayName': _nameController
+          .text, //This is the yucky workaround. Name is forced to be updated using text from controller.
       'lastSeen': DateTime.now()
     }, merge: true); //Merges data so old data isn't overwritten
   }
