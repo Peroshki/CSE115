@@ -32,7 +32,7 @@ void createRecord(
       'store': 'Safeway', // I don't know how to pass in the store select input
       'name': listName,
       'budget': budget,
-      'participants': people
+      'users': people
     }
   });
 }

@@ -6,6 +6,7 @@ import 'menu.dart';
 import 'store_select.dart';
 import 'signup_page.dart';
 import 'friends_list.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
