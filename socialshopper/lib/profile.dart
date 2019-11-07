@@ -3,6 +3,7 @@ import 'package:socialshopper/store_select.dart';
 import 'main.dart';
 import 'auth.dart';
 import 'login_page.dart';
+import 'friends_list.dart';
 
 class Profile extends StatefulWidget {
   static String tag = 'Profile';
@@ -51,6 +52,20 @@ class _ProfileState extends State<Profile> {
                 onPressed: () {
                   authService.signOut();
                   Navigator.of(context).pushNamed(LoginPage.tag);
+                },
+              ),
+
+              //button to view friends
+              FlatButton(
+                color: Colors.blue,
+                textColor: Colors.black,
+                padding: const EdgeInsets.all(6.0),
+                child: Text(
+                  'View Friends',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Friends.tag);
                 },
               ),
 

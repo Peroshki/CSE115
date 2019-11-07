@@ -5,7 +5,7 @@ import 'login_page.dart';
 import 'menu.dart';
 import 'store_select.dart';
 import 'signup_page.dart';
-
+import 'friends_list.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
     StoreSelect.tag: (context) => StoreSelect(),
     SignupPage.tag: (context) => SignupPage(),
     ListSetup.tag: (context) => ListSetup(),
+    Friends.tag: (context) => Friends(),
   };
 
   @override
