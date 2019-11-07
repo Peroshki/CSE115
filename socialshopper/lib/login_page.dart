@@ -71,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
 //Make the form which has email and password fields. This part of the login_page handles loging in with an email and password
 //, as opposed to signing in with a Google Account
 class _EmailPasswordForm extends StatefulWidget {
@@ -138,6 +139,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       ),
     );
   }
+
 //Creates an alert depending on the error caught which is stored in String reason
   dynamic createAlert(BuildContext context, String reason) {
     return showDialog<dynamic>(
@@ -164,13 +166,14 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     _passwordController.dispose();
     super.dispose();
   }
+
 //Here, it is attempted to login into account. Email and password are taken from their respective controllers.
 //Additionally, if login is successful, then data is merged with existing data in database.
 //Then, MenuPage is shown
 //If registration is not successful, then an error is caught and passed to createAlert
   void _signInWithEmailAndPassword() async {
     String reason;
-    //Try the following. Throws PlatformException error if invalid email, wrong password, or nonexisting account. 
+    //Try the following. Throws PlatformException error if invalid email, wrong password, or nonexisting account.
     try {
       final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
