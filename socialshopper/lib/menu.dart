@@ -235,11 +235,33 @@ class _MenuPageState extends State<MenuPage> {
   Widget _buildList() {
     //This is the whole list
     putNamesOfListInAList();
-    return ListView.builder(itemBuilder: (context, index) {
-      if (index < _numList.length) {
-        return _buildTodoItem(_numList[index], index);
-      }
-    });
+
+    return StreamBuilder(
+      stream: Firestore.instance.collection('lists').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return const Text('error');
+
+        List<DocumentSnapshot> lists = snapshot.data.documents;
+
+        return ListView.builder(
+          itemCount: lists.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: Text(lists[index].data['metadata']['name']),
+                onTap: () {
+                  _openList(index);
+                },
+                onLongPress: () {
+                  alertBoxForList(index);
+                },
+              ),
+            );
+          }
+        );
+      },
+    );
   }
 
   void alertBoxForList(int index) {
