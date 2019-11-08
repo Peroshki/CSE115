@@ -37,8 +37,8 @@ class User {
   String uid;
 
   User.fromMap(Map<dynamic, dynamic> data)
-    : name = data['name'],
-      uid = data['uid'];
+      : name = data['name'],
+        uid = data['uid'];
 }
 
 // Represents the metadata from the shopping list
@@ -104,8 +104,7 @@ Widget createDifferenceWidget(double difference) {
   if (difference < 0) {
     text = '-(\$${difference.toString().substring(1)})';
     textColor = Colors.red;
-  }
-  else {
+  } else {
     text = '(\$$difference)';
     textColor = Colors.green;
   }
@@ -113,9 +112,7 @@ Widget createDifferenceWidget(double difference) {
   return Text(
     text,
     textScaleFactor: 1.2,
-    style: TextStyle(
-        color: textColor
-    ),
+    style: TextStyle(color: textColor),
   );
 }
 
@@ -164,9 +161,7 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
       child: Text(
         "${indTotal.key}'s Total: ${(indTotal.value * 100).roundToDouble() / 100}",
         textScaleFactor: 1.2,
-        style: TextStyle(
-          color: Colors.white
-        ),
+        style: TextStyle(color: Colors.white),
       ),
     );
 
@@ -219,20 +214,15 @@ Widget createFinishWidget(BuildContext context, double groupTotal, Map<String, d
   colWidgets.add(divider);
 
   final Widget payButton = Padding(
-    padding: EdgeInsets.only(
-      bottom: 5.0
-    ),
-    child: FlatButton(
-      child: Text(
-        'Pay Now',
-        textScaleFactor: 1.2,
-        style: TextStyle(
-          color: Colors.white
+      padding: EdgeInsets.only(bottom: 5.0),
+      child: FlatButton(
+        child: Text(
+          'Pay Now',
+          textScaleFactor: 1.2,
+          style: TextStyle(color: Colors.white),
         ),
-      ),
-      onPressed: () {},
-    )
-  );
+        onPressed: () {},
+      ));
   colWidgets.add(payButton);
 
   return Container(
@@ -252,19 +242,13 @@ List<Widget> createItemCardWidget(Item item) {
   final List<Widget> widgets = [
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(item.name),
-        Text('\$${totalPrice.toString()}')
-      ],
+      children: <Widget>[Text(item.name), Text('\$${totalPrice.toString()}')],
     ),
     Text('Price: \$${item.price}'),
     Text('Quantity: ${item.quantity}'),
     Padding(
-        padding: const EdgeInsets.only(
-            bottom: 5.0
-        ),
-        child: Text('Shoppers: ${item.users.toString()}')
-    )
+        padding: const EdgeInsets.only(bottom: 5.0),
+        child: Text('Shoppers: ${item.users.toString()}'))
   ];
 
   return widgets;
@@ -310,28 +294,27 @@ class _ListViewsState extends State<ListViews> {
   // Removes an item from the shopping list at the given index
   void removeFromDatabase(int index){
     Firestore.instance.runTransaction((Transaction tx) async {
-      final DocumentReference postRef = Firestore.instance.collection('lists').document(widget.listName);
+      final DocumentReference postRef =
+          Firestore.instance.collection('lists').document(widget.listName);
       final DocumentSnapshot postSnapshot = await tx.get(postRef);
       if (postSnapshot.exists) {
         var doc = postSnapshot.data;
 
         List<dynamic> itemsList = List();
         itemsList = doc['items'].toList();
-        for(var i in itemsList) {
+        for (var i in itemsList) {
           print(i['name']);
         }
         itemsList.removeAt(index);
-        for(var i in itemsList) {
+        for (var i in itemsList) {
           print(i['name']);
         }
 
-        await postRef.updateData({
-          'items' : itemsList
-        });
+        await postRef.updateData({'items': itemsList});
       }
     });
   }
-
+  
   // Shows an alert dialog, prompting the user to consider
   // if they really want to delete the item
   void deleteItemDialog(int index) {
@@ -361,7 +344,7 @@ class _ListViewsState extends State<ListViews> {
      }
    );
   }
-  
+
   /*** END DATABASE METHODS ***/
 
 
@@ -380,8 +363,7 @@ class _ListViewsState extends State<ListViews> {
           final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
           // If the list has no items, notify the user that the list is empty
-          if (s.items == null)
-            return Center(child: Text('List is empty.'));
+          if (s.items == null) return Center(child: Text('List is empty.'));
 
           // Build the list of items
           return ListView.builder(
@@ -462,7 +444,7 @@ class _ListViewsState extends State<ListViews> {
       ),
     );
   }
-  
+
   void activateBottomSheet() {
     showBottomSheet(
       context: context,
@@ -494,15 +476,15 @@ class _ListViewsState extends State<ListViews> {
               }
             }
 
-            indTotals[name] = indTotal;
-          }
+                  indTotals[name] = indTotal;
+                }
 
           // Calculate the group total
           for (Item i in s.items) {
             groupTotal += i.price * i.quantity;
           }
 
-          final double budget = s.metadata.budget;
+                final double budget = s.metadata.budget;
 
           // Create a final display widget which shows the group and
           // individual totals, and provides a button to initiate payment
