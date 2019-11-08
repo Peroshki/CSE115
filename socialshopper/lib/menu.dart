@@ -119,23 +119,17 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
-// Open up a single list
-  void _openList(int index) {
+
+  void _getIndex(int index) {
+    //change state of list
+    setState(() => numList.elementAt(index));
+  }
+
+  void _openList(int index, String name) {
+    // Open up a single list
     documentName = numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-        // appBar: AppBar(
-        //   actions: <Widget>[
-        //     IconButton(
-        //       icon: Icon(Icons.add_circle),
-        //       onPressed: () {
-        //         getUsersOfList();
-        //         documentId = numList[index];
-        //         Navigator.of(context).pushNamed(UserItemInput.tag);
-        //       },
-        //     )
-        //   ],
-        // ),
         body: ListViews(listName: numList[index]),
       );
     }));
@@ -144,11 +138,34 @@ class _MenuPageState extends State<MenuPage> {
 //This is the whole list
   Widget _buildList() {
     putNamesOfListInAList();
-    return ListView.builder(itemBuilder: (context, index) {
-      if (index < numList.length) {
-        return _buildTodoItem(numList[index], index);
-      }
-    });
+
+
+    return StreamBuilder(
+      stream: Firestore.instance.collection('lists').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return const Text('error');
+
+        List<DocumentSnapshot> lists = snapshot.data.documents;
+
+        return ListView.builder(
+          itemCount: lists.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: Text(lists[index].data['metadata']['name']),
+                onTap: () {
+                  _openList(index, lists[index].data['metadata']['name']);
+                },
+                onLongPress: () {
+                  alertBoxForList(index);
+                },
+              ),
+            );
+          }
+        );
+      },
+    );
   }
 
 // Displays an alert box before deleting list
@@ -181,44 +198,30 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  Widget _buildTodoItem(String listName, int index) {
-    //Build one list
-    return Card(
-        child: ListTile(
-      title: Text(listName),
-      onTap: () {
-        // opens the list
-        setState(() {
-          _openList(index);
-        });
-      },
-      onLongPress: () {
-        // this deletes item from list view and from database
-        setState(() {
-          alertBoxForList(index);
-        });
-      },
-    ));
+
+
+  void _tapAddMoreItems() {
+    Navigator.of(context).push<dynamic>(
+        // MaterialPageRoute will automatically animate the screen entry, as well
+        // as adding a back button to close it
+        MaterialPageRoute<dynamic>(builder: (context) {
+      return Scaffold(
+          appBar: AppBar(title: const Text('Add a new task')),
+          body: TextField(
+            autofocus: true,
+            onSubmitted: (val) {
+              //_addNewList(val);
+              //putNamesOfListInAList();
+              createRecord(val); // puts List in database
+              Navigator.pop(context); // Close the add todo screen
+            },
+            decoration: InputDecoration(
+                hintText: 'Enter List Name',
+                contentPadding: const EdgeInsets.all(16.0)),
+          ));
+    }));
   }
 
-//Button to create a new list
-  // void _tapAddMoreItems() {
-  //   Navigator.of(context)
-  //       .push<dynamic>(MaterialPageRoute<dynamic>(builder: (context) {
-  //     return Scaffold(
-  //         appBar: AppBar(title: const Text('Add a new task')),
-  //         body: TextField(
-  //           autofocus: true,
-  //           onSubmitted: (val) {
-  //             createRecord(val);
-  //             Navigator.pop(context);
-  //           },
-  //           decoration: InputDecoration(
-  //               hintText: 'Enter List Name',
-  //               contentPadding: const EdgeInsets.all(16.0)),
-  //         ));
-  //   }));
-  // }
 
 //Scaffold is the main container for main page
   @override
