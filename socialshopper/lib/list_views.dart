@@ -3,8 +3,8 @@
 *
 *   Contains the view for an individual shopping list. Items are displayed in
 *   a list with each item containing a description of its name and price.
-*   It also allows for the user to delete items from their shopping list and 
-*   update the database. 
+*   It also allows for the user to delete items from their shopping list and
+*   update the database.
 *
 *   constructor: ListViews(listName: String)
 *   arguments:
@@ -404,6 +404,7 @@ class _ListViewsState extends State<ListViews> {
           )
         ],
       ),
+
 
       bottomNavigationBar: BottomAppBar(
         child: FlatButton(

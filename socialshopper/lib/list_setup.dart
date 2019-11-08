@@ -25,10 +25,21 @@ final databaseRef = Firestore.instance;
 void createRecord(
     String listName, int budget, List<String> people, String id) async {
   await databaseRef.collection('lists').document(id.toString()).setData({
+    'items' : [
+      {
+        'name': 'Banana',
+        'quantity': 2,
+        'price': 4,
+        'users': [
+          'Alan',
+          'Omar'
+        ]
+      }
+    ],
     'metadata': {
-      'ID': id,
+      'uid': id,
       //Gets the timestamp
-      'time': DateTime
+      'timeCreated': DateTime
           .now(), // Change this. We don't need the precision of milliseconds since epoch
       'store': 'Safeway', // I don't know how to pass in the store select input
       'name': listName,

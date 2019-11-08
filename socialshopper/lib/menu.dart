@@ -107,6 +107,7 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // Deletes list from database and updates array
+
   void deleteList(int index) {
     databaseRef.collection('lists').document(numList[index]).delete();
     putNamesOfListInAList();
@@ -138,8 +139,6 @@ class _MenuPageState extends State<MenuPage> {
 //This is the whole list
   Widget _buildList() {
     putNamesOfListInAList();
-
-
     return StreamBuilder(
       stream: Firestore.instance.collection('lists').snapshots(),
       builder: (context, snapshot) {
@@ -197,8 +196,6 @@ class _MenuPageState extends State<MenuPage> {
       },
     );
   }
-
-
 
   void _tapAddMoreItems() {
     Navigator.of(context).push<dynamic>(
