@@ -21,11 +21,12 @@ import 'profile.dart';
 import 'store_select.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'item_input.dart';
 
 var documentId = '';
  List<String> numList = new List(); //Array to hold the list names
  List<String> userNames = new List();
- List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
+//  List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 
  
 //FireBase stuff
@@ -67,48 +68,30 @@ var documentName = "";
 //   print(userNames.length);
 // }
 
-// Creates Checkbox to Select Users Who Are Buying Item
-// class _UserCheckBox extends State<UserCheckBox> {
-//   @override
-//   void initState() {
-//     inputs.clear();
-//     setState(() {
-//       for (int i = 0; i < 12; i++) {
-//         inputs.add(false);
-//       }
-//     });
-//   }
+void getUsersOfList() async {
+  userNames.clear();
+  List<String> test = new List();
+  final DocumentReference ref =
+      Firestore.instance.collection('lists').document(documentId);
+  DocumentSnapshot doc = await ref.get();
+  Map<dynamic, dynamic> tags = doc.data['metadata'];
+  tags.remove('name');
+  tags.remove('uid');
+  tags.remove('timeCreated');
+  tags.remove('store');
+  tags.remove('budget');
+  tags.forEach((Key, value) => test.add(value.toString()));
+  //print(test);
+  //print(test.elementAt(0));
+  String values = test.elementAt(0);
+  List<String> k = values.split(new RegExp(r'(\W+)'));
 
-//   void ChangeVal(bool val, int index) {
-//     setState(() {
-//       inputs[index] = val;
-//     });
-//   }
-
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       itemCount: userNames.length,
-//       itemBuilder: (BuildContext context, int index) {
-//         return new Card(
-//             child: new Container(
-//                 padding: new EdgeInsets.all(10.0),
-//                 child: new Column(
-//                   children: <Widget>[
-//                     new CheckboxListTile(
-//                       value: inputs[index],
-//                       title: new Text('${userNames.elementAt(index)}', textAlign: TextAlign.center,),
-//                       controlAffinity: ListTileControlAffinity.platform,
-//                       onChanged: (bool val) {
-//                         ChangeVal(val, index);
-//                       },
-//                     )
-//                   ],
-//                 )));
-//       },
-//     );
-//     return null;
-//   }
-// }
+  for(int i=0; i<k.length; i++){
+    if(i>0 && i<k.length -1){
+       userNames.add(k.elementAt(i));
+    }
+  }
+}
 
 //State of MenuPage
 class MenuPage extends StatefulWidget {
@@ -146,7 +129,7 @@ class _MenuPageState extends State<MenuPage> {
       numList.clear();
       while (i < docs.length) {
         val = docs.elementAt(i).documentID;
-        documentId = docs.elementAt(i).documentID;
+        //documentId = docs.elementAt(i).documentID;
         _addNewList(val);
         i++;
       }
@@ -157,135 +140,6 @@ class _MenuPageState extends State<MenuPage> {
   void createRecord(String listName) async {
     await databaseRef.collection("lists").document(listName);
   }
-
-// This functions populates a list with new items and updates database
-  // void addItemsToList(String name, String item, int price, int quantity,
-  //     List<String> users) async {
-  //   DocumentReference ref =
-  //       Firestore.instance.collection('lists').document(name);
-  //   DocumentSnapshot doc = await ref.get();
-  //   List tags = doc.data['items'];
-
-  //   ref.updateData({
-  //     'items': FieldValue.arrayUnion([
-  //       {'name': item, 'price': price, 'quantity': quantity, 'users': users}
-  //     ])
-  //   });
-  // }
-
-// // Opens a new page
-// // Allows user to manually enter
-// // Item name, Price, Quantity, and select shoppers
-//   void getNameAndPrice(int old_Index) {
-//     final FocusNode nodeTwo = FocusNode(); 
-//     final FocusNode nodeThree = FocusNode();
-//     //final FocusNode nodeFour = FocusNode();
-
-//     var newItem = "item";
-//     var price = 0;
-//     var quan = 0;
-//     var p = 'Omar';
-
-//     Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
-//       return Scaffold(
-//         appBar: AppBar(title: const Text('Add Item To Shopping List')),
-//         body: new Container(
-//             decoration: BoxDecoration(),
-//             child: Column(
-//               children: <Widget>[
-//                 Flexible(
-//                   // Textfield for Item nam
-//                   child: TextField(
-//                     textCapitalization: TextCapitalization.words,
-//                     autofocus: true,
-//                     maxLength: 30,
-//                     maxLengthEnforced: true,
-//                     textInputAction: TextInputAction.next,
-//                     onChanged: (userItem) {
-//                       print(userItem);
-//                       newItem = userItem;
-//                     },
-//                     onSubmitted: (v) {
-//                       FocusScope.of(context).requestFocus(nodeTwo);
-//                     },
-//                     decoration: InputDecoration(
-//                         hintText: 'Enter Item Name',
-//                         prefixIcon: Icon(Icons.add_shopping_cart),
-//                         contentPadding: const EdgeInsets.all(16.0)),
-//                   ),
-//                 ),
-//                 Flexible(
-//                   // Textfield for price
-//                   child: TextField(
-//                     autofocus: false,
-//                     focusNode: nodeTwo,
-//                     maxLength: 10,
-//                     maxLengthEnforced: true,
-//                     keyboardType: TextInputType.number,
-//                     textInputAction: TextInputAction.next,
-//                     onChanged: (newPrice) {
-//                       price = int.parse(newPrice);
-//                     },
-//                     onSubmitted: (v) {
-//                       FocusScope.of(context).requestFocus(nodeThree);
-//                     },
-//                     decoration: InputDecoration(
-//                         hintText: 'Enter Price Of Item',
-//                         prefixIcon: Icon(Icons.monetization_on),
-//                         contentPadding: const EdgeInsets.all(16.0)),
-//                   ),
-//                 ),
-//                 Flexible(
-//                   //Text field for quanity
-//                   child: TextField(
-//                     autofocus: false,
-//                     focusNode: nodeThree,
-//                     maxLength: 10,
-//                     maxLengthEnforced: true,
-//                     keyboardType: TextInputType.number,
-//                     textInputAction: TextInputAction.next,
-//                     onChanged: (Amount) {
-//                       quan = int.parse(Amount);
-//                     },
-//                     onSubmitted: (v) {
-//                       FocusScope.of(context).requestFocus(FocusNode());
-//                     },
-//                     decoration: InputDecoration(
-//                         hintText: 'Enter Quantity',
-//                         prefixIcon: Icon(Icons.add_box),
-//                         contentPadding: const EdgeInsets.all(16.0)),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   flex: 3,
-//                   child: Container(
-//                     child: UserCheckBox(),
-//                     height: 500,
-//                   ),
-//                 ),
-//                 FloatingActionButton.extended(
-//                   tooltip: "Submit",
-//                   icon: Icon(Icons.save),
-//                   label: Text("Save"),
-//                   onPressed: () {
-//                     List<String> shoppingUsers = new List();
-//                     for(int i=0; i<userNames.length; i++){
-//                       if(inputs.elementAt(i) == true)
-//                           {shoppingUsers.add(userNames.elementAt(i)); print(userNames.elementAt(i));}
-//                     }
-//                     addItemsToList(numList[old_Index], newItem, price, quan, shoppingUsers);
-//                     Navigator.of(context).pop();
-//                   },
-//                   backgroundColor: Colors.green,
-//                   shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
-//                   elevation: 0.0,
-//                 )
-//               ],
-//             )),
-//       );
-//     }));
-//   }
 
 // Deletes list from database and updates array
   void deleteList(int index) {
@@ -303,25 +157,23 @@ class _MenuPageState extends State<MenuPage> {
 // Open up a single list
   void _openList(int index) {
     documentName = numList[index];
-    Navigator.of(context).pushNamed(ListViews.tag);
-    // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-    //   return Scaffold(
-    //     appBar: AppBar(
-    //       //title: Text(_numList[index]),
-    //       actions: <Widget>[
-    //         IconButton(
-    //           icon: Icon(Icons.add_circle),
-    //           onPressed: () {
-    //             //getUsersOfList();
-    //             //This should direct to List_views;
-    //             //getNameAndPrice(index);
-    //           },
-    //         )
-    //       ],
-    //     ),
-    //     //body: ListViews(listName: numList[index]),
-    //   );
-    // }));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return Scaffold(
+        // appBar: AppBar(
+        //   actions: <Widget>[
+        //     IconButton(
+        //       icon: Icon(Icons.add_circle),
+        //       onPressed: () {
+        //         getUsersOfList();
+        //         documentId = numList[index];
+        //         Navigator.of(context).pushNamed(UserItemInput.tag);
+        //       },
+        //     )
+        //   ],
+        // ),
+        body: ListViews(listName: numList[index]),
+      );
+    }));
   }
 
 //This is the whole list

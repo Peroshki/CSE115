@@ -1,3 +1,14 @@
+/**
+ * This file creates a new page that allows 
+ * the user to manually enter the name of an item,
+ * the price of an item, and the quantity of an item.
+ * It also has a checkbox that allows the user to select 
+ * users who want that item. Lastly, it has a save button 
+ * that redirects the user back to the list items view page
+ * and populates the information the user provided to the database.
+ */
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +18,10 @@ List<String> userNames = new List();
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
 
-class Shoppers {
-  List<String> userNames = new List();
-  List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
-}
+
 
 //Create a state for checkbox
 class UserCheckBox extends StatefulWidget {
-  //UserCheckBox({Key key, this.title});
-  //final String title;
   @override
   _UserCheckBox createState() => _UserCheckBox();
 }
@@ -61,7 +67,6 @@ class _UserCheckBox extends State<UserCheckBox> {
                 )));
       },
     );
-    //return null;
   }
 }
 
@@ -78,26 +83,6 @@ void addItemsToList(String name, String item, int price, int quantity,
   });
 }
 
-// updates the app with list in the database
-// void putNamesOfListInAList() async {
-//   final QuerySnapshot results =
-//       await Firestore.instance.collection('lists').getDocuments();
-//   final List<DocumentSnapshot> docs = results.documents;
-
-//   var i = 0;
-//   var val = "";
-
-//   if (_numList.length < docs.length || _numList.length > docs.length) {
-//     _numList.clear();
-//     while (i < docs.length) {
-//       val = docs.elementAt(i).documentID;
-//       temp = docs.elementAt(i).documentID;
-//       globals._addNewList(val);
-//       i++;
-//     }
-//   }
-// }
-
 // Opens a new page
 // Allows user to manually enter
 // Item name, Price, Quantity, and select shoppers
@@ -105,20 +90,18 @@ Widget getNameAndPrice(BuildContext context) {
   final FocusNode nodeTwo = FocusNode();
   final FocusNode nodeThree = FocusNode();
   //final FocusNode nodeFour = FocusNode();
-
   var newItem = "item";
   var price = 0;
   var quan = 0;
   var p = 'Omar';
 
-  // Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
     return Scaffold(
       body: new Container(
           decoration: BoxDecoration(),
           child: Column(
             children: <Widget>[
               Flexible(
-                // Textfield for Item nam
+                // Textfield for Item name
                 child: TextField(
                   textCapitalization: TextCapitalization.words,
                   autofocus: true,
@@ -180,6 +163,7 @@ Widget getNameAndPrice(BuildContext context) {
                       contentPadding: const EdgeInsets.all(16.0)),
                 ),
               ),
+              //Checkbox of user names
               Expanded(
                 flex: 3,
                 child: Container(
@@ -211,9 +195,6 @@ Widget getNameAndPrice(BuildContext context) {
             ],
           )),
     );
-  //}
-  //)
-  //);
 }
 
 // Main class of page
