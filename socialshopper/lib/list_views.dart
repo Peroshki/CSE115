@@ -31,16 +31,6 @@ class Item {
         users = List.from(data['users']);
 }
 
-// Represents a user in the shopping list
-class User {
-  String name;
-  String uid;
-
-  User.fromMap(Map<dynamic, dynamic> data)
-      : name = data['name'],
-        uid = data['uid'];
-}
-
 // Represents the metadata from the shopping list
 class Metadata {
   double budget;
@@ -48,7 +38,7 @@ class Metadata {
   Timestamp timeCreated;
   String uid;
   String name;
-  List<User> users;
+  List<String> users;
 
   Metadata.fromMap(Map<dynamic, dynamic> data)
     : budget = data['budget'] * 1.0,
@@ -56,7 +46,7 @@ class Metadata {
       timeCreated = data['timeCreated'],
       uid = data['uid'],
       name = data['name'],
-      users = List.from(data['users'].map((user) => user = User.fromMap(user)));
+      users = List.from(data['users']);
 }
 
 // Represents a shopping list from Firebase
@@ -460,23 +450,21 @@ class _ListViewsState extends State<ListViews> {
 
           double groupTotal = 0.0;
           double indTotal = 0.0;
-          String name = '';
           Map<String, double> indTotals = <String,double>{};
 
           // Calculate every users individual total
-          for (User user in s.metadata.users) {
-            name = user.name;
+          for (String user in s.metadata.users) {
             indTotal = 0.0;
 
             for (Item i in s.items) {
-              if (i.users.contains(name)) {
+              if (i.users.contains(user)) {
                 // The price for an individual user of an item is
                 // (total price * quantity) / (number of users of the item)
                 indTotal += (i.price.toDouble() * i.quantity) / i.users.length;
               }
             }
 
-                  indTotals[name] = indTotal;
+                  indTotals[user] = indTotal;
                 }
 
           // Calculate the group total
