@@ -12,9 +12,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/scheduler.dart';
-//import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'app_settings.dart';
 import 'list_views.dart';
 import 'profile.dart';
@@ -23,39 +21,38 @@ import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'item_input.dart';
 
-var documentId = '';
- List<String> numList = new List(); //Array to hold the list names
- List<String> userNames = new List();
-//  List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
+//var documentId = '';
+List<String> numList = new List(); //Array to hold the list names
+List<String> userNames = new List();
 
- 
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = "";
 
-
-void getUsersOfList() async {
-  userNames.clear();
-  List<String> test = new List();
-  final DocumentReference ref =
-      Firestore.instance.collection('lists').document(documentId);
-  DocumentSnapshot doc = await ref.get();
-  Map<dynamic, dynamic> tags = doc.data['metadata'];
-  tags.remove('name');
-  tags.remove('uid');
-  tags.remove('timeCreated');
-  tags.remove('store');
-  tags.remove('budget');
-  tags.forEach((Key, value) => test.add(value.toString()));
-  //print(test);
-  //print(test.elementAt(0));
-  String values = test.elementAt(0);
-  List<String> k = values.split(new RegExp(r'(\W+)'));
-
-  for(int i=0; i<k.length; i++){
-    if(i>0 && i<k.length -1){
-       userNames.add(k.elementAt(i));
+class callUser {
+  
+  static void getUsersOfList() async {
+    userNames.clear();
+    List<String> test = new List();
+    final DocumentReference ref =
+        Firestore.instance.collection('lists').document(documentName);
+    DocumentSnapshot doc = await ref.get();
+    Map<dynamic, dynamic> tags = doc.data['metadata'];
+    tags.remove('name');
+    tags.remove('uid');
+    tags.remove('timeCreated');
+    tags.remove('store');
+    tags.remove('budget');
+    tags.forEach((Key, value) => test.add(value.toString()));
+    String values = test.elementAt(0);
+    List<String> k = values.split(new RegExp(r'(\W+)'));
+  
+    for (int i = 0; i < k.length; i++) {
+      if (i > 0 && i < k.length - 1) {
+        userNames.add(k.elementAt(i));
+      }
     }
+    //print(userNames);
   }
 }
 
@@ -65,13 +62,6 @@ class MenuPage extends StatefulWidget {
   @override
   _MenuPageState createState() => _MenuPageState();
 }
-
-class CheckboxWidget extends StatefulWidget {
-  // State for checkboxes
-  @override
-  CheckboxWidgetState createState() => new CheckboxWidgetState();
-}
-
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
@@ -88,7 +78,6 @@ class _MenuPageState extends State<MenuPage> {
       _selectedIndex = index;
     });
   }
-
 
   // updates the app with list in the database
   void putNamesOfListInAList() async {
@@ -212,14 +201,14 @@ class _MenuPageState extends State<MenuPage> {
 
 //Button to create a new list
   void _tapAddMoreItems() {
-    Navigator.of(context).push<dynamic>(
-        MaterialPageRoute<dynamic>(builder: (context) {
+    Navigator.of(context)
+        .push<dynamic>(MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
           appBar: AppBar(title: const Text('Add a new task')),
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              createRecord(val); 
+              createRecord(val);
               Navigator.pop(context);
             },
             decoration: InputDecoration(

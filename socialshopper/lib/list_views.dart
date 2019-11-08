@@ -16,6 +16,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'item_input.dart';
+import 'menu.dart';
 
 // Represents an item in the shopping list
 class Item {
@@ -396,7 +398,8 @@ class _ListViewsState extends State<ListViews> {
           IconButton(
             icon: Icon(Icons.add_circle),
             onPressed: () {
-              // TODO: route to new item page
+              callUser.getUsersOfList();
+              Navigator.of(context).pushNamed(UserItemInput.tag);
             },
           )
         ],

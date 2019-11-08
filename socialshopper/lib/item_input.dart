@@ -8,17 +8,15 @@
  * and populates the information the user provided to the database.
  */
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'menu.dart' as globals;
 
-List<String> userNames = new List();
+//List<String> userNames = new List();
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
-
-
+var test;
 
 //Create a state for checkbox
 class UserCheckBox extends StatefulWidget {
@@ -45,7 +43,7 @@ class _UserCheckBox extends State<UserCheckBox> {
 
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: userNames.length,
+      itemCount: globals.userNames.length,
       itemBuilder: (BuildContext context, int index) {
         return new Card(
             child: new Container(
@@ -55,7 +53,7 @@ class _UserCheckBox extends State<UserCheckBox> {
                     new CheckboxListTile(
                       value: inputs[index],
                       title: new Text(
-                        '${userNames.elementAt(index)}',
+                        '${globals.userNames.elementAt(index)}',
                         textAlign: TextAlign.center,
                       ),
                       controlAffinity: ListTileControlAffinity.platform,
@@ -87,114 +85,112 @@ void addItemsToList(String name, String item, int price, int quantity,
 // Allows user to manually enter
 // Item name, Price, Quantity, and select shoppers
 Widget getNameAndPrice(BuildContext context) {
-  final FocusNode nodeTwo = FocusNode();
-  final FocusNode nodeThree = FocusNode();
-  //final FocusNode nodeFour = FocusNode();
-  var newItem = "item";
+  // final FocusNode nodeTwo = FocusNode();
+  // final FocusNode nodeThree = FocusNode();
+  // final FocusNode nodeFour = FocusNode();
+  var user = 'item';
   var price = 0;
   var quan = 0;
   var p = 'Omar';
 
-    return Scaffold(
-      body: new Container(
-          decoration: BoxDecoration(),
-          child: Column(
-            children: <Widget>[
-              Flexible(
-                // Textfield for Item name
-                child: TextField(
-                  textCapitalization: TextCapitalization.words,
-                  autofocus: true,
-                  maxLength: 30,
-                  maxLengthEnforced: true,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (userItem) {
-                    print(userItem);
-                    newItem = userItem;
-                  },
-                  onSubmitted: (v) {
-                    FocusScope.of(context).requestFocus(nodeTwo);
-                  },
-                  decoration: InputDecoration(
-                      hintText: 'Enter Item Name',
-                      prefixIcon: Icon(Icons.add_shopping_cart),
-                      contentPadding: const EdgeInsets.all(16.0)),
-                ),
-              ),
-              Flexible(
-                // Textfield for price
-                child: TextField(
-                  autofocus: false,
-                  focusNode: nodeTwo,
-                  maxLength: 10,
-                  maxLengthEnforced: true,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (newPrice) {
-                    price = int.parse(newPrice);
-                  },
-                  onSubmitted: (v) {
-                    FocusScope.of(context).requestFocus(nodeThree);
-                  },
-                  decoration: InputDecoration(
-                      hintText: 'Enter Price Of Item',
-                      prefixIcon: Icon(Icons.monetization_on),
-                      contentPadding: const EdgeInsets.all(16.0)),
-                ),
-              ),
-              Flexible(
-                //Text field for quanity
-                child: TextField(
-                  autofocus: false,
-                  focusNode: nodeThree,
-                  maxLength: 10,
-                  maxLengthEnforced: true,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (Amount) {
-                    quan = int.parse(Amount);
-                  },
-                  onSubmitted: (v) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  decoration: InputDecoration(
-                      hintText: 'Enter Quantity',
-                      prefixIcon: Icon(Icons.add_box),
-                      contentPadding: const EdgeInsets.all(16.0)),
-                ),
-              ),
-              //Checkbox of user names
-              Expanded(
-                flex: 3,
-                child: Container(
-                  child: UserCheckBox(),
-                  height: 500,
-                ),
-              ),
-              FloatingActionButton.extended(
-                tooltip: "Submit",
-                icon: Icon(Icons.save),
-                label: Text("Save"),
-                onPressed: () {
-                  List<String> shoppingUsers = new List();
-                  for (int i = 0; i < userNames.length; i++) {
-                    if (inputs.elementAt(i) == true) {
-                      shoppingUsers.add(userNames.elementAt(i));
-                      print(userNames.elementAt(i));
-                    }
-                  }
-                  addItemsToList(
-                      globals.documentId, newItem, price, quan, shoppingUsers);
-                  Navigator.of(context).pop();
+  return Scaffold(
+    body:  Container(
+        decoration: BoxDecoration(),
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              // Textfield for Item name
+              child: TextField(
+                textCapitalization: TextCapitalization.words,
+                autofocus: true,
+                maxLength: 30,
+                maxLengthEnforced: true,
+                textInputAction: TextInputAction.done,
+                onChanged: (String userItem) {
+
+                  test = userItem;
+
                 },
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                elevation: 0.0,
-              )
-            ],
-          )),
-    );
+                decoration: InputDecoration(
+                    hintText: 'Enter Item Name',
+                    prefixIcon: Icon(Icons.add_shopping_cart),
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+            Flexible(
+              // Textfield for price
+              child: TextField(
+                autofocus: false,
+                //focusNode: nodeTwo,
+                maxLength: 10,
+                maxLengthEnforced: true,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                onChanged: (newPrice) {
+                  price = int.parse(newPrice);
+                },
+                onSubmitted: (vt) {
+                  //FocusScope.of(context).requestFocus(nodeThree);
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Price Of Item',
+                    prefixIcon: Icon(Icons.monetization_on),
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+            Flexible(
+              //Text field for quanity
+              child: TextField(
+                autofocus: false,
+                //focusNode: nodeThree,
+                maxLength: 10,
+                maxLengthEnforced: true,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                onChanged: (Amount) {
+                  quan = int.parse(Amount);
+                },
+                onSubmitted: (v) {
+                  //FocusScope.of(context).requestFocus(FocusNode());
+                },
+                decoration: InputDecoration(
+                    hintText: 'Enter Quantity',
+                    prefixIcon: Icon(Icons.add_box),
+                    contentPadding: const EdgeInsets.all(16.0)),
+              ),
+            ),
+            //Checkbox of user names
+            Expanded(
+              flex: 3,
+              child: Container(
+                child: UserCheckBox(),
+                height: 500,
+              ),
+            ),
+            FloatingActionButton.extended(
+              tooltip: "Submit",
+              icon: Icon(Icons.save),
+              label: Text("Save"),
+              onPressed: () {
+                List<String> shoppingUsers = new List();
+                for (int i = 0; i < globals.userNames.length; i++) {
+                  if (inputs.elementAt(i) == true) {
+                    shoppingUsers.add(globals.userNames.elementAt(i));
+                    print(globals.userNames.elementAt(i));
+                  }
+                }
+                addItemsToList(
+                    globals.documentName, test, price, quan, shoppingUsers);
+                Navigator.of(context).pop();
+              },
+              backgroundColor: Colors.green,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              elevation: 0.0,
+            )
+          ],
+        )),
+  );
 }
 
 // Main class of page
