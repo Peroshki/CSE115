@@ -11,16 +11,15 @@ class _Settings extends State<Settings> {
   bool _dmSelect = false;
 
   //Creates an alert to the user saying that these buttons aren't implemented.
-  Future<void> createAlert(BuildContext context){
+  Future<void> createAlert(BuildContext context) {
     return showDialog<void>(
         context: context,
-        builder: (context){
+        builder: (context) {
           return AlertDialog(
             title: const Text('Not Implemented'),
             content: const Text('Coming Soon!'),
           );
-        }
-    );
+        });
   }
 
   @override

@@ -8,6 +8,7 @@ import 'menu.dart';
 import 'store_select.dart';
 import 'signup_page.dart';
 import 'item_input.dart';
+import 'friends_list.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
     SignupPage.tag: (context) => SignupPage(),
     ListSetup.tag: (context) => ListSetup(),
     UserItemInput.tag: (context) => UserItemInput(),
+    Friends.tag: (context) => Friends(),
   };
 
   @override

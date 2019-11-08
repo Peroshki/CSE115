@@ -1,11 +1,13 @@
 //Creates the sign up page, including its sign up form.
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:socialshopper/menu.dart';
 import 'auth.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore _db = Firestore.instance;
 
 class SignupPage extends StatefulWidget {
   static String tag = 'signup-page';
@@ -16,8 +18,13 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   //These notify listeners of change in text input.
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  //Two password controllers in order to assure that user is correctly entering desired password.
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordControllerRedux =
+      TextEditingController();
+
   bool _success;
   String _userEmail;
   @override
@@ -31,9 +38,18 @@ class _SignupPageState extends State<SignupPage> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(50.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
@@ -48,6 +64,18 @@ class _SignupPageState extends State<SignupPage> {
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _passwordControllerRedux,
+                decoration:
+                    const InputDecoration(labelText: 'Confirm Password'),
                 obscureText: true,
                 validator: (String value) {
                   if (value.isEmpty) {
@@ -104,6 +132,8 @@ class _SignupPageState extends State<SignupPage> {
     // Clean up the controller when the Widget is disposed
     _emailController.dispose();
     _passwordController.dispose();
+    _passwordControllerRedux.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -114,6 +144,9 @@ class _SignupPageState extends State<SignupPage> {
   void _register() async {
     String reason;
     try {
+      if (_passwordControllerRedux.text != _passwordController.text) {
+        throw PlatformException(code: 'Passwords do not match.');
+      }
       final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
@@ -124,7 +157,8 @@ class _SignupPageState extends State<SignupPage> {
           _success = true;
           _userEmail = user.email;
         });
-        authService.updateUserData(user);
+        signUpUpdateUserData(user); // Yucky workaround
+
         Navigator.of(context).pushNamed(MenuPage.tag);
       } else {
         _success = false;
@@ -144,11 +178,28 @@ class _SignupPageState extends State<SignupPage> {
           reason = 'Password must be at least 6 characters in length.';
           createAlert(context, reason);
           break;
+        case 'Passwords do not match.':
+          reason = 'Password must match!';
+          createAlert(context, reason);
+          break;
         default:
           reason = 'Error';
           createAlert(context, reason);
           break;
       }
     }
+  }
+
+  void signUpUpdateUserData(FirebaseUser user) async {
+    DocumentReference ref = _db.collection('users').document(user.uid);
+    //Map data to database fields
+    return ref.setData({
+      'uid': user.uid,
+      'email': user.email,
+      'photoURL': user.photoUrl,
+      'displayName': _nameController
+          .text, //This is the yucky workaround. Name is forced to be updated using text from controller.
+      'lastSeen': DateTime.now()
+    }, merge: true); //Merges data so old data isn't overwritten
   }
 }
