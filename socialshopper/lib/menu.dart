@@ -231,7 +231,7 @@ class _MenuPageState extends State<MenuPage> {
       );
     }));
   }
-
+ 
   Widget _buildList() {
     //This is the whole list
     putNamesOfListInAList();
@@ -272,11 +272,28 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+  //Builds a widget that returns text box with the Lists Name instead of the ID.
+  Widget _getName(BuildContext context, String listName) {
+  return StreamBuilder(
+      //Get a snapshot of the data in the database for the particular list doc.
+      stream: Firestore.instance.collection('lists').document(listName).snapshots(),
+      //Builds the Text widget
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Text("Loading");
+        }
+        //Gets the data inside of the document (metadata and lists).
+        var userDocument = snapshot.data;
+        return Text(userDocument['metadata']['name']);
+      }
+    );
+  }
+
   Widget _buildTodoItem(String listName, int index) {
     //Build one list
     return Card(
         child: ListTile(
-      title: Text(listName),
+      title: _getName(context, listName),
       onTap: () {
         // opens the list
         setState(() {
