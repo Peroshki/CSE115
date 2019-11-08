@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'menu.dart';
+import 'menu.dart' as globals;
 
 //Creates an instance in the database
 final databaseRef = Firestore.instance;
@@ -46,6 +47,7 @@ void createRecord(
       'users': people
     }
   });
+  globals.numList.add(id);
 }
 
 //Sets up the page and the path to get to it.

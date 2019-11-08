@@ -16,6 +16,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'item_input.dart';
+import 'menu.dart';
 
 // Represents an item in the shopping list
 class Item {
@@ -375,6 +377,34 @@ class _ListViewsState extends State<ListViews> {
           );
         },
       ),
+
+      appBar: AppBar(
+        title: StreamBuilder(
+          stream: docRef.snapshots(),
+          builder: (context, snapshot) {
+            // If the list has not yet loaded data, provide a placeholder name
+            if (!snapshot.hasData)
+              return Text('Name loading...');
+
+            // Create a shopping list object from the list data
+            ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
+
+            // Create a text widget with the list name
+            return Text(s.metadata.name);
+          }
+        ),
+        actions: <Widget>[
+          // A button which routes to the new item page
+          IconButton(
+            icon: Icon(Icons.add_circle),
+            onPressed: () {
+              callUser.getUsersOfList();
+              Navigator.of(context).pushNamed(UserItemInput.tag);
+            },
+          )
+        ],
+      ),
+
 
       bottomNavigationBar: BottomAppBar(
         child: FlatButton(
