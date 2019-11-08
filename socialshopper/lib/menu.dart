@@ -66,6 +66,13 @@ class MenuPage extends StatefulWidget {
   _MenuPageState createState() => _MenuPageState();
 }
 
+class CheckboxWidget extends StatefulWidget {
+  // State for checkboxes
+  @override
+  CheckboxWidgetState createState() => new CheckboxWidgetState();
+}
+
+
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
 
@@ -81,6 +88,7 @@ class _MenuPageState extends State<MenuPage> {
       _selectedIndex = index;
     });
   }
+
 
   // updates the app with list in the database
   void putNamesOfListInAList() async {
