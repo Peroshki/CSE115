@@ -33,40 +33,6 @@ var documentId = '';
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = "";
 
-// //Create a state for checkbox
-// class UserCheckBox extends StatefulWidget {
-//   //UserCheckBox({Key key, this.title});
-//   //final String title;
-//   @override
-//   _UserCheckBox createState() => _UserCheckBox();
-  
-// }
-
-// // Gets users from MetaData to display 
-// // When users want to add people to an item
-// void getUsersOfList() async {
-//   userNames.clear();
-//   List<String> test = new List();
-//   final DocumentReference ref =
-//       Firestore.instance.collection('lists').document(documentName);
-//   DocumentSnapshot doc = await ref.get();
-//   Map<dynamic, dynamic> tags = doc.data['metadata'];
-//   tags.remove('name');
-//   tags.remove('uid');
-//   tags.remove('timeCreated');
-//   tags.remove('store');
-//   tags.remove('budget');
-//   tags.forEach((Key, value) => test.add(value.toString()));
-//   String n = test[0];
-//   List<String> k = n.split(new RegExp(r'(\W+)'));
-
-//   for(int i=0; i<k.length; i++){
-//     if(i>0 && i<k.length -1 && k.elementAt(i) != 'name'){
-//        userNames.add(k.elementAt(i));
-//     }
-//   }
-//   print(userNames.length);
-// }
 
 void getUsersOfList() async {
   userNames.clear();
