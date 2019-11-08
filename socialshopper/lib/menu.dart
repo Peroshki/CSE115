@@ -44,7 +44,9 @@ class callUser {
     tags.remove('store');
     tags.remove('budget');
     tags.forEach((Key, value) => test.add(value.toString()));
+    print(test);
     String values = test.elementAt(0);
+    print(values);
     List<String> k = values.split(new RegExp(r'(\W+)'));
   
     for (int i = 0; i < k.length; i++) {
@@ -200,23 +202,23 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 //Button to create a new list
-  void _tapAddMoreItems() {
-    Navigator.of(context)
-        .push<dynamic>(MaterialPageRoute<dynamic>(builder: (context) {
-      return Scaffold(
-          appBar: AppBar(title: const Text('Add a new task')),
-          body: TextField(
-            autofocus: true,
-            onSubmitted: (val) {
-              createRecord(val);
-              Navigator.pop(context);
-            },
-            decoration: InputDecoration(
-                hintText: 'Enter List Name',
-                contentPadding: const EdgeInsets.all(16.0)),
-          ));
-    }));
-  }
+  // void _tapAddMoreItems() {
+  //   Navigator.of(context)
+  //       .push<dynamic>(MaterialPageRoute<dynamic>(builder: (context) {
+  //     return Scaffold(
+  //         appBar: AppBar(title: const Text('Add a new task')),
+  //         body: TextField(
+  //           autofocus: true,
+  //           onSubmitted: (val) {
+  //             createRecord(val);
+  //             Navigator.pop(context);
+  //           },
+  //           decoration: InputDecoration(
+  //               hintText: 'Enter List Name',
+  //               contentPadding: const EdgeInsets.all(16.0)),
+  //         ));
+  //   }));
+  // }
 
 //Scaffold is the main container for main page
   @override
@@ -270,7 +272,7 @@ class _MenuPageState extends State<MenuPage> {
             onPressed: () {
               Navigator.of(context).pushNamed(StoreSelect.tag);
             },
-            tooltip: 'Name List',
+            tooltip: 'Create List',
             child: Icon(Icons.add),
           ),
         );
