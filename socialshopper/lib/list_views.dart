@@ -3,8 +3,8 @@
 *
 *   Contains the view for an individual shopping list. Items are displayed in
 *   a list with each item containing a description of its name and price.
-*   It also allows for the user to delete items from their shopping list and 
-*   update the database. 
+*   It also allows for the user to delete items from their shopping list and
+*   update the database.
 *
 *   constructor: ListViews(listName: String)
 *   arguments:
@@ -374,32 +374,6 @@ class _ListViewsState extends State<ListViews> {
             }
           );
         },
-      ),
-
-      appBar: AppBar(
-        title: StreamBuilder(
-          stream: docRef.snapshots(),
-          builder: (context, snapshot) {
-            // If the list has not yet loaded data, provide a placeholder name
-            if (!snapshot.hasData)
-              return Text('Name loading...');
-
-            // Create a shopping list object from the list data
-            ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
-
-            // Create a text widget with the list name
-            return Text(s.metadata.name);
-          }
-        ),
-        actions: <Widget>[
-          // A button which routes to the new item page
-          IconButton(
-            icon: Icon(Icons.add_circle),
-            onPressed: () {
-              // TODO: route to new item page
-            },
-          )
-        ],
       ),
 
       bottomNavigationBar: BottomAppBar(

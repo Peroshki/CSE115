@@ -113,8 +113,8 @@ class _MenuPageState extends State<MenuPage> {
       return Scaffold(
         appBar: AppBar(
             title: const Text('Item, Price, Amount, & People Buying Item')),
-        body: new Container(
-            child: Column(
+        body: Container(
+          child: Column(
           children: <Widget>[
             Flexible(
               // Textfield for Item name
@@ -124,12 +124,12 @@ class _MenuPageState extends State<MenuPage> {
                 maxLengthEnforced: true,
                 onSubmitted: (userItem) {
                   newItem = userItem;
-                  FocusScope.of(context)
-                      .requestFocus(nodeTwo); // This jumps to the other textbox
+                  FocusScope.of(context).requestFocus(nodeTwo); // This jumps to the other textbox
                 },
                 decoration: InputDecoration(
-                    hintText: 'Enter Item Name',
-                    contentPadding: const EdgeInsets.all(16.0)),
+                  hintText: 'Enter Item Name',
+                  contentPadding: const EdgeInsets.all(16.0)
+                ),
               ),
             ),
             Flexible(
@@ -144,8 +144,9 @@ class _MenuPageState extends State<MenuPage> {
                   FocusScope.of(context).requestFocus(nodeThree);
                 },
                 decoration: InputDecoration(
-                    hintText: 'Enter Price Of Item',
-                    contentPadding: const EdgeInsets.all(16.0)),
+                  hintText: 'Enter Price Of Item',
+                  contentPadding: const EdgeInsets.all(16.0)
+                ),
               ),
             ),
             Flexible(
@@ -160,8 +161,9 @@ class _MenuPageState extends State<MenuPage> {
                   FocusScope.of(context).requestFocus(nodeFour);
                 },
                 decoration: InputDecoration(
-                    hintText: 'Enter Quantity',
-                    contentPadding: const EdgeInsets.all(16.0)),
+                  hintText: 'Enter Quantity',
+                  contentPadding: const EdgeInsets.all(16.0)
+                ),
               ),
             ),
             Flexible(
@@ -173,13 +175,13 @@ class _MenuPageState extends State<MenuPage> {
                 onSubmitted: (allUsers) {
                   var list = allUsers.split(' ');
                   print(list);
-                  addItemsToList(_numList[index], newItem, price, quan,
-                      list); //Adds value to the list
+                  addItemsToList(_numList[index], newItem, price, quan, list); //Adds value to the list
                   Navigator.of(context).pop();
                 },
                 decoration: InputDecoration(
-                    hintText: 'Names: Ex. Maria Rex Alex',
-                    contentPadding: const EdgeInsets.all(16.0)),
+                  hintText: 'Names: Ex. Maria Rex Alex',
+                  contentPadding: const EdgeInsets.all(16.0)
+                ),
               ),
             ),
           ],
@@ -211,13 +213,13 @@ class _MenuPageState extends State<MenuPage> {
     setState(() => _numList.elementAt(index));
   }
 
-  void _openList(int index) {
+  void _openList(int index, String name) {
     // Open up a single list
     documentName = _numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(_numList[index]),
+          title: Text(name),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add_circle),
@@ -251,7 +253,7 @@ class _MenuPageState extends State<MenuPage> {
               child: ListTile(
                 title: Text(lists[index].data['metadata']['name']),
                 onTap: () {
-                  _openList(index);
+                  _openList(index, lists[index].data['metadata']['name']);
                 },
                 onLongPress: () {
                   alertBoxForList(index);
@@ -292,26 +294,6 @@ class _MenuPageState extends State<MenuPage> {
         );
       },
     );
-  }
-
-  Widget _buildTodoItem(String listName, int index) {
-    //Build one list
-    return Card(
-        child: ListTile(
-      title: Text(listName),
-      onTap: () {
-        // opens the list
-        setState(() {
-          _openList(index);
-        });
-      },
-      onLongPress: () {
-        // this deletes item from list view and from database
-        setState(() {
-          alertBoxForList(index);
-        });
-      },
-    ));
   }
 
   void _tapAddMoreItems() {
