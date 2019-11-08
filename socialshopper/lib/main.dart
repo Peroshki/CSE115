@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:socialshopper/store_select.dart';
+import 'add_friend.dart';
 import 'list_setup.dart';
 import 'login_page.dart';
 import 'menu.dart';
 import 'store_select.dart';
 import 'signup_page.dart';
 import 'friends_list.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
     SignupPage.tag: (context) => SignupPage(),
     ListSetup.tag: (context) => ListSetup(),
     Friends.tag: (context) => Friends(),
+    AddFriend.tag: (context) => AddFriend()
   };
 
   @override
