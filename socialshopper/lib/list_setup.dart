@@ -24,6 +24,17 @@ final databaseRef = Firestore.instance;
 void createRecord(
     String listName, int budget, List<String> people, String id) async {
   await databaseRef.collection('lists').document(id.toString()).setData({
+    'items' : [
+      {
+        'name': 'Banana',
+        'quantity': 2,
+        'price': 4,
+        'users': [
+          'Alan',
+          'Omar'
+        ]
+      }
+    ],
     'metadata': {
       'ID': id,
       //Gets the timestamp
