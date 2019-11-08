@@ -36,9 +36,9 @@ void createRecord(
       }
     ],
     'metadata': {
-      'ID': id,
+      'uid': id,
       //Gets the timestamp
-      'time': DateTime
+      'timeCreated': DateTime
           .now(), // Change this. We don't need the precision of milliseconds since epoch
       'store': 'Safeway', // I don't know how to pass in the store select input
       'name': listName,
