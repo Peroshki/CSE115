@@ -13,6 +13,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:socialshopper/mock_store.dart';
 import 'app_settings.dart';
 import 'list_views.dart';
 import 'profile.dart';
@@ -257,7 +258,9 @@ class _MenuPageState extends State<MenuPage> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.search),
-                onPressed: null,
+                onPressed: (){
+                   Navigator.of(context).pushNamed(MockStore.tag);
+                },
               ),
               IconButton(
                   icon: Icon(Icons.add),
