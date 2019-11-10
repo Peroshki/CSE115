@@ -16,6 +16,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:socialshopper/mock_store.dart';
 import 'item_input.dart';
 import 'menu.dart';
 
@@ -399,7 +400,7 @@ class _ListViewsState extends State<ListViews> {
             icon: Icon(Icons.add_circle),
             onPressed: () {
               callUser.getUsersOfList();
-              Navigator.of(context).pushNamed(UserItemInput.tag);
+              Navigator.of(context).pushNamed(MockStore.tag);
             },
           )
         ],

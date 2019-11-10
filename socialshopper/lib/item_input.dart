@@ -16,7 +16,7 @@ import 'menu.dart' as globals;
 //List<String> userNames = new List();
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
-var test;
+var test = 'item';
 
 //Create a state for checkbox
 class UserCheckBox extends StatefulWidget {
@@ -92,7 +92,6 @@ Widget getNameAndPrice(BuildContext context) {
   var price = 0;
   var quan = 0;
   var p = 'Omar';
-
   return Scaffold(
     body:  Container(
         decoration: BoxDecoration(),
@@ -176,7 +175,6 @@ Widget getNameAndPrice(BuildContext context) {
                 for (int i = 0; i < globals.userNames.length; i++) {
                   if (inputs.elementAt(i) == true) {
                     shoppingUsers.add(globals.userNames.elementAt(i));
-                    print(globals.userNames.elementAt(i));
                   }
                 }
                 addItemsToList(
@@ -204,10 +202,10 @@ class _UserItemInput extends State<UserItemInput> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Item Description'),
-      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text('Item Description'),
+      // ),
       body: getNameAndPrice(context),
     );
   }
