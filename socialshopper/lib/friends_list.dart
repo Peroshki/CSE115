@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:socialshopper/store_select.dart';
 import 'main.dart';
 import 'profile.dart';
+//import 'package:socialshopper/add_friend.dart';
+//import 'add_friends.dart';
 
 List<String> friends = [
   'Axel',
@@ -37,7 +39,7 @@ class _friendState extends State<Friends> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: (){
-              //Navigator.of(context).pushNamed(LoginPage.tag);
+              //Navigator.of(context).pushNamed(add_friends.tag);
             },
           )
         ],
