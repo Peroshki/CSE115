@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:socialshopper/add_friend.dart';
 import 'add_friend.dart';
 
 class Friends extends StatefulWidget {
