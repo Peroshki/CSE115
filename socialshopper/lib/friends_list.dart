@@ -11,6 +11,7 @@ class Friend {
       uid = data['uid'];
 }
 
+
 class Friends extends StatefulWidget {
   static String tag = "friends_list";
   _friendState createState() => _friendState();
