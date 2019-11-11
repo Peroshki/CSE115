@@ -138,9 +138,9 @@ class _AddFriendState extends State<AddFriend> {
                     /// Check the username against the filter, and only display
                     /// user names which match a sub-sequence of the filter
                     return filter == null || filter == "" ?
-                    Card(child: generateUserWidget(documentList[index].data, context)) :
+                    generateUserWidget(documentList[index].data, context) :
                     documentList[index].data['email'].toLowerCase().contains(filter) ?
-                    Card(child: generateUserWidget(documentList[index].data, context)) :
+                    generateUserWidget(documentList[index].data, context) :
                     Container();
                   }
                 )
