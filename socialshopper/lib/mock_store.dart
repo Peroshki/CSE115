@@ -1,13 +1,9 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:socialshopper/creating_new_list.dart';
 import 'item_input.dart';
 import 'menu.dart' as globals;
-
-List<int> quantity_Produce = new List();
-List<int> quantity_Snacks = new List();
-List<int> quantity_Drinks = new List();
-List<int> quantity_Meat = new List();
 
 List<dynamic> produce_Item = [];
 List<dynamic> produce_Prices = [];
@@ -21,6 +17,8 @@ List<dynamic> snack_Prices = [];
 List<dynamic> meat_Item = [];
 List<dynamic> meat_Prices = [];
 
+
+//Populates the database with the items selected by the user
 void populateDataBase(String itemName, double price, int quantity) async {
   DocumentReference ref =
       Firestore.instance.collection('lists').document(globals.documentName);
@@ -74,9 +72,6 @@ class _Meat extends State<Meat> {
   @override
   void initState() {
     getMeatData();
-    for (int i = 0; i < 100; i++) {
-      quantity_Meat.add(0);
-    }
   }
 
   @override
@@ -143,9 +138,6 @@ class _Drinks extends State<Drinks> {
   @override
   void initState() {
     getDrinkData();
-    for (int i = 0; i < 100; i++) {
-      quantity_Drinks.add(0);
-    }
   }
 
   @override
@@ -211,9 +203,9 @@ class _Snacks extends State<Snacks> {
   @override
   void initState() {
     getSnackData();
-    for (int i = 0; i < 100; i++) {
-      quantity_Snacks.add(0);
-    }
+    // for (int i = 0; i < 100; i++) {
+    //   quantity_Snacks.add(0);
+    // }
   }
 
   @override
@@ -280,9 +272,7 @@ class _Produce extends State<Produce> {
   @override
   void initState() {
     getProduceData();
-    for (int i = 0; i < 100; i++) {
-      quantity_Produce.add(0);
-    }
+
   }
 
   @override
