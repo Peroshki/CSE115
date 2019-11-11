@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'auth.dart';
 import 'menu.dart';
@@ -9,6 +10,7 @@ import 'signup_page.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore _db = Firestore.instance;
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -185,7 +187,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           _success = true;
           _userEmail = user.email;
         });
-        authService.updateUserData(user);
+        logInUpdateUserData(user);
         Navigator.of(context).pushNamed(MenuPage.tag);
       } else {
         _success = false;
@@ -210,5 +212,18 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           break;
       }
     }
+  }
+  //This is necessary as before auth's update function was used. This was fine for Google accounts, 
+  //but if signing in with email and password, the name was overwritten with null
+  //as FirebaseAuth has no field for name when creating an account with email and password. So here, we update everything except for name.
+  void logInUpdateUserData(FirebaseUser user) async {
+    DocumentReference ref = _db.collection('users').document(user.uid);
+    //Map data to database fields
+    return ref.setData({
+      'uid': user.uid,
+      'email': user.email,
+      'photoURL': user.photoUrl,
+      'lastSeen': DateTime.now()
+    }, merge: true); //Merges data so old data isn't overwritten
   }
 }

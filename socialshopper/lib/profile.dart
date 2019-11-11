@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'auth.dart';
@@ -18,9 +19,6 @@ class _ProfileState extends State<Profile> {
 //class _Profile extends StatelessWidget{
   bool isSwitched = false;
   //Get and initialize currently logged in user.
-  initUser() async {
-    user = await _auth.currentUser();
-  }
 
   //If user data has an image then use that, else use some icon.
   String imageInit() {
@@ -29,7 +27,14 @@ class _ProfileState extends State<Profile> {
     } else
       return user.photoUrl;
   }
-
+  //Get the user that is currently logged in.
+  initUser() async {
+    user = await _auth.currentUser();
+    return user;
+  }
+  //Now uses streambulder to get data from firestore based on the user's uid.
+  //First streambuilder gets display name from database
+  //Second streambuilder gets email from database
   @override
   Widget build(BuildContext context) {
     initUser();
@@ -49,11 +54,21 @@ class _ProfileState extends State<Profile> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Hello, ${user?.displayName}!',
-                  style: DefaultTextStyle.of(context)
-                      .style
-                      .apply(fontSizeFactor: 2.0),
+                child: StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('users')
+                      .document(user.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return new Text("Loading");
+                    }
+                    var userDocument = snapshot.data;
+                    return Text(
+                      'Hello, ${userDocument["displayName"]}!',
+                      style: TextStyle(fontSize: 30),
+                    );
+                  },
                 ),
               ),
               Padding(
@@ -67,7 +82,29 @@ class _ProfileState extends State<Profile> {
                             fit: BoxFit.fill,
                             image: NetworkImage(imageInit())))),
               ),
-
+              Text(
+                'You currently have: 0 Lists',
+                style: TextStyle(fontSize: 20.0),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('users')
+                      .document(user.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return new Text("Loading");
+                    }
+                    var userDocument = snapshot.data;
+                    return Text(
+                      '${userDocument["email"]}',
+                      style: TextStyle(fontSize: 20),
+                    );
+                  },
+                ),
+              ),
               FlatButton(
                 color: Colors.blue,
                 padding: const EdgeInsets.all(6.0),
@@ -96,10 +133,6 @@ class _ProfileState extends State<Profile> {
               ),
 
               //counter for how many lists have
-              Text(
-                'You currently have: 0 Lists',
-                style: TextStyle(fontSize: 20.0),
-              ),
             ],
           ),
         ));
