@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:socialshopper/store_select.dart';
-import 'main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'auth.dart';
-import 'login_page.dart';
 import 'friends_list.dart';
+import 'login_page.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+FirebaseUser user;
 
 class Profile extends StatefulWidget {
   static String tag = 'Profile';
@@ -14,9 +16,20 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
 //class _Profile extends StatelessWidget{
   bool isSwitched = false;
+  initUser() async {
+    user = await _auth.currentUser();
+  }
+
+  String imageInit() {
+    if (user.photoUrl == null) {
+      return 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
+    } else
+      return user.photoUrl;
+  }
 
   @override
   Widget build(BuildContext context) {
+    initUser();
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -31,23 +44,33 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: NetworkImage(
-                              'https://i.imgur.com/BoN9kdC.png')))),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Hello, ${user?.displayName}!',
+                  style: DefaultTextStyle.of(context)
+                      .style
+                      .apply(fontSizeFactor: 2.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                    width: 200.0,
+                    height: 200.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(imageInit())))),
+              ),
 
               FlatButton(
                 color: Colors.blue,
-                textColor: Colors.black,
                 padding: const EdgeInsets.all(6.0),
                 child: Text(
                   'Logout',
-                  style: TextStyle(fontSize: 20.0),
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
                 onPressed: () {
                   authService.signOut();
@@ -58,7 +81,7 @@ class _ProfileState extends State<Profile> {
               //button to view friends
               FlatButton(
                 color: Colors.blue,
-                textColor: Colors.black,
+                textColor: Colors.white,
                 padding: const EdgeInsets.all(6.0),
                 child: Text(
                   'View Friends',
