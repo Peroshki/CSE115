@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socialshopper/store_select.dart';
-import 'main.dart';
-import 'profile.dart';
+import 'add_friend.dart';
 
 class Friends extends StatefulWidget {
   static String tag = "friends_list";
@@ -16,6 +14,14 @@ class _friendState extends State<Friends> {
         centerTitle: true,
         backgroundColor: Colors.blue,
         title: Text("Friends"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed(AddFriend.tag);
+            },
+          )
+        ],
       ),
     );
   }
