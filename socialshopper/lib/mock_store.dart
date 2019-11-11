@@ -37,7 +37,7 @@ class UserCheckBox extends StatefulWidget {
   _UserCheckBox createState() => _UserCheckBox();
 }
 
-// Checkbox for user items
+// The checkbox allows the user to selecte who want what items
 class _UserCheckBox extends State<UserCheckBox> {
   @override
   void initState() {
