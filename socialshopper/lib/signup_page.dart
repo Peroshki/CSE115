@@ -190,7 +190,7 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  void signUpUpdateUserData(FirebaseUser user) async {
+    signUpUpdateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
     return ref.setData({
