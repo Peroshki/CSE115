@@ -36,7 +36,9 @@ class _friendState extends State<Friends> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: (){},
+            onPressed: (){
+              //Navigator.of(context).pushNamed(LoginPage.tag);
+            },
           )
         ],
 
@@ -69,6 +71,7 @@ class _friendState extends State<Friends> {
                               FlatButton(
                                 child: Text("Delete"),
                                 onPressed: (){
+                                  friends.removeAt(index);
                                   Navigator.of(context).pop();
                                 },
                               ),
