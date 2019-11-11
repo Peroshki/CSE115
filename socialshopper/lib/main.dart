@@ -10,7 +10,6 @@ import 'store_select.dart';
 import 'signup_page.dart';
 import 'item_input.dart';
 import 'friends_list.dart';
-import 'mock_store.dart';
 
 
 void main() => runApp(MyApp());
@@ -24,9 +23,7 @@ class MyApp extends StatelessWidget {
     ListSetup.tag: (context) => ListSetup(),
     UserItemInput.tag: (context) => UserItemInput(),
     Friends.tag: (context) => Friends(),
-    MockStore.tag: (context) => MockStore()
     AddFriend.tag: (context) => AddFriend()
-
   };
 
   @override
