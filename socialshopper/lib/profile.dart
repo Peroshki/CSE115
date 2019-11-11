@@ -4,6 +4,7 @@ import 'auth.dart';
 import 'friends_list.dart';
 import 'login_page.dart';
 
+//Create an instance
 final FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseUser user;
 
@@ -16,10 +17,12 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
 //class _Profile extends StatelessWidget{
   bool isSwitched = false;
+  //Get and initialize currently logged in user.
   initUser() async {
     user = await _auth.currentUser();
   }
 
+  //If user data has an image then use that, else use some icon.
   String imageInit() {
     if (user.photoUrl == null) {
       return 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
@@ -35,7 +38,7 @@ class _ProfileState extends State<Profile> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.blue,
-          title: Text('Profile'),
+          title: const Text('Profile'),
           automaticallyImplyLeading: false,
           //code for back button
         ),
