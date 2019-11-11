@@ -182,7 +182,7 @@ class _Meat extends State<Meat> {
                       maxLength: 3,
                       maxLengthEnforced: true,
                       keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.go,
+                      textInputAction: TextInputAction.done,
                       onChanged: (val) {
                         quan = int.parse(val);
                         priceString = meat_Prices.elementAt(index).toString();
@@ -289,7 +289,7 @@ class _Drinks extends State<Drinks> {
                     maxLength: 3,
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.go,
+                    textInputAction: TextInputAction.done,
                     onChanged: (val) {
                       quan = int.parse(val);
                       priceString = drink_Prices.elementAt(index).toString();
@@ -395,7 +395,7 @@ class _Snacks extends State<Snacks> {
                     maxLength: 3,
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.go,
+                    textInputAction: TextInputAction.done,
                     onChanged: (val) {
                       quan = int.parse(val);
                       priceString = snack_Prices.elementAt(index).toString();
@@ -501,7 +501,7 @@ class _Produce extends State<Produce> {
                     maxLengthEnforced: true,
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
-                    onSubmitted: (val) {
+                    onChanged: (val) {
                       quan = int.parse(val);
                       priceString = produce_Prices.elementAt(index).toString();
                       price = double.tryParse(priceString);

@@ -68,7 +68,7 @@ class _UserCheckBox extends State<UserCheckBox> {
   }
 }
 
-void addItemsToList(String name, String item, int price, int quantity,
+void addItemsToList(String name, String item, double price, int quantity,
     List<String> users) async {
   DocumentReference ref = Firestore.instance.collection('lists').document(name);
   DocumentSnapshot doc = await ref.get();
@@ -89,7 +89,7 @@ Widget getNameAndPrice(BuildContext context) {
   // final FocusNode nodeThree = FocusNode();
   // final FocusNode nodeFour = FocusNode();
   var user = 'item';
-  var price = 0;
+  var price = 0.0;
   var quan = 0;
   var p = 'Omar';
 
@@ -127,7 +127,7 @@ Widget getNameAndPrice(BuildContext context) {
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 onChanged: (newPrice) {
-                  price = int.parse(newPrice);
+                  price = double.parse(newPrice);
                 },
                 onSubmitted: (vt) {
                   //FocusScope.of(context).requestFocus(nodeThree);
@@ -204,10 +204,6 @@ class _UserItemInput extends State<UserItemInput> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Item Description'),
-      ),
       body: getNameAndPrice(context),
     );
   }
