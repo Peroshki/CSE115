@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
     ListSetup.tag: (context) => ListSetup(),
     UserItemInput.tag: (context) => UserItemInput(),
     Friends.tag: (context) => Friends(),
-    AddFriend.tag: (context) => AddFriend()
+    MockStore.tag: (context) => MockStore(),
+    AddFriend.tag: (context) => AddFriend(),
   };
 
   @override
