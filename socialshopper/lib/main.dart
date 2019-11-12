@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
     ListSetup.tag: (context) => ListSetup(),
     UserItemInput.tag: (context) => UserItemInput(),
     Friends.tag: (context) => Friends(),
+    MockStore.tag: (context) => MockStore(),
     AddFriend.tag: (context) => AddFriend()
   };
 

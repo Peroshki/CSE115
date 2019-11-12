@@ -223,7 +223,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
-      'lastSeen': DateTime.now()
+      'lastSeen': DateTime.now(),
     }, merge: true); //Merges data so old data isn't overwritten
   }
 }

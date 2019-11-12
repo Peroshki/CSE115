@@ -190,6 +190,8 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+    List<String> friends = [];
+    List<String> lists = [];
     signUpUpdateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
@@ -199,7 +201,9 @@ class _SignupPageState extends State<SignupPage> {
       'photoURL': user.photoUrl,
       'displayName': _nameController
           .text, //This is the yucky workaround. Name is forced to be updated using text from controller.
-      'lastSeen': DateTime.now()
+      'lastSeen': DateTime.now(),
+      'friends' : friends,
+      'lists' : lists
     }, merge: true); //Merges data so old data isn't overwritten
   }
 }
