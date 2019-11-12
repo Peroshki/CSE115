@@ -10,6 +10,7 @@
 // import 'dart:convert';
 // import 'dart:ffi';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -61,6 +62,7 @@ class callUser {
 //State of MenuPage
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
+
   @override
   _MenuPageState createState() => _MenuPageState();
 }
@@ -83,9 +85,18 @@ class _MenuPageState extends State<MenuPage> {
 
   // updates the app with list in the database
   void putNamesOfListInAList() async {
+    final DocumentSnapshot user =
+        await Firestore.instance.collection('users').document(ModalRoute.of(context).settings.arguments.toString()).get();
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
-    final List<DocumentSnapshot> docs = results.documents;
+
+    final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
+    print(user.documentID);
+    for (String list in user.data['lists']) {
+      docs.add(results.documents.where((doc) => doc.documentID == list).first);
+    }
+    print(docs.length);
+    print(numList.length);
 
     var i = 0;
     var val = "";
@@ -93,6 +104,7 @@ class _MenuPageState extends State<MenuPage> {
     if (numList.length < docs.length || numList.length > docs.length) {
       numList.clear();
       while (i < docs.length) {
+        print(docs.elementAt(i).documentID);
         val = docs.elementAt(i).documentID;
         //documentId = docs.elementAt(i).documentID;
         _addNewList(val);
@@ -146,6 +158,7 @@ class _MenuPageState extends State<MenuPage> {
           return const Text('error');
 
         List<DocumentSnapshot> lists = snapshot.data.documents;
+        lists = lists.where((doc) => numList.contains(doc.documentID)).toList();
 
         return ListView.builder(
           itemCount: lists.length,

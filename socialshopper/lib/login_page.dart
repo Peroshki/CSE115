@@ -86,6 +86,9 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   //These notify listeners of change in text input.
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final FocusNode focusPassword = FocusNode();
+
   bool _success;
   String _userEmail;
   @override
@@ -109,6 +112,10 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       controller: _emailController,
       decoration: const InputDecoration(labelText: 'Email'),
       keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).requestFocus(focusPassword);
+      },
       validator: (String value) {
         if (value.isEmpty) {
           return 'Please enter email';
@@ -118,6 +125,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     );
     final password = TextFormField(
       controller: _passwordController,
+      focusNode: focusPassword,
       decoration: const InputDecoration(labelText: 'Password'),
       obscureText: true,
       validator: (String value) {
@@ -188,7 +196,9 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           _userEmail = user.email;
         });
         logInUpdateUserData(user);
-        Navigator.of(context).pushNamed(MenuPage.tag);
+        Navigator.of(context).pushNamed(
+            MenuPage.tag,
+            arguments: user.uid);
       } else {
         _success = false;
       }
