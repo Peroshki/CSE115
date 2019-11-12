@@ -10,6 +10,7 @@
 // import 'dart:convert';
 // import 'dart:ffi';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -61,6 +62,7 @@ class callUser {
 //State of MenuPage
 class MenuPage extends StatefulWidget {
   static String tag = 'menu-page';
+
   @override
   _MenuPageState createState() => _MenuPageState();
 }
@@ -83,9 +85,17 @@ class _MenuPageState extends State<MenuPage> {
 
   // updates the app with list in the database
   void putNamesOfListInAList() async {
+    // Grab the users document according to their uid
+    final DocumentSnapshot user =
+        await Firestore.instance.collection('users').document(ModalRoute.of(context).settings.arguments.toString()).get();
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
-    final List<DocumentSnapshot> docs = results.documents;
+
+    // Only add the lists to numLists which belong to the user
+    final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
+    for (String list in user.data['lists']) {
+      docs.add(results.documents.where((doc) => doc.documentID == list).first);
+    }
 
     var i = 0;
     var val = "";
@@ -145,7 +155,9 @@ class _MenuPageState extends State<MenuPage> {
         if (!snapshot.hasData)
           return const Text('error');
 
+        // Only display the lists that belong to the user
         List<DocumentSnapshot> lists = snapshot.data.documents;
+        lists = lists.where((doc) => numList.contains(doc.documentID)).toList();
 
         return ListView.builder(
           itemCount: lists.length,
