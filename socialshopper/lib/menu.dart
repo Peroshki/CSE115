@@ -257,9 +257,7 @@ class _MenuPageState extends State<MenuPage> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.search),
-                onPressed: (){
-
-                },
+                onPressed: null,
               ),
               IconButton(
                   icon: Icon(Icons.add),
