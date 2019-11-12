@@ -87,6 +87,8 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Create a focus node so that the password field is focused
+  // after pressing the next button on the keyboard for email input
   final FocusNode focusPassword = FocusNode();
 
   bool _success;
@@ -114,6 +116,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
+        // Once the user presses the 'next' button, focus on the password input
         FocusScope.of(context).requestFocus(focusPassword);
       },
       validator: (String value) {
@@ -198,6 +201,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
         logInUpdateUserData(user);
         Navigator.of(context).pushNamed(
             MenuPage.tag,
+            // Pass the users uid as an argument to the main menu page
             arguments: user.uid);
       } else {
         _success = false;
