@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'item_input.dart';
 import 'menu.dart';
+import 'mock_store.dart';
 
 // Represents an item in the shopping list
 class Item {
@@ -399,7 +400,7 @@ class _ListViewsState extends State<ListViews> {
             icon: Icon(Icons.add_circle),
             onPressed: () {
               callUser.getUsersOfList();
-              Navigator.of(context).pushNamed(UserItemInput.tag);
+              Navigator.of(context).pushNamed(MockStore.tag);
             },
           )
         ],

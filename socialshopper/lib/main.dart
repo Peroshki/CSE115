@@ -10,6 +10,7 @@ import 'store_select.dart';
 import 'signup_page.dart';
 import 'item_input.dart';
 import 'friends_list.dart';
+import 'mock_store.dart';
 
 
 void main() => runApp(MyApp());
