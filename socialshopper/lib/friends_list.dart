@@ -37,7 +37,10 @@ class _friendState extends State<Friends> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context).pushNamed(AddFriend.tag);
+              Navigator.of(context).pushNamed(
+                AddFriend.tag,
+                arguments: ModalRoute.of(context).settings.arguments.toString()
+              );
             },
           )
         ],

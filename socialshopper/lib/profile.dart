@@ -128,7 +128,10 @@ class _ProfileState extends State<Profile> {
                   style: TextStyle(fontSize: 20.0),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(Friends.tag);
+                  Navigator.of(context).pushNamed(
+                    Friends.tag,
+                    arguments: user.uid
+                  );
                 },
               ),
 
