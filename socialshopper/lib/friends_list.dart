@@ -21,7 +21,7 @@ List<String> friends = [
 ];
 
 class Friends extends StatefulWidget{
-  static String tag = "friends_list";
+  static String tag = 'friends_list';
   _friendState createState() => _friendState();
 
 }
@@ -34,7 +34,7 @@ class _friendState extends State<Friends> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.blue,
-        title: Text("Friends"),
+        title: Text('Friends'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
@@ -78,7 +78,7 @@ class _friendState extends State<Friends> {
                                 },
                               ),
                               FlatButton(
-                                child: Text("Cancle"),
+                                child: Text('Cancel'),
                                 onPressed: (){
                                   Navigator.of(context).pop();
                                 },
@@ -91,5 +91,4 @@ class _friendState extends State<Friends> {
                 );
             }),
           );
-  }
-}
+  }}
