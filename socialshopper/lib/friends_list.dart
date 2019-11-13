@@ -91,4 +91,6 @@ class _friendState extends State<Friends> {
                 );
             }),
           );
-  }}
+  }
+
+}
