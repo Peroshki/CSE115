@@ -31,6 +31,47 @@ List<dynamic> meat_Prices = [];
 List<bool> inputs = new List<bool>();
 List<String> users = new List<String>();
 
+//Get Data For Each Category
+void getCategoryData(String Category) async {
+  DocumentReference ref =
+      Firestore.instance.collection('stores').document('SafewayMock');
+  DocumentSnapshot store = await ref.get();
+  Map<dynamic, dynamic> data = store.data[Category];
+  List<dynamic> keys = data.keys.toList();
+  List<dynamic> values = data.values.toList();
+
+  if (Category == 'Produce') {
+    produce_Item.clear();
+    produce_Prices.clear();
+    for (int i = 0; i < keys.length; i++) {
+      produce_Item.add(keys.elementAt(i));
+      produce_Prices.add(values.elementAt(i));
+    }
+  } else if (Category == 'Snacks') {
+    snack_Item.clear();
+    snack_Prices.clear();
+    for (int i = 0; i < keys.length; i++) {
+      snack_Item.add(keys.elementAt(i));
+      snack_Prices.add(values.elementAt(i));
+    }
+  } else if (Category == 'Drinks') {
+    drinks_Item.clear();
+    drink_Prices.clear();
+    for (int i = 0; i < keys.length; i++) {
+      drinks_Item.add(keys.elementAt(i));
+      drink_Prices.add(values.elementAt(i));
+    }
+  } else if (Category == 'Meat') {
+    meat_Item.clear();
+    meat_Prices.clear();
+
+    for (int i = 0; i < keys.length; i++) {
+      meat_Item.add(keys.elementAt(i));
+      meat_Prices.add(values.elementAt(i));
+    }
+  }
+}
+
 //Create a state for checkbox
 class UserCheckBox extends StatefulWidget {
   @override
@@ -126,23 +167,6 @@ class Meat extends StatefulWidget {
 
 // END OF STATEFUL WIDGET CREATION
 
-//Gets Meat Data from Database
-void getMeatData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> meatData = store.data['Meat'];
-  List<dynamic> keys = meatData.keys.toList();
-  List<dynamic> values = meatData.values.toList();
-  meat_Item.clear();
-  meat_Prices.clear();
-
-  for (int i = 0; i < keys.length; i++) {
-    meat_Item.add(keys.elementAt(i));
-    meat_Prices.add(values.elementAt(i));
-  }
-}
-
 //UI for meat items
 class _Meat extends State<Meat> {
   //List<bool> inputs = new List<bool>();
@@ -152,7 +176,7 @@ class _Meat extends State<Meat> {
 
   @override
   void initState() {
-    getMeatData();
+    getCategoryData('Meat');
   }
 
   @override
@@ -233,23 +257,7 @@ class _Meat extends State<Meat> {
   }
 }
 
-//---------------------------Drink
-
-//Gets Drink Data From Database
-void getDrinkData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> drinkData = store.data['Drinks'];
-  List<dynamic> keys = drinkData.keys.toList();
-  List<dynamic> values = drinkData.values.toList();
-  drinks_Item.clear();
-  drink_Prices.clear();
-  for (int i = 0; i < keys.length; i++) {
-    drinks_Item.add(keys.elementAt(i));
-    drink_Prices.add(values.elementAt(i));
-  }
-}
+//---------------------------Drinks
 
 //UI for Drink class
 class _Drinks extends State<Drinks> {
@@ -259,7 +267,7 @@ class _Drinks extends State<Drinks> {
 
   @override
   void initState() {
-    getDrinkData();
+    getCategoryData('Drinks');
   }
 
   @override
@@ -341,22 +349,6 @@ class _Drinks extends State<Drinks> {
 
 //----------------------snacks
 
-//Retrieves Snack Data From DataBase
-void getSnackData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> snackData = store.data['Snacks'];
-  List<dynamic> keys = snackData.keys.toList();
-  List<dynamic> values = snackData.values.toList();
-  snack_Item.clear();
-  snack_Prices.clear();
-  for (int i = 0; i < keys.length; i++) {
-    snack_Item.add(keys.elementAt(i));
-    snack_Prices.add(values.elementAt(i));
-  }
-}
-
 //UI for all snack items
 class _Snacks extends State<Snacks> {
   var quan = 1;
@@ -365,7 +357,7 @@ class _Snacks extends State<Snacks> {
 
   @override
   void initState() {
-    getSnackData();
+    getCategoryData('Snacks');
   }
 
   @override
@@ -446,22 +438,6 @@ class _Snacks extends State<Snacks> {
 }
 //-----------------------------Produce--------
 
-//Gets Produce Data From Database
-void getProduceData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> produceData = store.data['Produce'];
-  List<dynamic> keys = produceData.keys.toList();
-  List<dynamic> values = produceData.values.toList();
-  produce_Item.clear();
-  produceData.clear();
-  for (int i = 0; i < keys.length; i++) {
-    produce_Item.add(keys.elementAt(i));
-    produce_Prices.add(values.elementAt(i));
-  }
-}
-
 // UI for Produce
 class _Produce extends State<Produce> {
   var quan = 1;
@@ -470,7 +446,7 @@ class _Produce extends State<Produce> {
 
   @override
   void initState() {
-    getProduceData();
+    getCategoryData('Produce');
   }
 
   @override
