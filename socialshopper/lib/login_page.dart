@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'auth.dart';
 import 'menu.dart';
@@ -9,6 +10,7 @@ import 'signup_page.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore _db = Firestore.instance;
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -44,7 +46,10 @@ class _LoginPageState extends State<LoginPage> {
             shape: BoxShape.circle,
             image: DecorationImage(
                 fit: BoxFit.fill,
-                image: NetworkImage('https://i.imgur.com/BoN9kdC.png'))));
+                image: const AssetImage('assets/images/Logo(1).png'),
+            )
+        )
+    );
 
     return Scaffold(
       body: Center(
@@ -68,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
 //Make the form which has email and password fields. This part of the login_page handles loging in with an email and password
 //, as opposed to signing in with a Google Account
 class _EmailPasswordForm extends StatefulWidget {
@@ -80,6 +86,11 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   //These notify listeners of change in text input.
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  // Create a focus node so that the password field is focused
+  // after pressing the next button on the keyboard for email input
+  final FocusNode focusPassword = FocusNode();
+
   bool _success;
   String _userEmail;
   @override
@@ -103,6 +114,11 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       controller: _emailController,
       decoration: const InputDecoration(labelText: 'Email'),
       keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        // Once the user presses the 'next' button, focus on the password input
+        FocusScope.of(context).requestFocus(focusPassword);
+      },
       validator: (String value) {
         if (value.isEmpty) {
           return 'Please enter email';
@@ -112,6 +128,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     );
     final password = TextFormField(
       controller: _passwordController,
+      focusNode: focusPassword,
       decoration: const InputDecoration(labelText: 'Password'),
       obscureText: true,
       validator: (String value) {
@@ -135,6 +152,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       ),
     );
   }
+
 //Creates an alert depending on the error caught which is stored in String reason
   dynamic createAlert(BuildContext context, String reason) {
     return showDialog<dynamic>(
@@ -161,13 +179,14 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     _passwordController.dispose();
     super.dispose();
   }
+
 //Here, it is attempted to login into account. Email and password are taken from their respective controllers.
 //Additionally, if login is successful, then data is merged with existing data in database.
 //Then, MenuPage is shown
 //If registration is not successful, then an error is caught and passed to createAlert
   void _signInWithEmailAndPassword() async {
     String reason;
-    //Try the following. Throws PlatformException error if invalid email, wrong password, or nonexisting account. 
+    //Try the following. Throws PlatformException error if invalid email, wrong password, or nonexisting account.
     try {
       final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
@@ -179,8 +198,11 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           _success = true;
           _userEmail = user.email;
         });
-        authService.updateUserData(user);
-        Navigator.of(context).pushNamed(MenuPage.tag);
+        logInUpdateUserData(user);
+        Navigator.of(context).pushNamed(
+            MenuPage.tag,
+            // Pass the users uid as an argument to the main menu page
+            arguments: user.uid);
       } else {
         _success = false;
       }
@@ -204,5 +226,18 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           break;
       }
     }
+  }
+  //This is necessary as before auth's update function was used. This was fine for Google accounts, 
+  //but if signing in with email and password, the name was overwritten with null
+  //as FirebaseAuth has no field for name when creating an account with email and password. So here, we update everything except for name.
+  void logInUpdateUserData(FirebaseUser user) async {
+    DocumentReference ref = _db.collection('users').document(user.uid);
+    //Map data to database fields
+    return ref.setData({
+      'uid': user.uid,
+      'email': user.email,
+      'photoURL': user.photoUrl,
+      'lastSeen': DateTime.now(),
+    }, merge: true); //Merges data so old data isn't overwritten
   }
 }

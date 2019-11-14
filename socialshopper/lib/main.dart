@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:socialshopper/item_input.dart';
 import 'package:socialshopper/store_select.dart';
+import 'add_friend.dart';
+import 'friends_list.dart';
+import 'item_input.dart';
 import 'list_setup.dart';
 import 'login_page.dart';
 import 'menu.dart';
-import 'store_select.dart';
+import 'mock_store.dart';
 import 'signup_page.dart';
-import 'friends_list.dart';
+import 'store_select.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,7 +20,10 @@ class MyApp extends StatelessWidget {
     StoreSelect.tag: (context) => StoreSelect(),
     SignupPage.tag: (context) => SignupPage(),
     ListSetup.tag: (context) => ListSetup(),
+    UserItemInput.tag: (context) => UserItemInput(),
     Friends.tag: (context) => Friends(),
+    MockStore.tag: (context) => MockStore(),
+    AddFriend.tag: (context) => AddFriend()
   };
 
   @override

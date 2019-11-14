@@ -5,40 +5,66 @@
 * You can open a new list.
 * You can add an item to a new list. 
 * Specifing the item name, price, and quanitity. 
-*/ 
+*/
 
+// import 'dart:convert';
+// import 'dart:ffi';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/src/material/bottom_navigation_bar.dart';
+import 'package:flutter/scheduler.dart';
 import 'app_settings.dart';
 import 'list_views.dart';
 import 'profile.dart';
 import 'store_select.dart';
 import 'package:flutter/src/material/page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'item_input.dart';
 
-var temp = '';
+//var documentId = '';
+List<String> numList = new List(); //Array to hold the list names
+List<String> userNames = new List();
+
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = "";
 
-class MenuPage extends StatefulWidget {
-  static String tag = 'menu-page';
-  @override
-  _MenuPageState createState() => _MenuPageState();
+class callUser {
+  
+  static void getUsersOfList() async {
+    userNames.clear();
+    List<String> test = new List();
+    final DocumentReference ref =
+        Firestore.instance.collection('lists').document(documentName);
+    DocumentSnapshot doc = await ref.get();
+    Map<dynamic, dynamic> tags = doc.data['metadata'];
+    tags.remove('name');
+    tags.remove('uid');
+    tags.remove('timeCreated');
+    tags.remove('store');
+    tags.remove('budget');
+    tags.forEach((Key, value) => test.add(value.toString()));
+    print(test);
+    String values = test.elementAt(0);
+    print(values);
+    List<String> k = values.split(new RegExp(r'(\W+)'));
+  
+    for (int i = 0; i < k.length; i++) {
+      if (i > 0 && i < k.length - 1) {
+        userNames.add(k.elementAt(i));
+      }
+    }
+    //print(userNames);
+  }
 }
 
-class CheckboxWidget extends StatefulWidget{ // State for checkboxes
-    @override
-    CheckboxWidgetState createState() => new CheckboxWidgetState();
-}
-    
-class CheckboxWidgetState extends State{
+//State of MenuPage
+class MenuPage extends StatefulWidget {
+  static String tag = 'menu-page';
+
   @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
-  }
-  
+  _MenuPageState createState() => _MenuPageState();
 }
 
 class _MenuPageState extends State<MenuPage> {
@@ -50,198 +76,111 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+  //Function to click on a single list
   void listPress(int index) {
-    // click on list
     setState(() {
       _selectedIndex = index;
     });
   }
 
-
-  final List<String> _numList = []; //Array to hold the list names
-
+  // updates the app with list in the database
   void putNamesOfListInAList() async {
-    // updates the app with list in the database
+    // Grab the users document according to their uid
+    final DocumentSnapshot user =
+        await Firestore.instance.collection('users').document(ModalRoute.of(context).settings.arguments.toString()).get();
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
-    final List<DocumentSnapshot> docs = results.documents;
+
+    // Only add the lists to numLists which belong to the user
+    final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
+    for (String list in user.data['lists']) {
+      docs.add(results.documents.where((doc) => doc.documentID == list).first);
+    }
 
     var i = 0;
     var val = "";
 
-    if (_numList.length < docs.length || _numList.length > docs.length) {
-      _numList.clear();
+    if (numList.length < docs.length || numList.length > docs.length) {
+      numList.clear();
       while (i < docs.length) {
         val = docs.elementAt(i).documentID;
-        temp = docs.elementAt(i).documentID;
+        //documentId = docs.elementAt(i).documentID;
         _addNewList(val);
         i++;
       }
     }
   }
 
+// Add a new list to the database created by user
   void createRecord(String listName) async {
-    // functions used to record user data -> database
     await databaseRef.collection("lists").document(listName);
   }
 
-// This functions populates a list with new items and updates database
-  void addItemsToList(String name, String item, String price, String quantity, List<String> users) async {
-    DocumentReference ref =
-        Firestore.instance.collection('lists').document(name);
-    DocumentSnapshot doc = await ref.get();
-    List tags = doc.data['items'];
-    var nPrice = int.parse(price);
-    var nQuan  = int.parse(quantity);
-    //List <String> p= ['one', 'two', 'three'];
-    ref.updateData({
-      'items': FieldValue.arrayUnion([
-        {'name': item, 'price': nPrice, 'quantity': nQuan, 'users': users}
-      ])
-    });
-  }
-
-// Gets the Item and Price and adds it to database
-  void getNameAndPrice(int index) {
-    final FocusNode nodeTwo = FocusNode(); //Focus node moves the cursor
-    final FocusNode nodeThree = FocusNode();
-    final FocusNode nodeFour  = FocusNode();
-    var newItem = "item";
-    var price = "0";
-    var quan = "0";
-    Navigator.of(context).push(MaterialPageRoute<dynamic>(builder: (context) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Item, Price, Amount, & People Buying Item')),
-        body: new Container(
-            child: Column(
-          children: <Widget>[
-            Flexible(
-              // Textfield for Item name
-              child: TextField(
-                autofocus: true,
-                maxLength: 30,
-                maxLengthEnforced: true,
-                onSubmitted: (userItem) {
-                  newItem = userItem;
-                  FocusScope.of(context)
-                      .requestFocus(nodeTwo); // This jumps to the other textbox
-                },
-                decoration: InputDecoration(
-                    hintText: 'Enter Item Name',
-                    contentPadding: const EdgeInsets.all(16.0)),
-              ),
-            ),
-            Flexible(
-              // Textfield for price
-              child: TextField(
-                autofocus: false,
-                focusNode: nodeTwo,
-                maxLength: 10,
-                maxLengthEnforced: true,
-                onSubmitted: (new_Price) {
-                  price = new_Price;
-                  FocusScope.of(context).requestFocus(nodeThree);
-                },
-                decoration: InputDecoration(
-                    hintText: 'Enter Price Of Item',
-                    contentPadding: const EdgeInsets.all(16.0)),
-              ),
-            ),
-            Flexible(
-              //Text field for quanity
-              child: TextField(
-                autofocus: false,
-                focusNode: nodeThree,
-                maxLength: 10,
-                maxLengthEnforced: true,
-                onSubmitted: (Amount) {
-                  quan = Amount;
-                  FocusScope.of(context).requestFocus(nodeFour);
-                },
-                decoration: InputDecoration(
-                    hintText: 'Enter Quantity',
-                    contentPadding: const EdgeInsets.all(16.0)),
-              ),
-            ),
-             Flexible(
-               child: TextField(
-                autofocus: false,
-                focusNode: nodeFour,
-                maxLength: 100,
-                maxLengthEnforced: true,
-                onSubmitted: (allUsers) {
-                  var list = allUsers.split(' ');
-                  print(list);
-                  addItemsToList(_numList[index], newItem, price, quan, list);//Adds value to the list
-                  Navigator.of(context).pop();
-                },
-                decoration: InputDecoration(
-                    hintText: 'Names: Ex. Maria Rex Alex',
-                    contentPadding: const EdgeInsets.all(16.0)),
-              ),
-            ),
-          ],
-        )),
-      );
-    }));
-  }
-
-  // void getDataFromDatabase() {
-  //   // Get Items and Price from DataBase
-  //   databaseRef.collection("lists");
-  // }
+// Deletes list from database and updates array
 
   void deleteList(int index) {
-    // Deletes list from database and updates array
-    databaseRef.collection('lists').document(_numList[index]).delete();
+    databaseRef.collection('lists').document(numList[index]).delete();
     putNamesOfListInAList();
   }
 
+//allows to change state of the list appearing
   void _addNewList(String task) {
-    //allows to change state of the list appearing
     if (task.isNotEmpty) {
-      setState(() => _numList.add(task));
+      setState(() => numList.add(task));
     }
   }
 
+
   void _getIndex(int index) {
     //change state of list
-    setState(() => _numList.elementAt(index));
+    setState(() => numList.elementAt(index));
   }
 
-  void _openList(int index) {
+  void _openList(int index, String name) {
     // Open up a single list
-    documentName = _numList[index];
+    documentName = numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(_numList[index]),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add_circle),
-              onPressed: () {
-                getNameAndPrice(index); // Allows user to enter item and price
-              },
-            )
-          ],
-        ),
-        body: ListViews(listName: _numList[index]),
+        body: ListViews(listName: numList[index]),
       );
     }));
   }
 
+//This is the whole list
   Widget _buildList() {
-    //This is the whole list
     putNamesOfListInAList();
-    return ListView.builder(itemBuilder: (context, index) {
-      if (index < _numList.length) {
-        return _buildTodoItem(_numList[index], index);
-      }
-    });
+    return StreamBuilder(
+      stream: Firestore.instance.collection('lists').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return const Text('error');
+
+        // Only display the lists that belong to the user
+        List<DocumentSnapshot> lists = snapshot.data.documents;
+        lists = lists.where((doc) => numList.contains(doc.documentID)).toList();
+
+        return ListView.builder(
+          itemCount: lists.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: Text(lists[index].data['metadata']['name']),
+                onTap: () {
+                  _openList(index, lists[index].data['metadata']['name']);
+                },
+                onLongPress: () {
+                  alertBoxForList(index);
+                },
+              ),
+            );
+          }
+        );
+      },
+    );
   }
 
+// Displays an alert box before deleting list
   void alertBoxForList(int index) {
-    // Displays an alert box before deleting list
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -270,26 +209,6 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  Widget _buildTodoItem(String listName, int index) {
-    //Build one list
-    return Card(
-        child: ListTile(
-      title: Text(listName),
-      onTap: () {
-        // opens the list
-        setState(() {
-          _openList(index);
-        });
-      },
-      onLongPress: () {
-        // this deletes item from list view and from database
-        setState(() {
-          alertBoxForList(index);
-        });
-      },
-    ));
-  }
-
   void _tapAddMoreItems() {
     Navigator.of(context).push<dynamic>(
         // MaterialPageRoute will automatically animate the screen entry, as well
@@ -312,10 +231,11 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
+
+//Scaffold is the main container for main page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Scaffold is the main container for main page
       body: _getBody(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -336,15 +256,14 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+//Menu Page
   Widget _getBody(int index) {
     switch (index) {
       case 0:
         return Settings();
       case 1:
         return Scaffold(
-          //Scaffold is the main container for main page
           appBar: AppBar(
-            //title bar at the top of the page
             centerTitle: true,
             title: const Text('Lists'),
             actions: <Widget>[
@@ -365,7 +284,7 @@ class _MenuPageState extends State<MenuPage> {
             onPressed: () {
               Navigator.of(context).pushNamed(StoreSelect.tag);
             },
-            tooltip: 'Name List',
+            tooltip: 'Create List',
             child: Icon(Icons.add),
           ),
         );
