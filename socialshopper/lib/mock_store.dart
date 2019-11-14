@@ -78,7 +78,6 @@ void populateDataBase(String itemName, double price, int quantity) async {
       Firestore.instance.collection('lists').document(globals.documentName);
   DocumentSnapshot doc = await ref.get();
   List tags = doc.data['items'];
-  //List<String> empty = [];
   ref.updateData({
     'items': FieldValue.arrayUnion([
       {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
