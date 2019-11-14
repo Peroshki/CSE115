@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install dependencies
-      run: pub get
+      run: flutter pub get
       working-directory: socialshopper
     - name: Run tests
       run: pub run test
