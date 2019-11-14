@@ -15,4 +15,4 @@ jobs:
         flutter-version: '1.7.8+hotfix.4'
     - run: flutter pub get
     - run: flutter test
-      working-directory: socialshopper
+      working-directory: /CSE115/socialshopper
