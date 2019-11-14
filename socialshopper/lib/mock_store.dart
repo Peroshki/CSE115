@@ -72,13 +72,48 @@ void getCategoryData(String Category) async {
   }
 }
 
-//Create a state for checkbox
+//Populates the database with the items selected by the user
+void populateDataBase(String itemName, double price, int quantity) async {
+  DocumentReference ref =
+      Firestore.instance.collection('lists').document(globals.documentName);
+  DocumentSnapshot doc = await ref.get();
+  List tags = doc.data['items'];
+  //List<String> empty = [];
+  ref.updateData({
+    'items': FieldValue.arrayUnion([
+      {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
+    ])
+  });
+}
+
+//----------------Creation of each stateful widget classes
 class UserCheckBox extends StatefulWidget {
   @override
   _UserCheckBox createState() => _UserCheckBox();
 }
 
-// Checkbox for user itemss
+class Produce extends StatefulWidget {
+  @override
+  _Produce createState() => _Produce();
+}
+
+class Snacks extends StatefulWidget {
+  @override
+  _Snacks createState() => _Snacks();
+}
+
+class Drinks extends StatefulWidget {
+  @override
+  _Drinks createState() => _Drinks();
+}
+
+class Meat extends StatefulWidget {
+  @override
+  _Meat createState() => _Meat();
+}
+// END OF STATEFUL WIDGET CREATION
+
+// UI for how checkbox are displayed on screen and for interaction 
 class _UserCheckBox extends State<UserCheckBox> {
   @override
   void initState() {
@@ -131,45 +166,9 @@ class _UserCheckBox extends State<UserCheckBox> {
   }
 }
 
-//Populates the database with the items selected by the user
-void populateDataBase(String itemName, double price, int quantity) async {
-  DocumentReference ref =
-      Firestore.instance.collection('lists').document(globals.documentName);
-  DocumentSnapshot doc = await ref.get();
-  List tags = doc.data['items'];
-  //List<String> empty = [];
-  ref.updateData({
-    'items': FieldValue.arrayUnion([
-      {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
-    ])
-  });
-}
-
-class Produce extends StatefulWidget {
-  @override
-  _Produce createState() => _Produce();
-}
-
-class Snacks extends StatefulWidget {
-  @override
-  _Snacks createState() => _Snacks();
-}
-
-class Drinks extends StatefulWidget {
-  @override
-  _Drinks createState() => _Drinks();
-}
-
-class Meat extends StatefulWidget {
-  @override
-  _Meat createState() => _Meat();
-}
-
-// END OF STATEFUL WIDGET CREATION
-
+//--------------------Meat 
 //UI for meat items
 class _Meat extends State<Meat> {
-  //List<bool> inputs = new List<bool>();
   var quan = 1;
   var priceString;
   var price;
@@ -241,7 +240,7 @@ class _Meat extends State<Meat> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text("Done"),
               onPressed: () {
                 priceString = meat_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -258,7 +257,6 @@ class _Meat extends State<Meat> {
 }
 
 //---------------------------Drinks
-
 //UI for Drink class
 class _Drinks extends State<Drinks> {
   var quan = 1;
@@ -331,7 +329,7 @@ class _Drinks extends State<Drinks> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text("Done"), 
               onPressed: () {
                 priceString = drink_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -347,8 +345,7 @@ class _Drinks extends State<Drinks> {
   }
 }
 
-//----------------------snacks
-
+//----------------------Snacks
 //UI for all snack items
 class _Snacks extends State<Snacks> {
   var quan = 1;
@@ -437,7 +434,6 @@ class _Snacks extends State<Snacks> {
   }
 }
 //-----------------------------Produce--------
-
 // UI for Produce
 class _Produce extends State<Produce> {
   var quan = 1;
@@ -510,7 +506,7 @@ class _Produce extends State<Produce> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text("Done"),
               onPressed: () {
                 priceString = produce_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -527,7 +523,6 @@ class _Produce extends State<Produce> {
 }
 
 //-----------------------Entire Page Setup
-
 class MockStore extends StatefulWidget {
   static String tag = 'mock-store';
   @override
