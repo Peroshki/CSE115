@@ -18,12 +18,99 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'menu.dart';
 import 'menu.dart' as globals;
 
-//Creates an instance in the database
+// Creates an instance in the database
 final databaseRef = Firestore.instance;
 
+// Generates a widget for each friend currently in the list
+Widget generateFriendWidget(String name) {
+  return ListTile(
+    title: Text('hi'),
+    leading: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          name,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        const Text(
+          'Shopper'
+        ),
+      ],
+    ),
+    trailing: IconButton(
+      icon: Icon(Icons.cancel),
+    ),
+  );
+}
+
+List<Widget> generateFriendWidgets(friends) {
+  List<Widget> widgets = List();
+
+  for (var friend in friends) {
+    widgets.add(
+      ListTile(
+        title: Text(friend['name']),
+        trailing: IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+
+          },
+        ),
+      )
+    );
+  }
+
+  return widgets;
+}
+
+// Generates a widget to show the user's display name
+Widget generateUsernameWidget(String name) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Text(
+        name,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold
+        ),
+      ),
+      const Text(
+        'List Owner',
+      ),
+    ],
+  );
+}
+
+/// Creates a pop up to add new participants.
+Future<void> createAlert(BuildContext context, friends) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        content: SingleChildScrollView(
+          child: Column(
+            children: generateFriendWidgets(friends)
+          )
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text('DONE'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      );
+    }
+  );
+}
+
 // functions used to record user data -> database
-void createRecord(
-    String listName, int budget, List<String> people, String id) async {
+void createRecord(String listName, int budget, List<String> people, String id) async {
   await databaseRef.collection('lists').document(id.toString()).setData({
     'items' : [
       {
@@ -39,8 +126,7 @@ void createRecord(
     'metadata': {
       'uid': id,
       //Gets the timestamp
-      'timeCreated': DateTime
-          .now(), // Change this. We don't need the precision of milliseconds since epoch
+      'timeCreated': DateTime.now(), // Change this. We don't need the precision of milliseconds since epoch
       'store': 'Safeway', // I don't know how to pass in the store select input
       'name': listName,
       'budget': budget,
@@ -59,84 +145,50 @@ class ListSetup extends StatefulWidget {
 
 //Main Widget
 class _ListSetup extends State<ListSetup> {
-  //Initializing variables used throughout the page.
-  String name = '', part = '';
-  int budget = -1;
-  List<String> people = [
-    'User'
-  ]; // When we get proper user data, this will be empty and the user will be
-  // manually added.
-  //Gets the name of the file.
+  /// Local variables
+  String name, part, uid, filter = '';
+  List<Map<String, String>> people = List();
+  int budget = 0;
+
+  /// Resets the view when the filter is updated.
+  void getFilter(String value) {
+    filter = value;
+  }
+
+  /// Updates the name of the file.
   void getName(String value) {
-    setState(() {
-      name = value;
-    });
+    name = value;
   }
 
-  //Gets the name of the participants you're adding.
+  /// Gets the name of the participants you're adding.
   void getPeople(String value) {
-    setState(() {
-      part = value;
-    });
+    part = value;
   }
 
-  //Gets the budget.
+  /// Gets the budget.
   void getBudget(String value) {
-    setState(() {
-      budget = int.parse(value);
-    });
+    budget = int.parse(value);
   }
 
-  //Puts the participants into the list of people
-  void onPressed(String name) {
-    setState(() {
-      people.add(name);
-    });
-  }
+  /// Puts the participants into the list of people
+  void addPerson(Map<String, String> person) {
+    for (Map<String, String> p in people) {
+      if (p['uid'] == person['uid'])
+        return;
+    }
 
-  //Creates a pop up to add new participants.
-  Future<void> createAlert(BuildContext context) {
-    return showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-              content: Container(
-                  padding: const EdgeInsets.all(32.0),
-                  height: 175.0,
-                  child: Center(
-                      child: Column(children: <Widget>[
-                    //Allows user to enter participant's names
-                    TextField(
-                      onChanged: (String value) {
-                        getPeople(value);
-                      },
-                      autocorrect: true,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Participant\'s Name',
-                      ),
-                    ),
-
-                    //Saves data to the list of participants
-                    RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      onPressed: () {
-                        onPressed(part);
-                        Navigator.of(context).pop();
-                      },
-                      padding: const EdgeInsets.all(12),
-                      color: Colors.lightBlueAccent,
-                      child: Text('Add Member',
-                          style: TextStyle(color: Colors.white)),
-                    )
-                  ]))));
-        });
+    people.add(person);
+    print(people.map((f) => f['name']).toList().toString());
   }
 
   @override
   Widget build(BuildContext context) {
+    /// A generator for random document names
     final Uuid uuid = Uuid();
+
+    /// Focus nodes to make UI transition seamless
+    FocusNode budgetNode = FocusNode();
+
     return Scaffold(
       //Top bar of the app
       appBar: AppBar(
@@ -146,17 +198,32 @@ class _ListSetup extends State<ListSetup> {
       ),
 
       body: Container(
-          padding: const EdgeInsets.all(32.0),
-          child: Center(
-            child: Column(
+        padding: const EdgeInsets.all(32.0),
+        child: StreamBuilder(
+          stream: databaseRef.collection('users').document(
+              ModalRoute.of(context).settings.arguments.toString()
+          ).snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return const Text('Loading user data...');
+
+            var data = snapshot.data;
+
+            List<dynamic> friends = data['friends'];
+
+            addPerson({'name': data['displayName'], 'uid': data['uid']});
+
+            return Column(
               children: <Widget>[
                 ListTile(
-                  title: Text('List Name',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                        fontSize: 20,
-                      )),
+                  title: Text(
+                    'List Name',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                      fontSize: 20,
+                    )
+                  ),
                 ),
 
                 //Allows the user to enter the name of the list.
@@ -164,6 +231,11 @@ class _ListSetup extends State<ListSetup> {
                   child: TextField(
                     onChanged: (String value) {
                       getName(value);
+                    },
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (value) {
+                      // Once the user presses the 'next' button, focus on the budget
+                      FocusScope.of(context).requestFocus(budgetNode);
                     },
                     autocorrect: true,
                     decoration: InputDecoration(
@@ -173,17 +245,19 @@ class _ListSetup extends State<ListSetup> {
                 ),
 
                 ListTile(
-                  title: Text('Set Budget',
+                  title: Text('Budget',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
                         fontSize: 20,
-                      )),
+                      )
+                  ),
                 ),
 
                 // Allows user to set the budget.
                 Container(
                   child: TextField(
+                    focusNode: budgetNode,
                     keyboardType: TextInputType.number,
                     onChanged: (String value) {
                       getBudget(value);
@@ -200,42 +274,11 @@ class _ListSetup extends State<ListSetup> {
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
                         fontSize: 20,
-                      )),
+                      )
+                  ),
                 ),
 
-                //Displays the people in the list.
-                Expanded(
-                    child: ListView.builder(
-                  itemCount: people.length,
-                  itemBuilder: (context, int index) {
-                    return Row(
-                      textDirection: TextDirection.rtl,
-                      children: <Widget>[
-                        //Creates the button to remove participants from the list.
-                        Expanded(
-                            child: FlatButton(
-                                onPressed: () {
-                                  setState(() {
-                                    people.removeAt(index);
-                                  });
-                                },
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: const Text(
-                                    'Remove',
-                                    style: TextStyle(
-                                        fontSize: 15.0, color: Colors.red),
-                                  ),
-                                ))),
-
-                        //Displays the names of the participants on screen
-                        Expanded(
-                          child: ListTile(title: Text(people[index])),
-                        ),
-                      ],
-                    );
-                  },
-                )),
+                generateUsernameWidget(data['displayName']),
 
                 //Button to add new participants to the list.
                 RaisedButton(
@@ -243,7 +286,7 @@ class _ListSetup extends State<ListSetup> {
                     borderRadius: BorderRadius.circular(24),
                   ),
                   onPressed: () {
-                    createAlert(context);
+                    createAlert(context, friends);
                   },
                   padding: const EdgeInsets.all(12),
                   color: Colors.lightBlueAccent,
@@ -251,13 +294,16 @@ class _ListSetup extends State<ListSetup> {
                       style: TextStyle(color: Colors.white)),
                 ),
               ],
-            ),
-          )),
+            );
+          },
+        ),
+      ),
       // Button to move to the next page.
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          createRecord(name, budget, people,
+          List<String> peoples = people.map((f) => f['name']);
+          createRecord(name, budget, peoples,
               uuid.v4()); // Instead of a random number, create a uid for the list.
           Navigator.of(context).pushNamed(MenuPage.tag);
         },

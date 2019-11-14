@@ -11,6 +11,10 @@ FirebaseUser user;
 
 class Profile extends StatefulWidget {
   static String tag = 'Profile';
+  final String uid;
+
+  Profile({Key key, @required this.uid}) : super(key: key);
+
   //@override
   _ProfileState createState() => _ProfileState();
 }
@@ -37,7 +41,6 @@ class _ProfileState extends State<Profile> {
   //Second streambuilder gets email from database
   @override
   Widget build(BuildContext context) {
-    initUser();
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -57,7 +60,7 @@ class _ProfileState extends State<Profile> {
                 child: StreamBuilder(
                   stream: Firestore.instance
                       .collection('users')
-                      .document(user.uid)
+                      .document(widget.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -65,7 +68,7 @@ class _ProfileState extends State<Profile> {
                     }
                     var userDocument = snapshot.data;
                     return Text(
-                      'Hello, ${userDocument["displayName"]}!',
+                      'Hello, ${userDocument['displayName']}!',
                       style: TextStyle(fontSize: 30),
                     );
                   },
@@ -80,7 +83,7 @@ class _ProfileState extends State<Profile> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: NetworkImage(imageInit())))),
+                            image: NetworkImage('https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png')))),
               ),
               Text(
                 'You currently have: 0 Lists',
@@ -91,7 +94,7 @@ class _ProfileState extends State<Profile> {
                 child: StreamBuilder(
                   stream: Firestore.instance
                       .collection('users')
-                      .document(user.uid)
+                      .document(widget.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -130,7 +133,7 @@ class _ProfileState extends State<Profile> {
                 onPressed: () {
                   Navigator.of(context).pushNamed(
                     Friends.tag,
-                    arguments: user.uid
+                    arguments: widget.uid
                   );
                 },
               ),

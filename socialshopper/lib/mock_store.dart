@@ -76,7 +76,7 @@ class _UserCheckBox extends State<UserCheckBox> {
                   value: inputs[index],
                   title: new Text(
                     '${globals.userNames.elementAt(index)}',
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.center
                   ),
                   controlAffinity: ListTileControlAffinity.platform,
                   onChanged: (bool val) {

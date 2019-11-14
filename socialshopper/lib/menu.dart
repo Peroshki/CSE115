@@ -282,14 +282,17 @@ class _MenuPageState extends State<MenuPage> {
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(StoreSelect.tag);
+              Navigator.of(context).pushNamed(
+                  StoreSelect.tag,
+                  arguments: ModalRoute.of(context).settings.arguments.toString()
+              );
             },
             tooltip: 'Create List',
             child: Icon(Icons.add),
           ),
         );
       case 2:
-        return Profile();
+        return Profile(uid: ModalRoute.of(context).settings.arguments.toString());
     }
     return Center(
       child: const Text('No body for selected tab'),

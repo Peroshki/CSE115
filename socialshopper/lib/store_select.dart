@@ -33,7 +33,10 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(ListSetup.tag);
+          Navigator.of(context).pushNamed(
+            ListSetup.tag,
+            arguments: ModalRoute.of(context).settings.arguments.toString()
+          );
         },
         padding: EdgeInsets.all(12),
         color: Colors.red[100],

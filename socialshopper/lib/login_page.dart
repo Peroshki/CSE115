@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
@@ -8,7 +7,7 @@ import 'auth.dart';
 import 'menu.dart';
 import 'signup_page.dart';
 
-final GoogleSignIn _googleSignIn = GoogleSignIn();
+//final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _db = Firestore.instance;
 
@@ -21,11 +20,15 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    final googleButton = GoogleSignInButton(
-      borderRadius: 24,
-      onPressed: () => authService.googleSignIn().whenComplete(() {
-        Navigator.of(context).pushNamed(MenuPage.tag);
-      }),
+    final Widget googleButton = Container(
+      width: 230,
+      child: GoogleSignInButton(
+        borderRadius: 24,
+        darkMode: true,
+        onPressed: () => authService.googleSignIn().whenComplete(() {
+          Navigator.of(context).pushNamed(MenuPage.tag);
+        }),
+      ),
     );
 
     final signUpButton = RaisedButton(
@@ -36,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushNamed(SignupPage.tag);
       },
       padding: EdgeInsets.all(12),
-      color: Colors.green,
+      color: const Color.fromARGB(255, 43, 190, 254),
       child: Text('Sign Up', style: TextStyle(color: Colors.white)),
     );
     final image = Container(
@@ -53,24 +56,41 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       body: Center(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(30.0, 5.0, 30.0, 5.0),
-          color: Colors.transparent,
-          child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: ListView(
-              children: <Widget>[
-                image,
-                SizedBox(height: 40.0),
-                _EmailPasswordForm(),
-                googleButton,
-                signUpButton,
-              ],
-            ),
-          ),
-        ),
-      ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            image,
+            _EmailPasswordForm(),
+            googleButton
+          ],
+        )
+      )
     );
+//      body: Center(
+//        child: Column(
+//          mainAxisSize: MainAxisSize.min,
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          children: <Widget> [
+//            Container(
+//              margin: EdgeInsets.fromLTRB(30.0, 5.0, 30.0, 5.0),
+//              color: Colors.transparent,
+//              child: Padding(
+//                padding: const EdgeInsets.all(50),
+//                child: ListView(
+//                  children: <Widget>[
+//                    image,
+//                    SizedBox(height: 40.0),
+//                    _EmailPasswordForm(),
+//                    signUpButton,
+//                  ],
+//                ),
+//              ),
+//            ),
+//            googleButton
+//          ]
+//        ),
+//      )
   }
 }
 
@@ -93,56 +113,75 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
 
   bool _success;
   String _userEmail;
+
   @override
   Widget build(BuildContext context) {
-    final loginButton = ButtonTheme(
-        minWidth: 250,
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          onPressed: () async {
-            if (_formKey.currentState.validate()) {
-              _signInWithEmailAndPassword();
-            }
-          },
-          padding: EdgeInsets.all(12),
-          color: Colors.blue,
-          child: Text('Login', style: TextStyle(color: Colors.white)),
-        ));
-    final email = TextFormField(
-      controller: _emailController,
-      decoration: const InputDecoration(labelText: 'Email'),
-      keyboardType: TextInputType.emailAddress,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        // Once the user presses the 'next' button, focus on the password input
-        FocusScope.of(context).requestFocus(focusPassword);
-      },
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Please enter email';
-        }
-        return null;
-      },
+    final Widget loginButton = ButtonTheme(
+      minWidth: 230,
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: () async {
+          if (_formKey.currentState.validate()) {
+            _signInWithEmailAndPassword();
+          }
+        },
+        color: const Color.fromARGB(255, 43, 190, 254),
+        padding: const EdgeInsets.all(8.5),
+        child: Text(
+          'Login',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 18.0,
+          )
+        ),
+      )
     );
-    final password = TextFormField(
-      controller: _passwordController,
-      focusNode: focusPassword,
-      decoration: const InputDecoration(labelText: 'Password'),
-      obscureText: true,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Please enter password';
-        }
-        return null;
-      },
+
+    final Widget email = Container(
+      width: 300,
+      child: TextFormField(
+        controller: _emailController,
+        decoration: const InputDecoration(labelText: 'Email'),
+        keyboardType: TextInputType.emailAddress,
+        textInputAction: TextInputAction.next,
+        onFieldSubmitted: (value) {
+          // Once the user presses the 'next' button, focus on the password input
+          FocusScope.of(context).requestFocus(focusPassword);
+        },
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Please enter email';
+          }
+          return null;
+        },
+      ),
     );
+
+    final Widget password = Container(
+      width: 300,
+      child: TextFormField(
+        controller: _passwordController,
+        focusNode: focusPassword,
+        decoration: const InputDecoration(labelText: 'Password'),
+        obscureText: true,
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Please enter password';
+          }
+          return null;
+        },
+      ),
+    );
+
     //Returns the actual form built from the above elements.
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           email,
           password,

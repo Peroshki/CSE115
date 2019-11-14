@@ -235,7 +235,10 @@ List<Widget> createItemCardWidget(Item item) {
   final List<Widget> widgets = [
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[Text(item.name), Text('\$${totalPrice.toString()}')],
+      children: <Widget>[
+        Text(item.name),
+        Text('\$${totalPrice.toString()}')
+      ],
     ),
     Text('Price: \$${item.price}'),
     Text('Quantity: ${item.quantity}'),
@@ -371,7 +374,7 @@ class _ListViewsState extends State<ListViews> {
                     onPressed: () => deleteItemDialog(index),
                   ),
                   title: widgets.first,
-                  children: widgets.sublist(1)
+                  children: widgets.sublist(1),
                 ),
               );
             }
