@@ -12,6 +12,7 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
         flutter-version: '1.7.8+hotfix.4'
+    - working-directory: socialshopper
     - run: flutter pub get
     - run: flutter test
-      working-directory: socialshopper
+      
