@@ -71,7 +71,7 @@ class _friendState extends State<Friends> {
                             content: Text('Are you sure you want to delete: ${friends[index]}'),
                             actions: <Widget>[
                               FlatButton(
-                                child: Text("Delete"),
+                                child: Text('Delete'),
                                 onPressed: (){
                                   friends.removeAt(index);
                                   Navigator.of(context).pop();
@@ -92,5 +92,4 @@ class _friendState extends State<Friends> {
             }),
           );
   }
-
 }
