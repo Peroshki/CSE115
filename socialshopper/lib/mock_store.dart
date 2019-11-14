@@ -31,13 +31,88 @@ List<dynamic> meat_Prices = [];
 List<bool> inputs = new List<bool>();
 List<String> users = new List<String>();
 
-//Create a state for checkbox
+//Get Data For Each Category
+void getCategoryData(String Category) async {
+  DocumentReference ref =
+      Firestore.instance.collection('stores').document('SafewayMock');
+  DocumentSnapshot store = await ref.get();
+  Map<dynamic, dynamic> data = store.data[Category];
+  List<dynamic> keys = data.keys.toList();
+  List<dynamic> values = data.values.toList();
+
+  if (Category == 'Produce') {
+    produce_Item.clear();
+    produce_Prices.clear();
+    for (int i = 0; i < keys.length; i++) {
+      produce_Item.add(keys.elementAt(i));
+      produce_Prices.add(values.elementAt(i));
+    }
+  } else if (Category == 'Snacks') {
+    snack_Item.clear();
+    snack_Prices.clear();
+    for (int i = 0; i < keys.length; i++) {
+      snack_Item.add(keys.elementAt(i));
+      snack_Prices.add(values.elementAt(i));
+    }
+  } else if (Category == 'Drinks') {
+    drinks_Item.clear();
+    drink_Prices.clear();
+    for (int i = 0; i < keys.length; i++) {
+      drinks_Item.add(keys.elementAt(i));
+      drink_Prices.add(values.elementAt(i));
+    }
+  } else if (Category == 'Meat') {
+    meat_Item.clear();
+    meat_Prices.clear();
+
+    for (int i = 0; i < keys.length; i++) {
+      meat_Item.add(keys.elementAt(i));
+      meat_Prices.add(values.elementAt(i));
+    }
+  }
+}
+
+//Populates the database with the items selected by the user
+void populateDataBase(String itemName, double price, int quantity) async {
+  DocumentReference ref =
+      Firestore.instance.collection('lists').document(globals.documentName);
+  DocumentSnapshot doc = await ref.get();
+  List tags = doc.data['items'];
+  ref.updateData({
+    'items': FieldValue.arrayUnion([
+      {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
+    ])
+  });
+}
+
+//----------------Creation of each stateful widget classes
 class UserCheckBox extends StatefulWidget {
   @override
   _UserCheckBox createState() => _UserCheckBox();
 }
 
-// Checkbox for user itemss
+class Produce extends StatefulWidget {
+  @override
+  _Produce createState() => _Produce();
+}
+
+class Snacks extends StatefulWidget {
+  @override
+  _Snacks createState() => _Snacks();
+}
+
+class Drinks extends StatefulWidget {
+  @override
+  _Drinks createState() => _Drinks();
+}
+
+class Meat extends StatefulWidget {
+  @override
+  _Meat createState() => _Meat();
+}
+// END OF STATEFUL WIDGET CREATION
+
+// UI for how checkbox are displayed on screen and for interaction 
 class _UserCheckBox extends State<UserCheckBox> {
   @override
   void initState() {
@@ -90,69 +165,16 @@ class _UserCheckBox extends State<UserCheckBox> {
   }
 }
 
-//Populates the database with the items selected by the user
-void populateDataBase(String itemName, double price, int quantity) async {
-  DocumentReference ref =
-      Firestore.instance.collection('lists').document(globals.documentName);
-  DocumentSnapshot doc = await ref.get();
-  List tags = doc.data['items'];
-  //List<String> empty = [];
-  ref.updateData({
-    'items': FieldValue.arrayUnion([
-      {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
-    ])
-  });
-}
-
-class Produce extends StatefulWidget {
-  @override
-  _Produce createState() => _Produce();
-}
-
-class Snacks extends StatefulWidget {
-  @override
-  _Snacks createState() => _Snacks();
-}
-
-class Drinks extends StatefulWidget {
-  @override
-  _Drinks createState() => _Drinks();
-}
-
-class Meat extends StatefulWidget {
-  @override
-  _Meat createState() => _Meat();
-}
-
-// END OF STATEFUL WIDGET CREATION
-
-//Gets Meat Data from Database
-void getMeatData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> meatData = store.data['Meat'];
-  List<dynamic> keys = meatData.keys.toList();
-  List<dynamic> values = meatData.values.toList();
-  meat_Item.clear();
-  meat_Prices.clear();
-
-  for (int i = 0; i < keys.length; i++) {
-    meat_Item.add(keys.elementAt(i));
-    meat_Prices.add(values.elementAt(i));
-  }
-}
-
+//--------------------Meat 
 //UI for meat items
 class _Meat extends State<Meat> {
-  //List<bool> inputs = new List<bool>();
   var quan = 1;
   var priceString;
   var price;
 
   @override
   void initState() {
-    getMeatData();
+    getCategoryData('Meat');
   }
 
   @override
@@ -217,7 +239,7 @@ class _Meat extends State<Meat> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text("Done"),
               onPressed: () {
                 priceString = meat_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -233,24 +255,7 @@ class _Meat extends State<Meat> {
   }
 }
 
-//---------------------------Drink
-
-//Gets Drink Data From Database
-void getDrinkData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> drinkData = store.data['Drinks'];
-  List<dynamic> keys = drinkData.keys.toList();
-  List<dynamic> values = drinkData.values.toList();
-  drinks_Item.clear();
-  drink_Prices.clear();
-  for (int i = 0; i < keys.length; i++) {
-    drinks_Item.add(keys.elementAt(i));
-    drink_Prices.add(values.elementAt(i));
-  }
-}
-
+//---------------------------Drinks
 //UI for Drink class
 class _Drinks extends State<Drinks> {
   var quan = 1;
@@ -259,7 +264,7 @@ class _Drinks extends State<Drinks> {
 
   @override
   void initState() {
-    getDrinkData();
+    getCategoryData('Drinks');
   }
 
   @override
@@ -323,7 +328,7 @@ class _Drinks extends State<Drinks> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text("Done"), 
               onPressed: () {
                 priceString = drink_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -339,24 +344,7 @@ class _Drinks extends State<Drinks> {
   }
 }
 
-//----------------------snacks
-
-//Retrieves Snack Data From DataBase
-void getSnackData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> snackData = store.data['Snacks'];
-  List<dynamic> keys = snackData.keys.toList();
-  List<dynamic> values = snackData.values.toList();
-  snack_Item.clear();
-  snack_Prices.clear();
-  for (int i = 0; i < keys.length; i++) {
-    snack_Item.add(keys.elementAt(i));
-    snack_Prices.add(values.elementAt(i));
-  }
-}
-
+//----------------------Snacks
 //UI for all snack items
 class _Snacks extends State<Snacks> {
   var quan = 1;
@@ -365,7 +353,7 @@ class _Snacks extends State<Snacks> {
 
   @override
   void initState() {
-    getSnackData();
+    getCategoryData('Snacks');
   }
 
   @override
@@ -445,23 +433,6 @@ class _Snacks extends State<Snacks> {
   }
 }
 //-----------------------------Produce--------
-
-//Gets Produce Data From Database
-void getProduceData() async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> produceData = store.data['Produce'];
-  List<dynamic> keys = produceData.keys.toList();
-  List<dynamic> values = produceData.values.toList();
-  produce_Item.clear();
-  produceData.clear();
-  for (int i = 0; i < keys.length; i++) {
-    produce_Item.add(keys.elementAt(i));
-    produce_Prices.add(values.elementAt(i));
-  }
-}
-
 // UI for Produce
 class _Produce extends State<Produce> {
   var quan = 1;
@@ -470,7 +441,7 @@ class _Produce extends State<Produce> {
 
   @override
   void initState() {
-    getProduceData();
+    getCategoryData('Produce');
   }
 
   @override
@@ -534,7 +505,7 @@ class _Produce extends State<Produce> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text("Done"),
               onPressed: () {
                 priceString = produce_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -551,7 +522,6 @@ class _Produce extends State<Produce> {
 }
 
 //-----------------------Entire Page Setup
-
 class MockStore extends StatefulWidget {
   static String tag = 'mock-store';
   @override
