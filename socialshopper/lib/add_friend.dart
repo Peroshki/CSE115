@@ -34,11 +34,11 @@ void addFriend(data, BuildContext context){
 
       // Grab the data of the friend being added,
       // and set their name to their uid if they do not have a display name
-      final String uid = data['friendUid'].toString();
+      final String uid = data['uid'].toString();
       final String name = data['displayName'] ?? uid;
 
       // Create a new entry for the friend you wish to add
-      final Map<String, String> friend = <String, String>{'name': name, 'friendUid': uid};
+      final Map<String, String> friend = <String, String>{'name': name, 'uid': uid};
       friendsList.add(friend);
 
       // Update the users friends list
