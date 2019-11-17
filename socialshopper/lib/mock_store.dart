@@ -605,6 +605,7 @@ class _MockStore extends State<MockStore> {
       case 4:
         return UserItemInput();
     }
+    throw 'Invalid select index';
   }
 
   String topAppBar(int index) {
@@ -626,5 +627,6 @@ class _MockStore extends State<MockStore> {
         appBarVal = 'Enter Item Description';
         return appBarVal;
     }
+    throw 'Invalid index';
   }
 }

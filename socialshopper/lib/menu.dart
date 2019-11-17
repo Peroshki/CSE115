@@ -93,12 +93,13 @@ class _MenuPageState extends State<MenuPage> {
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
-    for (String list in user.data['lists']) {
-      docs.add(results.documents.where((doc) => doc.documentID == list).first);
-    }
+    if (user.data != null) 
+      for (String list in user.data['lists']) {
+        docs.add(results.documents.where((doc) => doc.documentID == list).first);
+      }
 
     var i = 0;
-    var val = "";
+    var val = '';
 
     if (numList.length < docs.length || numList.length > docs.length) {
       numList.clear();
