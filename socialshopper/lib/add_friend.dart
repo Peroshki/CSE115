@@ -38,7 +38,7 @@ void addFriend(data, BuildContext context){
       final String name = data['displayName'] ?? uid;
 
       // Create a new entry for the friend you wish to add
-      final Map<String, String> friend = <String, String>{'name': name, 'uid': uid};
+      final Map<String, String> friend = <String, String>{'name': name, 'friendUid': uid};
       friendsList.add(friend);
 
       // Update the users friends list

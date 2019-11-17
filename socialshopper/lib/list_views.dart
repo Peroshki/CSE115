@@ -247,9 +247,9 @@ List<Widget> createItemCardWidget(Item item) {
   return widgets;
 }
 
-Widget createTitleWidget(String name) {
+// Widget createTitleWidget(String name) {
 
-}
+// }
 
 /*** END WIDGET GENERATORS ***/
 
