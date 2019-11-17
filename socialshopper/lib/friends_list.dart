@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialshopper/add_friend.dart';
+import 'profile.dart';
+
 
 class Friend {
   String name;
   String uid;
-
+  String photo;
   Friend.fromMap(Map<dynamic, dynamic> data)
       : name = data['name'],
-        uid = data['uid'];
+        uid = data['uid'],
+        photo = data['photo'];
 }
 
 class Friends extends StatefulWidget {
@@ -16,7 +20,14 @@ class Friends extends StatefulWidget {
   _friendState createState() => _friendState();
 }
 
-Widget generateFriendWidget(String name, BuildContext context) {
+Widget generateFriendWidget(String name, String photo, BuildContext context) {
+  //final Arguments args = ModalRoute.of(context).settings.arguments;
+  // String imageInit(FirebaseUser uid) {
+  //   if (uid.photoUrl == null) {
+  //     return 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
+  //   } else
+  //     return args.photoUrl;
+  // }
   return ListTile(
     leading: Container(
         width: 40.0,
@@ -26,7 +37,7 @@ Widget generateFriendWidget(String name, BuildContext context) {
             image:  DecorationImage(
                 fit: BoxFit.fill,
                 image: NetworkImage(
-                    'https://i.imgur.com/BoN9kdC.png'
+                   '$photo'
                 )
             )
         )
@@ -69,6 +80,7 @@ Widget generateFriendWidget(String name, BuildContext context) {
 class _friendState extends State<Friends> {
   @override
   Widget build(BuildContext context) {
+    final Arguments args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -80,7 +92,7 @@ class _friendState extends State<Friends> {
             onPressed: () {
               Navigator.of(context).pushNamed(
                   AddFriend.tag,
-                  arguments: ModalRoute.of(context).settings.arguments.toString()
+                  arguments: args.uid
               );
             },
           )
@@ -88,7 +100,7 @@ class _friendState extends State<Friends> {
       ),
       body: StreamBuilder(
         // TODO: Get the current users account to get their friends list
-        stream: Firestore.instance.collection('users').document('S5xWtKZWyFYklveNY7jk7Qfnabf2').snapshots(),
+        stream: Firestore.instance.collection('users').document(args.uid.toString()).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Text('error');
@@ -98,7 +110,7 @@ class _friendState extends State<Friends> {
           return ListView.builder(
               itemCount: friends.length,
               itemBuilder: (context, index) {
-                return generateFriendWidget(friends[index].name, context);
+                return generateFriendWidget(friends[index].name,friends[index].photo, context);
               }
           );
         },
