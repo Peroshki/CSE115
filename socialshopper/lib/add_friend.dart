@@ -36,11 +36,9 @@ void addFriend(data, BuildContext context){
       // and set their name to their uid if they do not have a display name
       final String uid = data['uid'].toString();
       final String name = data['displayName'] ?? uid;
-      const String anonPhoto = 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
-      final String photo = data['photoURL'] ?? anonPhoto;
 
       // Create a new entry for the friend you wish to add
-      final Map<String, String> friend = <String, String>{'name': name, 'uid': uid, 'photo': photo};
+      final Map<String, String> friend = <String, String>{'name': name, 'uid': uid};
       friendsList.add(friend);
 
       // Update the users friends list
