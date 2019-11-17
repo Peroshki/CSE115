@@ -21,13 +21,6 @@ class Friends extends StatefulWidget {
 }
 
 Widget generateFriendWidget(String name, String photo, BuildContext context) {
-  //final Arguments args = ModalRoute.of(context).settings.arguments;
-  // String imageInit(FirebaseUser uid) {
-  //   if (uid.photoUrl == null) {
-  //     return 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
-  //   } else
-  //     return args.photoUrl;
-  // }
   return ListTile(
     leading: Container(
         width: 40.0,

@@ -46,17 +46,19 @@ class AuthService {
       idToken: googleAuth.idToken,
     );
     //Use credentials from before to login to Firebase
-    final FirebaseUser user =
-        (await _auth.signInWithCredential(credential)).user;
+    final AuthResult result =
+        await _auth.signInWithCredential(credential);
+    final FirebaseUser user = result.user;
+    var isNew = result.additionalUserInfo.isNewUser;
     //Make sure fields entered/returned are not null
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
-
+  
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
-    updateUserData(user);
+    updateUserData(user, isNew);
     print('Signed in ' + user.displayName);
 
     loading.add(false);
@@ -66,20 +68,24 @@ class AuthService {
   //Store user's data
   List<String> friends = [];
   List<String> lists = [];
-  void updateUserData(FirebaseUser user) async {
+  void updateUserData(FirebaseUser user, bool isNewUser) async {
+    FirebaseUserMetadata metadata = user.metadata;
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
-    if (ref.collection('users/friends') == null && ref.collection('users/lists') == null)
+    print(isNewUser);
+    if (isNewUser) {
+          print('This do.');
       return ref.setData({
         'uid': user.uid,
         'email': user.email,
         'photoURL': user.photoUrl,
         'displayName': user.displayName,
         'lastSeen': DateTime.now(),
-        'friends' : friends,
-        'lists' : lists,
+        'friends': friends,
+        'lists': lists,
       }, merge: true); //Merges data so old data isn't overwritten
-    else
+    } else {
+        print('This do2.');
       return ref.setData({
         'uid': user.uid,
         'email': user.email,
@@ -87,6 +93,7 @@ class AuthService {
         'displayName': user.displayName,
         'lastSeen': DateTime.now(),
       }, merge: true); //Merges data so old data isn't overwritten
+    }
   }
 
   void signOut() async {
