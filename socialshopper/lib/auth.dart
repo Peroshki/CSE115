@@ -64,16 +64,29 @@ class AuthService {
   }
 
   //Store user's data
+  List<String> friends = [];
+  List<String> lists = [];
   void updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
-    return ref.setData({
-      'uid': user.uid,
-      'email': user.email,
-      'photoURL': user.photoUrl,
-      'displayName': user.displayName,
-      'lastSeen': DateTime.now(),
-    }, merge: true); //Merges data so old data isn't overwritten
+    if (ref.collection('users/friends') == null)
+      return ref.setData({
+        'uid': user.uid,
+        'email': user.email,
+        'photoURL': user.photoUrl,
+        'displayName': user.displayName,
+        'lastSeen': DateTime.now(),
+        'friends' : friends,
+        'lists' : lists,
+      }, merge: true); //Merges data so old data isn't overwritten
+    else
+      return ref.setData({
+        'uid': user.uid,
+        'email': user.email,
+        'photoURL': user.photoUrl,
+        'displayName': user.displayName,
+        'lastSeen': DateTime.now(),
+      }, merge: true); //Merges data so old data isn't overwritten
   }
 
   void signOut() async {
