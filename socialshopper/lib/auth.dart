@@ -69,7 +69,7 @@ class AuthService {
   void updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
-    if (ref.collection('users/friends') == null)
+    if (ref.collection('users/friends') == null && ref.collection('users/lists') == null)
       return ref.setData({
         'uid': user.uid,
         'email': user.email,

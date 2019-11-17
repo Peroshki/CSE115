@@ -84,17 +84,20 @@ class _MenuPageState extends State<MenuPage> {
 
   // updates the app with list in the database
   void putNamesOfListInAList() async {
+    print('This runs1');
     // Grab the users document according to their uid
     final DocumentSnapshot user = await Firestore.instance
         .collection('users')
         .document(ModalRoute.of(context).settings.arguments.toString())
         .get();
+    print(ModalRoute.of(context).settings.arguments.toString());
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
     if (user.data != null) {
+      print('This runs');
       for (String list in user.data['lists']) {
         docs.add(
             results.documents.where((doc) => doc.documentID == list).first);

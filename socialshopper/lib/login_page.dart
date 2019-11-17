@@ -23,9 +23,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final googleButton = GoogleSignInButton(
       borderRadius: 24,
-      onPressed: () => authService.googleSignIn().whenComplete(() {
-        Navigator.of(context).pushNamed(MenuPage.tag);
-      }),
+      onPressed: () async { 
+        FirebaseUser user = await authService.googleSignIn();
+        Navigator.of(context).pushNamed(MenuPage.tag, arguments: user.uid);
+      ;},
     );
 
     final signUpButton = RaisedButton(
