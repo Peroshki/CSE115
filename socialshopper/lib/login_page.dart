@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final googleButton = GoogleSignInButton(
       borderRadius: 24,
+      //This has been changed in order to allow for the argument uid to be passed into the menu page.
       onPressed: () async { 
         FirebaseUser user = await authService.googleSignIn();
         Navigator.of(context).pushNamed(MenuPage.tag, arguments: user.uid);
