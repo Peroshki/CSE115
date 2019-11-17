@@ -1,3 +1,6 @@
+//This file will handle the push notifications through deploying the function sendFriendNotification on Firebase.
+//If Firebase detects a write in the friends portion of the database, then the user being friended will receive a notification.
+//This is mostly copied from https://github.com/firebase/functions-samples/blob/master/fcm-notifications/functions/index.js
 'use strict';
 
 const functions = require('firebase-functions');
@@ -10,7 +13,9 @@ admin.initializeApp();
  * friends add a flag to `/friends/{mainUid}/{friendUid}`.
  * Users save their device notification tokens to `/users/{mainUid}/notificationTokens/{notificationToken}`.
  */
+//Following is the path to the friends portion in the database.
 exports.sendfriendNotification = functions.database.ref('/users/{uid}/friends/{$}/{friendUid}')
+//If write detected, then do the following:
     .onWrite(async (change, context) => {
       const friendUid = context.params.friendUid;
       const mainUid = context.params.mainUid;
