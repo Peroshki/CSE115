@@ -46,10 +46,13 @@ class AuthService {
       idToken: googleAuth.idToken,
     );
     //Use credentials from before to login to Firebase
+    //Store result of sign-in in result
     final AuthResult result =
         await _auth.signInWithCredential(credential);
+    //Create Firebase user with the result.
     final FirebaseUser user = result.user;
-    var isNew = result.additionalUserInfo.isNewUser;
+    //Check result's additional returned user of isNewUser
+    final bool isNew = result.additionalUserInfo.isNewUser;
     //Make sure fields entered/returned are not null
     assert(user.email != null);
     assert(user.displayName != null);
@@ -58,6 +61,7 @@ class AuthService {
   
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
+    //Update user data
     updateUserData(user, isNew);
     print('Signed in ' + user.displayName);
 
@@ -68,13 +72,12 @@ class AuthService {
   //Store user's data
   List<String> friends = [];
   List<String> lists = [];
+  //Added a bool argument which says whether or not the user is new
   void updateUserData(FirebaseUser user, bool isNewUser) async {
-    FirebaseUserMetadata metadata = user.metadata;
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
-    print(isNewUser);
+    //If the user is indeed new do:
     if (isNewUser) {
-          print('This do.');
       return ref.setData({
         'uid': user.uid,
         'email': user.email,
@@ -84,8 +87,8 @@ class AuthService {
         'friends': friends,
         'lists': lists,
       }, merge: true); //Merges data so old data isn't overwritten
+    //If the user already exists in Firebase auth then:
     } else {
-        print('This do2.');
       return ref.setData({
         'uid': user.uid,
         'email': user.email,
