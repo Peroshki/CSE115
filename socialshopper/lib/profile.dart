@@ -14,7 +14,12 @@ class Profile extends StatefulWidget {
   //@override
   _ProfileState createState() => _ProfileState();
 }
+class Arguments {
+  final String uid;
+  final String photoUrl;
 
+  Arguments(this.uid, this.photoUrl);
+}
 class _ProfileState extends State<Profile> {
 //class _Profile extends StatelessWidget{
   bool isSwitched = false;
@@ -130,7 +135,7 @@ class _ProfileState extends State<Profile> {
                 onPressed: () {
                   Navigator.of(context).pushNamed(
                     Friends.tag,
-                    arguments: user.uid
+                    arguments: Arguments(user.uid, user.photoUrl),
                   );
                 },
               ),
