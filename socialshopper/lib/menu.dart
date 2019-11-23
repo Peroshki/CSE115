@@ -31,7 +31,6 @@ final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = "";
 
 class callUser {
-  
   static void getUsersOfList() async {
     userNames.clear();
     List<String> test = new List();
@@ -49,7 +48,7 @@ class callUser {
     String values = test.elementAt(0);
     print(values);
     List<String> k = values.split(new RegExp(r'(\W+)'));
-  
+
     for (int i = 0; i < k.length; i++) {
       if (i > 0 && i < k.length - 1) {
         userNames.add(k.elementAt(i));
@@ -85,28 +84,36 @@ class _MenuPageState extends State<MenuPage> {
 
   // updates the app with list in the database
   void putNamesOfListInAList() async {
+    print('This runs1');
     // Grab the users document according to their uid
-    final DocumentSnapshot user =
-        await Firestore.instance.collection('users').document(ModalRoute.of(context).settings.arguments.toString()).get();
+    final DocumentSnapshot user = await Firestore.instance
+        .collection('users')
+        .document(ModalRoute.of(context).settings.arguments.toString())
+        .get();
+    print(ModalRoute.of(context).settings.arguments.toString());
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
-    for (String list in user.data['lists']) {
-      docs.add(results.documents.where((doc) => doc.documentID == list).first);
-    }
+    if (user.data['lists'] != null) {
+      print('This runs');
+      for (String list in user.data['lists']) {
+        docs.add(
+            results.documents.where((doc) => doc.documentID == list).first);
+      }
 
-    var i = 0;
-    var val = "";
+      var i = 0;
+      var val = '';
 
-    if (numList.length < docs.length || numList.length > docs.length) {
-      numList.clear();
-      while (i < docs.length) {
-        val = docs.elementAt(i).documentID;
-        //documentId = docs.elementAt(i).documentID;
-        _addNewList(val);
-        i++;
+      if (numList.length < docs.length || numList.length > docs.length) {
+        numList.clear();
+        while (i < docs.length) {
+          val = docs.elementAt(i).documentID;
+          //documentId = docs.elementAt(i).documentID;
+          _addNewList(val);
+          i++;
+        }
       }
     }
   }
@@ -130,7 +137,6 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
-
   void _getIndex(int index) {
     //change state of list
     setState(() => numList.elementAt(index));
@@ -152,29 +158,27 @@ class _MenuPageState extends State<MenuPage> {
     return StreamBuilder(
       stream: Firestore.instance.collection('lists').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
-          return const Text('error');
+        if (!snapshot.hasData) return const Text('error');
 
         // Only display the lists that belong to the user
         List<DocumentSnapshot> lists = snapshot.data.documents;
         lists = lists.where((doc) => numList.contains(doc.documentID)).toList();
 
         return ListView.builder(
-          itemCount: lists.length,
-          itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                title: Text(lists[index].data['metadata']['name']),
-                onTap: () {
-                  _openList(index, lists[index].data['metadata']['name']);
-                },
-                onLongPress: () {
-                  alertBoxForList(index);
-                },
-              ),
-            );
-          }
-        );
+            itemCount: lists.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  title: Text(lists[index].data['metadata']['name']),
+                  onTap: () {
+                    _openList(index, lists[index].data['metadata']['name']);
+                  },
+                  onLongPress: () {
+                    alertBoxForList(index);
+                  },
+                ),
+              );
+            });
       },
     );
   }
@@ -230,7 +234,6 @@ class _MenuPageState extends State<MenuPage> {
           ));
     }));
   }
-
 
 //Scaffold is the main container for main page
   @override
