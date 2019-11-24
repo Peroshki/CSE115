@@ -14,12 +14,14 @@ class Profile extends StatefulWidget {
   //@override
   _ProfileState createState() => _ProfileState();
 }
+
 class Arguments {
   final String uid;
   final String photoUrl;
 
   Arguments(this.uid, this.photoUrl);
 }
+
 class _ProfileState extends State<Profile> {
 //class _Profile extends StatelessWidget{
   bool isSwitched = false;
@@ -32,11 +34,13 @@ class _ProfileState extends State<Profile> {
     } else
       return user.photoUrl;
   }
+
   //Get the user that is currently logged in.
   initUser() async {
     user = await _auth.currentUser();
     return user;
   }
+
   //Now uses streambulder to get data from firestore based on the user's uid.
   //First streambuilder gets display name from database
   //Second streambuilder gets email from database
@@ -53,96 +57,83 @@ class _ProfileState extends State<Profile> {
           //code for back button
         ),
         body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('users')
-                      .document(user.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return new Text("Loading");
-                    }
-                    var userDocument = snapshot.data;
-                    return Text(
+            child: Container(
+          color: Colors.transparent,
+          child: StreamBuilder(
+            stream: Firestore.instance
+                .collection('users')
+                .document(user.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                var userDocument = snapshot.data;
+                return ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    Text(
                       'Hello, ${userDocument["displayName"]}!',
-                      style: TextStyle(fontSize: 30),
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                    width: 200.0,
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(imageInit())))),
-              ),
-              Text(
-                'You currently have: 0 Lists',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('users')
-                      .document(user.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return new Text("Loading");
-                    }
-                    var userDocument = snapshot.data;
-                    return Text(
+                      style: TextStyle(fontSize: 30.0),
+                      textAlign: TextAlign.center,
+                    ),
+                    Container(
+                        padding: const EdgeInsets.fromLTRB(90,10,90,10),
+                        child: CircleAvatar(
+                            radius: 100,
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.transparent,
+                            backgroundImage: NetworkImage(imageInit()))),
+                    Text(
+                      'You currently have: 0 Lists',
+                      style: TextStyle(fontSize: 20.0),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10.0),
+                    Text(
                       '${userDocument["email"]}',
                       style: TextStyle(fontSize: 20),
-                    );
-                  },
-                ),
-              ),
-              FlatButton(
-                color: Colors.blue,
-                padding: const EdgeInsets.all(6.0),
-                child: Text(
-                  'Logout',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                onPressed: () {
-                  authService.signOut();
-                  Navigator.of(context).pushNamed(LoginPage.tag);
-                },
-              ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10.0),
+                    Column(children: <Widget>[
+                      FlatButton(
+                        color: Colors.blue,
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                        onPressed: () {
+                          authService.signOut();
+                          Navigator.of(context).pushNamed(LoginPage.tag);
+                        },
+                      ),
+                      FlatButton(
+                        color: Colors.blue,
+                        textColor: Colors.white,
+                        padding: const EdgeInsets.all(6.0),
+                        child: Text(
+                          'View Friends',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            Friends.tag,
+                            arguments: Arguments(user.uid, user.photoUrl),
+                          );
+                        },
+                      ),
+                    ]),
 
-              //button to view friends
-              FlatButton(
-                color: Colors.blue,
-                textColor: Colors.white,
-                padding: const EdgeInsets.all(6.0),
-                child: Text(
-                  'View Friends',
-                  style: TextStyle(fontSize: 20.0),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    Friends.tag,
-                    arguments: Arguments(user.uid, user.photoUrl),
-                  );
-                },
-              ),
-
-              //counter for how many lists have
-            ],
+                    //button to view friends
+                  ],
+                );
+              }
+            },
           ),
-        ));
+          // ),
+        )
+            //counter for how many lists have
+            ));
   }
 }
