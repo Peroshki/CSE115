@@ -72,7 +72,7 @@ class ShoppingList {
 // Generates a widget to display the total price for the entire shopping list
 Widget createTotalWidget(double total) {
   return Text(
-    'Total: \$$total',
+    'Total: \$${total.toStringAsFixed(2)}',
     textScaleFactor: 1.2,
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white),
@@ -221,7 +221,7 @@ List<Widget> createItemCardWidget(Item item) {
   final List<Widget> widgets = [
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[Text(item.name), Text('\$${totalPrice.toString()}')],
+      children: <Widget>[Text(item.name), Text('\$${totalPrice.toStringAsFixed(2)}')],
     ),
     Text('Price: \$${item.price}'),
     Text('Quantity: ${item.quantity}'),
