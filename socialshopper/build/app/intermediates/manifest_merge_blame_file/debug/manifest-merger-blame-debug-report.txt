@@ -1,0 +1,299 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.kmsinc.socialshopper"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="28" />
+10    <!--
+11         Flutter needs it to communicate with the running application
+12         to allow setting breakpoints, to provide hot reload, etc.
+13    -->
+14    <uses-permission android:name="android.permission.INTERNET" />
+14-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/debug/AndroidManifest.xml:6:5-66
+14-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/debug/AndroidManifest.xml:6:22-64
+15    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+15-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
+15-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-76
+16    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+16-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:9:5-68
+16-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:9:22-65
+17    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+17-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:26:5-82
+17-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:26:22-79
+18    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+18-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:26:5-110
+18-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:26:22-107
+19    <!--
+20 io.flutter.app.FlutterApplication is an android.app.Application that
+21         calls FlutterMain.startInitialization(this); in its onCreate method.
+22         In most cases you can leave this as-is, but you if you want to provide
+23         additional functionality it is fine to subclass or reimplement
+24         FlutterApplication and put your custom class here.
+25    -->
+26    <application
+26-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:9:5-32:19
+27        android:name="io.flutter.app.FlutterApplication"
+27-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:10:9-57
+28        android:debuggable="true"
+29        android:icon="@mipmap/ic_launcher"
+29-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:12:9-43
+30        android:label="socialshopper" >
+30-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:11:9-38
+31        <activity
+31-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:13:9-31:20
+32            android:name="com.example.socialshopper.MainActivity"
+32-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:14:13-41
+33            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+33-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:17:13-144
+34            android:hardwareAccelerated="true"
+34-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:18:13-47
+35            android:launchMode="singleTop"
+35-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:15:13-43
+36            android:theme="@style/LaunchTheme"
+36-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:16:13-47
+37            android:windowSoftInputMode="adjustResize" >
+37-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:19:13-55
+38
+39            <!--
+40                 This keeps the window background of the activity showing
+41                 until Flutter renders its first frame. It can be removed if
+42                 there is no splash screen (such as the default splash screen
+43                 defined in @style/LaunchTheme).
+44            -->
+45            <meta-data
+45-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:24:13-26:40
+46                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
+46-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:25:17-82
+47                android:value="true" />
+47-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:26:17-37
+48
+49            <intent-filter>
+49-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:27:13-30:29
+50                <action android:name="android.intent.action.MAIN" />
+50-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:28:17-68
+50-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:28:25-66
+51
+52                <category android:name="android.intent.category.LAUNCHER" />
+52-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:29:17-76
+52-->/Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/android/app/src/main/AndroidManifest.xml:29:27-74
+53            </intent-filter>
+54        </activity>
+55
+56        <service
+56-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:12:9-16:19
+57            android:name="com.google.firebase.components.ComponentDiscoveryService"
+57-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:12:18-89
+58            android:exported="false" >
+58-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:35:13-37
+59            <meta-data
+59-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-15:85
+60                android:name="com.google.firebase.components:io.flutter.plugins.firebaseanalytics.FlutterFirebaseAppRegistrar"
+60-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:14:17-127
+61                android:value="com.google.firebase.components.ComponentRegistrar" />
+61-->[:firebase_analytics] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:15:17-82
+62            <meta-data
+62-->[:firebase_auth] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+63                android:name="com.google.firebase.components:io.flutter.plugins.firebaseauth.FlutterFirebaseAppRegistrar"
+63-->[:firebase_auth] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-122
+64                android:value="com.google.firebase.components.ComponentRegistrar" />
+64-->[:firebase_auth] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+65            <meta-data
+65-->[:cloud_firestore] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+66                android:name="com.google.firebase.components:io.flutter.plugins.firebase.cloudfirestore.FlutterFirebaseAppRegistrar"
+66-->[:cloud_firestore] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-133
+67                android:value="com.google.firebase.components.ComponentRegistrar" />
+67-->[:cloud_firestore] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+68            <meta-data
+68-->[:firebase_core] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+69                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseAppRegistrar"
+69-->[:firebase_core] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-123
+70                android:value="com.google.firebase.components.ComponentRegistrar" />
+70-->[:firebase_core] /Users/axelgarcia/Documents/CSE115/CSE115.nosync/socialshopper/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+71            <meta-data
+71-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:36:13-38:85
+72                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+72-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:37:17-109
+73                android:value="com.google.firebase.components.ComponentRegistrar" />
+73-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:38:17-82
+74            <meta-data
+74-->[com.google.firebase:firebase-firestore:19.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/6e66fa76e0f1c5c035c52d3a49773c3d/firebase-firestore-19.0.0/AndroidManifest.xml:18:13-20:85
+75                android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+75-->[com.google.firebase:firebase-firestore:19.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/6e66fa76e0f1c5c035c52d3a49773c3d/firebase-firestore-19.0.0/AndroidManifest.xml:19:17-111
+76                android:value="com.google.firebase.components.ComponentRegistrar" />
+76-->[com.google.firebase:firebase-firestore:19.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/6e66fa76e0f1c5c035c52d3a49773c3d/firebase-firestore-19.0.0/AndroidManifest.xml:20:17-82
+77            <meta-data
+77-->[com.google.android.gms:play-services-measurement-api:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/9147cab95394388ad65c861a48f64143/play-services-measurement-api-16.5.0/AndroidManifest.xml:30:13-32:85
+78                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+78-->[com.google.android.gms:play-services-measurement-api:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/9147cab95394388ad65c861a48f64143/play-services-measurement-api-16.5.0/AndroidManifest.xml:31:17-139
+79                android:value="com.google.firebase.components.ComponentRegistrar" />
+79-->[com.google.android.gms:play-services-measurement-api:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/9147cab95394388ad65c861a48f64143/play-services-measurement-api-16.5.0/AndroidManifest.xml:32:17-82
+80            <meta-data
+80-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:32:13-34:85
+81                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+81-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:33:17-96
+82                android:value="com.google.firebase.components.ComponentRegistrar" />
+82-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:34:17-82
+83        </service>
+84
+85        <activity
+85-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:24:9-31:50
+86            android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
+86-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:25:13-85
+87            android:excludeFromRecents="true"
+87-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:26:13-46
+88            android:exported="true"
+88-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:27:13-36
+89            android:launchMode="singleTask"
+89-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:28:13-44
+90            android:permission="com.google.firebase.auth.api.gms.permission.LAUNCH_FEDERATED_SIGN_IN"
+90-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:29:13-102
+91            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+91-->[com.google.firebase:firebase-auth:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/b755ce2fdba7bfa5b7edefcc948608bd/firebase-auth-17.0.0/AndroidManifest.xml:30:13-72
+92
+93        <receiver
+93-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:37:9-44:20
+94            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+94-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:38:13-78
+95            android:exported="true"
+95-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:39:13-36
+96            android:permission="com.google.android.c2dm.permission.SEND" >
+96-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:40:13-73
+97            <intent-filter>
+97-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:41:13-43:29
+98                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+98-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:42:17-81
+98-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:42:25-78
+99            </intent-filter>
+100        </receiver>
+101        <!--
+102             FirebaseInstanceIdService performs security checks at runtime,
+103             no need for explicit permissions despite exported="true"
+104        -->
+105        <service
+105-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:50:9-56:19
+106            android:name="com.google.firebase.iid.FirebaseInstanceIdService"
+106-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:51:13-77
+107            android:exported="true" >
+107-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:52:13-36
+108            <intent-filter android:priority="-500" >
+108-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:53:13-55:29
+108-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:53:28-51
+109                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+109-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:54:17-80
+109-->[com.google.firebase:firebase-iid:17.1.2] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/acbff7c427410970490e8ac905a6d316/firebase-iid-17.1.2/AndroidManifest.xml:54:25-77
+110            </intent-filter>
+111        </service>
+112
+113        <provider
+113-->[com.google.firebase:firebase-common:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/f6eba89fd7089581b1fde97b0e2407c8/firebase-common-17.0.0/AndroidManifest.xml:12:9-16:39
+114            android:name="com.google.firebase.provider.FirebaseInitProvider"
+114-->[com.google.firebase:firebase-common:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/f6eba89fd7089581b1fde97b0e2407c8/firebase-common-17.0.0/AndroidManifest.xml:13:13-77
+115            android:authorities="com.kmsinc.socialshopper.firebaseinitprovider"
+115-->[com.google.firebase:firebase-common:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/f6eba89fd7089581b1fde97b0e2407c8/firebase-common-17.0.0/AndroidManifest.xml:14:13-72
+116            android:exported="false"
+116-->[com.google.firebase:firebase-common:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/f6eba89fd7089581b1fde97b0e2407c8/firebase-common-17.0.0/AndroidManifest.xml:15:13-37
+117            android:initOrder="100" />
+117-->[com.google.firebase:firebase-common:17.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/f6eba89fd7089581b1fde97b0e2407c8/firebase-common-17.0.0/AndroidManifest.xml:16:13-36
+118
+119        <activity
+119-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:23:9-27:75
+120            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+120-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:24:13-93
+121            android:excludeFromRecents="true"
+121-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:25:13-46
+122            android:exported="false"
+122-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:26:13-37
+123            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+123-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:27:13-72
+124        <!--
+125            Service handling Google Sign-In user revocation. For apps that do not integrate with
+126            Google Sign-In, this service will never be started.
+127        -->
+128        <service
+128-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:33:9-36:110
+129            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+129-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:34:13-89
+130            android:exported="true"
+130-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:35:13-36
+131            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION" />
+131-->[com.google.android.gms:play-services-auth:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/1cb3981bb63519b05633a04d6ca7d2e1/play-services-auth-16.0.1/AndroidManifest.xml:36:13-107
+132
+133        <receiver
+133-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:29:9-33:20
+134            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+134-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:30:13-85
+135            android:enabled="true"
+135-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:31:13-35
+136            android:exported="false" >
+136-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:32:13-37
+137        </receiver>
+138        <receiver
+138-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:34:9-42:20
+139            android:name="com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver"
+139-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:35:13-100
+140            android:enabled="true"
+140-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:36:13-35
+141            android:exported="true"
+141-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:37:13-36
+142            android:permission="android.permission.INSTALL_PACKAGES" >
+142-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:38:13-69
+143            <intent-filter>
+143-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:39:13-41:29
+144                <action android:name="com.android.vending.INSTALL_REFERRER" />
+144-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:40:17-79
+144-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:40:25-76
+145            </intent-filter>
+146        </receiver>
+147
+148        <service
+148-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:44:9-47:40
+149            android:name="com.google.android.gms.measurement.AppMeasurementService"
+149-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:45:13-84
+150            android:enabled="true"
+150-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:46:13-35
+151            android:exported="false" />
+151-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:47:13-37
+152        <service
+152-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:48:9-52:72
+153            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+153-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:49:13-87
+154            android:enabled="true"
+154-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:50:13-35
+155            android:exported="false"
+155-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:51:13-37
+156            android:permission="android.permission.BIND_JOB_SERVICE" />
+156-->[com.google.android.gms:play-services-measurement:16.5.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/12d8481c06b6c47c6434a5b7088455f1/play-services-measurement-16.5.0/AndroidManifest.xml:52:13-69
+157
+158        <activity
+158-->[com.google.android.gms:play-services-base:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/c25366526d6141f852bbc66756b427dc/play-services-base-16.0.1/AndroidManifest.xml:23:9-26:75
+159            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+159-->[com.google.android.gms:play-services-base:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/c25366526d6141f852bbc66756b427dc/play-services-base-16.0.1/AndroidManifest.xml:24:13-79
+160            android:exported="false"
+160-->[com.google.android.gms:play-services-base:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/c25366526d6141f852bbc66756b427dc/play-services-base-16.0.1/AndroidManifest.xml:25:13-37
+161            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+161-->[com.google.android.gms:play-services-base:16.0.1] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/c25366526d6141f852bbc66756b427dc/play-services-base-16.0.1/AndroidManifest.xml:26:13-72
+162
+163        <meta-data
+163-->[com.google.android.gms:play-services-basement:16.2.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/2cfc9cea36ae38643dc1a0b5465b3ebb/play-services-basement-16.2.0/AndroidManifest.xml:23:9-25:69
+164            android:name="com.google.android.gms.version"
+164-->[com.google.android.gms:play-services-basement:16.2.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/2cfc9cea36ae38643dc1a0b5465b3ebb/play-services-basement-16.2.0/AndroidManifest.xml:24:13-58
+165            android:value="@integer/google_play_services_version" />
+165-->[com.google.android.gms:play-services-basement:16.2.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/2cfc9cea36ae38643dc1a0b5465b3ebb/play-services-basement-16.2.0/AndroidManifest.xml:25:13-66
+166        <meta-data
+166-->[com.android.support:support-v4:26.1.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/36b3d83db9d15781ef6163bca8e5257e/support-v4-26.1.0/AndroidManifest.xml:26:9-28:38
+167            android:name="android.support.VERSION"
+167-->[com.android.support:support-v4:26.1.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/36b3d83db9d15781ef6163bca8e5257e/support-v4-26.1.0/AndroidManifest.xml:27:13-51
+168            android:value="26.1.0" />
+168-->[com.android.support:support-v4:26.1.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/36b3d83db9d15781ef6163bca8e5257e/support-v4-26.1.0/AndroidManifest.xml:28:13-35
+169        <meta-data
+169-->[android.arch.lifecycle:runtime:1.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/bd66b53e9bb924527365ba1e7d519932/runtime-1.0.0/AndroidManifest.xml:25:9-27:47
+170            android:name="android.arch.lifecycle.VERSION"
+170-->[android.arch.lifecycle:runtime:1.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/bd66b53e9bb924527365ba1e7d519932/runtime-1.0.0/AndroidManifest.xml:26:13-58
+171            android:value="27.0.0-SNAPSHOT" />
+171-->[android.arch.lifecycle:runtime:1.0.0] /Users/axelgarcia/.gradle/caches/transforms-2/files-2.1/bd66b53e9bb924527365ba1e7d519932/runtime-1.0.0/AndroidManifest.xml:27:13-44
+172    </application>
+173
+174</manifest>
