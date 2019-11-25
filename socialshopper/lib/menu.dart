@@ -68,6 +68,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
+  String userId;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -89,27 +90,32 @@ class _MenuPageState extends State<MenuPage> {
         .collection('users')
         .document(ModalRoute.of(context).settings.arguments.toString())
         .get();
+    userId = ModalRoute.of(context).settings.arguments.toString();
+    print(ModalRoute.of(context).settings.arguments.toString());
+
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
-    if (user.data['lists'] != null) {
-      for (String list in user.data['lists']) {
-        docs.add(
-            results.documents.where((doc) => doc.documentID == list).first);
-      }
+    if (user.data != null) {
+      if (user.data['lists'] != null) {
+        for (String list in user.data['lists']) {
+          docs.add(
+              results.documents.where((doc) => doc.documentID == list).first);
+        }
 
-      var i = 0;
-      var val = '';
+        var i = 0;
+        var val = '';
 
-      if (numList.length < docs.length || numList.length > docs.length) {
-        numList.clear();
-        while (i < docs.length) {
-          val = docs.elementAt(i).documentID;
-          //documentId = docs.elementAt(i).documentID;
-          _addNewList(val);
-          i++;
+        if (numList.length < docs.length || numList.length > docs.length) {
+          numList.clear();
+          while (i < docs.length) {
+            val = docs.elementAt(i).documentID;
+            //documentId = docs.elementAt(i).documentID;
+            _addNewList(val);
+            i++;
+          }
         }
       }
     }
@@ -275,7 +281,10 @@ class _MenuPageState extends State<MenuPage> {
               IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(StoreSelect.tag);
+                    Navigator.of(context).pushNamed(
+                      StoreSelect.tag,
+                      arguments: userId,
+                    );
                   }),
             ],
             automaticallyImplyLeading: false,
@@ -283,7 +292,10 @@ class _MenuPageState extends State<MenuPage> {
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(StoreSelect.tag);
+              Navigator.of(context).pushNamed(
+                StoreSelect.tag,
+                arguments: userId,
+              );
             },
             tooltip: 'Create List',
             child: Icon(Icons.add),
