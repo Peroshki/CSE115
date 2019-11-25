@@ -82,7 +82,7 @@ Widget createTotalWidget(double total) {
 // Generates a widget to display the budget for the shopping list
 Widget createBudgetWidget(double budget) {
   return Text(
-    'Budget: \$$budget',
+    'Budget: \$${budget.toStringAsFixed(2)}',
     textScaleFactor: 1.2,
     style: TextStyle(color: Colors.white),
   );
@@ -94,7 +94,7 @@ Widget createDifferenceWidget(double difference) {
   String text;
   Color textColor;
   if (difference < 0) {
-    text = '-(\$${difference.toString().substring(1)})';
+    text = '-(\$${difference.toStringAsFixed(2).substring(1)})';
     textColor = Colors.red;
   } else {
     text = '(\$$difference)';
@@ -223,7 +223,7 @@ List<Widget> createItemCardWidget(Item item) {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[Text(item.name), Text('\$${totalPrice.toStringAsFixed(2)}')],
     ),
-    Text('Price: \$${item.price}'),
+    Text('Price: \$${item.price.toStringAsFixed(2)}'),
     Text('Quantity: ${item.quantity}'),
     Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
