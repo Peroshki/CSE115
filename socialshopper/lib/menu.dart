@@ -28,7 +28,7 @@ List<String> userNames = new List();
 
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
-var documentName = "";
+var documentName = '';
 
 class callUser {
   static void getUsersOfList() async {
@@ -96,22 +96,25 @@ class _MenuPageState extends State<MenuPage> {
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
-    if (user.data['lists'] != null) {
-      for (String list in user.data['lists']) {
-        docs.add(
-            results.documents.where((doc) => doc.documentID == list).first);
-      }
+    
+    if (user.data != null) {
+      if (user.data['lists'] != null) {
+        for (String list in user.data['lists']) {
+          docs.add(
+              results.documents.where((doc) => doc.documentID == list).first);
+        }
 
-      var i = 0;
-      var val = '';
+        var i = 0;
+        var val = '';
 
-      if (numList.length < docs.length || numList.length > docs.length) {
-        numList.clear();
-        while (i < docs.length) {
-          val = docs.elementAt(i).documentID;
-          //documentId = docs.elementAt(i).documentID;
-          _addNewList(val);
-          i++;
+        if (numList.length < docs.length || numList.length > docs.length) {
+          numList.clear();
+          while (i < docs.length) {
+            val = docs.elementAt(i).documentID;
+            //documentId = docs.elementAt(i).documentID;
+            _addNewList(val);
+            i++;
+          }
         }
       }
     }
@@ -157,7 +160,8 @@ class _MenuPageState extends State<MenuPage> {
     return StreamBuilder(
       stream: Firestore.instance.collection('lists').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Text('error');
+        if (!snapshot.hasData)
+          return Center(child: CircularProgressIndicator());
 
         // Only display the lists that belong to the user
         List<DocumentSnapshot> lists = snapshot.data.documents;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socialshopper/item_input.dart';
+import 'package:socialshopper/payment.dart';
 import 'package:socialshopper/store_select.dart';
 import 'add_friend.dart';
 import 'friends_list.dart';
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
     UserItemInput.tag: (context) => UserItemInput(),
     Friends.tag: (context) => Friends(),
     MockStore.tag: (context) => MockStore(),
-    AddFriend.tag: (context) => AddFriend()
+    AddFriend.tag: (context) => AddFriend(),
+    Payment.tag: (context) => Payment(),
   };
 
   @override
