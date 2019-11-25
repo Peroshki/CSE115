@@ -195,6 +195,7 @@ Widget createFinishWidget(BuildContext context, double groupTotal,
           textScaleFactor: 1.2,
           style: TextStyle(color: Colors.white),
         ),
+        // Go to payment page.
         onPressed: () {
           Navigator.of(context).pushNamed(Payment.tag);
         },
