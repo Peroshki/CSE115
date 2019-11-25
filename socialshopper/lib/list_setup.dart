@@ -1,18 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socialshopper/friends_list.dart';
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///      This file creates the basic list settings page of the app before any items can be added to it.
-/// All of the metadata collected from this page is put into a new list on the database with the list ID as it's
-/// name. This is for our convinience because it allows for the app to easily find the lists the users made
-/// in the database instead of searching by individual list names.
-///
-///   This file still needs some work. Here are the things it needs:
-/// * The file needs to look at all pre-existing list data and properly create a new List ID that is unique.
-///   Right now this is random, which is bad because it can overwrite other peoples lists.
-/// * There should be a functionality to add users in our database into the list instead of just using a text box
-/// * This should also get the store in the future and display that to the database.
-/// * The files time stamp looks strange, and I don't know how to parse it to become a timestamp in firebase.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +71,7 @@ class ListSetup extends StatefulWidget {
 //Main Widget
 class _ListSetup extends State<ListSetup> {
   //Initializing variables used throughout the page.
-  String name = '', part = '', id = '', username = '';
+  String name = '', part = '', id = '';
   int budget = -1;
   List<String> people = [];
   List<dynamic> friends = [];
@@ -120,15 +107,6 @@ class _ListSetup extends State<ListSetup> {
     setState(() {
       people.add(name);
     });
-  }
-
-  Future<void> userInfo() async {
-    final ref = Firestore.instance
-        .collection('users')
-        .document(ModalRoute.of(context).settings.arguments);
-    DocumentSnapshot user = await ref.get();
-    id = user.data['uid'];
-    username = user.data['displayName'];
   }
 
   //Create an in app version of the friends list.
@@ -267,7 +245,7 @@ class _ListSetup extends State<ListSetup> {
                 ),
 
                 ListTile(
-                  title: Text('Add Other Participants',
+                  title: Text('Other Participants',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
@@ -332,13 +310,10 @@ class _ListSetup extends State<ListSetup> {
       // Button to move to the next page.
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
+        //Puts the User Id in the list of IDs
         onPressed: () {
-          userInfo();
           setState(() {
             ids.add(user.uid);
-          });
-          setState(() {
-            people.add(username);
           });
           
           createRecord(name, budget, people,
