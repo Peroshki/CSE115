@@ -19,15 +19,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _succ = false;
   @override
   Widget build(BuildContext context) {
     final googleButton = GoogleSignInButton(
       borderRadius: 24,
       //This has been changed in order to allow for the argument uid to be passed into the menu page.
-      onPressed: () async { 
+      onPressed: () async {
         FirebaseUser user = await authService.googleSignIn();
         Navigator.of(context).pushNamed(MenuPage.tag, arguments: user.uid);
-      ;},
+        ;
+      },
     );
 
     final signUpButton = RaisedButton(
@@ -47,11 +49,9 @@ class _LoginPageState extends State<LoginPage> {
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-                fit: BoxFit.fill,
-                image: const AssetImage('assets/images/Logo(1).png'),
-            )
-        )
-    );
+              fit: BoxFit.fill,
+              image: const AssetImage('assets/images/Logo(1).png'),
+            )));
 
     return Scaffold(
       body: Center(
@@ -143,15 +143,19 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     //Returns the actual form built from the above elements.
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          email,
-          password,
-          SizedBox(height: 20.0),
-          loginButton,
-        ],
-      ),
+      child: _success == true
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                email,
+                password,
+                SizedBox(height: 20.0),
+                loginButton,
+              ],
+            ),
     );
   }
 
@@ -201,8 +205,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           _userEmail = user.email;
         });
         logInUpdateUserData(user);
-        Navigator.of(context).pushNamed(
-            MenuPage.tag,
+        Navigator.of(context).pushNamed(MenuPage.tag,
             // Pass the users uid as an argument to the main menu page
             arguments: user.uid);
       } else {
@@ -229,7 +232,8 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       }
     }
   }
-  //This is necessary as before auth's update function was used. This was fine for Google accounts, 
+
+  //This is necessary as before auth's update function was used. This was fine for Google accounts,
   //but if signing in with email and password, the name was overwritten with null
   //as FirebaseAuth has no field for name when creating an account with email and password. So here, we update everything except for name.
   void logInUpdateUserData(FirebaseUser user) async {
