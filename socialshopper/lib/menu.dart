@@ -68,6 +68,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   int _selectedIndex = 1;
+  String userId;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -89,6 +90,9 @@ class _MenuPageState extends State<MenuPage> {
         .collection('users')
         .document(ModalRoute.of(context).settings.arguments.toString())
         .get();
+    userId = ModalRoute.of(context).settings.arguments.toString();
+    print(ModalRoute.of(context).settings.arguments.toString());
+    
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
 
@@ -275,7 +279,10 @@ class _MenuPageState extends State<MenuPage> {
               IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(StoreSelect.tag);
+                    Navigator.of(context).pushNamed(
+                      StoreSelect.tag,
+                      arguments: userId,
+                    );
                   }),
             ],
             automaticallyImplyLeading: false,
@@ -283,7 +290,10 @@ class _MenuPageState extends State<MenuPage> {
           body: _buildList(),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(StoreSelect.tag);
+              Navigator.of(context).pushNamed(
+                StoreSelect.tag,
+                arguments: userId,
+              );
             },
             tooltip: 'Create List',
             child: Icon(Icons.add),
