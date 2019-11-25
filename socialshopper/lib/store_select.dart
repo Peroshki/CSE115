@@ -8,6 +8,11 @@ class StoreSelect extends StatefulWidget {
   _StoreSelectState createState() => _StoreSelectState();
 }
 
+class Arguments{
+  String userId;
+  Arguments(this.userId);
+}
+
 class _StoreSelectState extends State<StoreSelect> {
   //Creates an alert to the user saying that these buttons aren't implemented.
   Future<void> createAlert(BuildContext context) {
@@ -24,6 +29,8 @@ class _StoreSelectState extends State<StoreSelect> {
   @override
   Widget build(BuildContext context) {
     const String title = 'Store Select';
+    
+    //final Arguments args = ModalRoute.of(context).settings.arguments;
 
     //Creates the Safeway Button
     final safewayButton = Padding(
@@ -33,7 +40,10 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(ListSetup.tag);
+          Navigator.of(context).pushNamed(
+                ListSetup.tag,
+                arguments: ModalRoute.of(context).settings.arguments,
+              );
         },
         padding: EdgeInsets.all(12),
         color: Colors.red[100],
