@@ -9,6 +9,7 @@
 .history
 .svn/
 .firebase/
+*.icloud
 
 # IntelliJ related
 *.iml
