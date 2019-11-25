@@ -35,12 +35,6 @@ class Arguments {
 // functions used to record user data -> database
 void createRecord(
   String listName, int budget, List<String> people, String id, List<String> ids, BuildContext context) async {
-  //Gives access to the users lists.
-  final ref = Firestore.instance
-        .collection('users')
-        .document(ModalRoute.of(context).settings.arguments);
-    DocumentSnapshot user = await ref.get();
-
   //Sets up the initial list and it's data in the database.
   await databaseRef.collection('lists').document(id.toString()).setData({
     'items': [
