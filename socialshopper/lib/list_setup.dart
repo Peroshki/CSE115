@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:socialshopper/friends_list.dart';
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///      This file creates the basic list settings page of the app before any items can be added to it.
 /// All of the metadata collected from this page is put into a new list on the database with the list ID as it's
@@ -15,25 +17,31 @@
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'menu.dart';
+import 'add_friend.dart';
 import 'menu.dart' as globals;
 
 //Creates an instance in the database
 final databaseRef = Firestore.instance;
+FirebaseAuth _auth = FirebaseAuth.instance;
+FirebaseUser user;
+
+class Arguments {
+  final String userId;
+  Arguments(this.userId);
+}
 
 // functions used to record user data -> database
 void createRecord(
     String listName, int budget, List<String> people, String id) async {
   await databaseRef.collection('lists').document(id.toString()).setData({
-    'items' : [
+    'items': [
       {
         'name': 'Banana',
         'quantity': 2,
         'price': 4,
-        'users': [
-          'Alan',
-          'Omar'
-        ]
+        'users': ['Alan', 'Omar']
       }
     ],
     'metadata': {
@@ -50,6 +58,15 @@ void createRecord(
   globals.numList.add(id);
 }
 
+void putInListsDatabase(String listId, List<String> ids) async {
+  for (int i = 0; i < ids.length; i++) {
+    await databaseRef
+        .collection('users')
+        .document(ids[i])
+        .updateData({'lists': listId});
+  }
+}
+
 //Sets up the page and the path to get to it.
 class ListSetup extends StatefulWidget {
   static String tag = 'list-setup';
@@ -62,9 +79,10 @@ class _ListSetup extends State<ListSetup> {
   //Initializing variables used throughout the page.
   String name = '', part = '';
   int budget = -1;
-  List<String> people = [
-    'User'
-  ]; // When we get proper user data, this will be empty and the user will be
+  List<String> people = [];
+  List<dynamic> friends = [];
+  List<String> ids = [];
+  // When we get proper user data, this will be empty and the user will be
   // manually added.
   //Gets the name of the file.
   void getName(String value) {
@@ -72,7 +90,10 @@ class _ListSetup extends State<ListSetup> {
       name = value;
     });
   }
-
+  initUser() async {
+    user = await _auth.currentUser();
+    return user;
+  }
   //Gets the name of the participants you're adding.
   void getPeople(String value) {
     setState(() {
@@ -94,6 +115,39 @@ class _ListSetup extends State<ListSetup> {
     });
   }
 
+  void getUser() async {
+    //Gets the users information.
+    final ref = Firestore.instance
+        .collection('users')
+        .document(ModalRoute.of(context).settings.arguments);
+    DocumentSnapshot user = await ref.get();
+
+    onPressed(user.data['displayName']);
+
+    setState(() {
+      ids.add(user.data['uid']);
+    });
+  }
+
+  //Create an in app version of the friends list.
+  Future<void> getFriends() async {
+    final ref = Firestore.instance
+        .collection('users')
+        .document(ModalRoute.of(context).settings.arguments);
+    DocumentSnapshot user = await ref.get();
+    List<dynamic> friendsList = user.data['friends'];
+    friends = friendsList;
+  }
+
+  Future<void> personInList(BuildContext context) {
+    return showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              content: const Text('You Already Have This Member.'));
+        });
+  }
+
   //Creates a pop up to add new participants.
   Future<void> createAlert(BuildContext context) {
     return showDialog<void>(
@@ -102,32 +156,47 @@ class _ListSetup extends State<ListSetup> {
           return AlertDialog(
               content: Container(
                   padding: const EdgeInsets.all(32.0),
-                  height: 175.0,
                   child: Center(
                       child: Column(children: <Widget>[
-                    //Allows user to enter participant's names
-                    TextField(
-                      onChanged: (String value) {
-                        getPeople(value);
-                      },
-                      autocorrect: true,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Participant\'s Name',
-                      ),
+
+                    //Allows user to get friends from their list
+                    Container(
+                      child: Column(children: [
+                        //For Loop creates tiles for all of the friends to appear on the alert dialog
+                        for (int i = 0; i < friends.length; i++)
+                          GestureDetector(
+                              child: ListTile(title: Text(friends[i]['name'])),
+                              onTap: () {
+                                //If the person is already in the list don't add them again
+                                if (people.contains(friends[i]['name'])) {
+                                  Navigator.of(context).pop();
+                                  personInList(context);
+                                } 
+                                else {
+                                  //Add the participants name to the people list
+                                  onPressed(friends[i]['name']);
+                                  //Adds the participant's user ID to another list to use later.
+                                  setState(() {
+                                    ids.add(friends[i]['uid']);
+                                  });
+                                  //Leave the alert dialog
+                                  Navigator.of(context).pop();
+                                }
+                              })
+                      ]),
                     ),
 
-                    //Saves data to the list of participants
+                    //Navigates to the add friends page
                     RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
                       onPressed: () {
-                        onPressed(part);
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed(AddFriend.tag);
                       },
                       padding: const EdgeInsets.all(12),
                       color: Colors.lightBlueAccent,
-                      child: Text('Add Member',
+                      child: Text('Add New Friends',
                           style: TextStyle(color: Colors.white)),
                     )
                   ]))));
@@ -136,6 +205,7 @@ class _ListSetup extends State<ListSetup> {
 
   @override
   Widget build(BuildContext context) {
+    initUser();
     final Uuid uuid = Uuid();
     return Scaffold(
       //Top bar of the app
@@ -195,7 +265,7 @@ class _ListSetup extends State<ListSetup> {
                 ),
 
                 ListTile(
-                  title: Text('Add Participants',
+                  title: Text('Add Other Participants',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
@@ -217,6 +287,9 @@ class _ListSetup extends State<ListSetup> {
                                 onPressed: () {
                                   setState(() {
                                     people.removeAt(index);
+                                  });
+                                  setState(() {
+                                    ids.removeAt(index);
                                   });
                                 },
                                 child: Align(
@@ -242,7 +315,8 @@ class _ListSetup extends State<ListSetup> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
+                    await getFriends();
                     createAlert(context);
                   },
                   padding: const EdgeInsets.all(12),
@@ -257,9 +331,13 @@ class _ListSetup extends State<ListSetup> {
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          getUser();
           createRecord(name, budget, people,
               uuid.v4()); // Instead of a random number, create a uid for the list.
-          Navigator.of(context).pushNamed(MenuPage.tag);
+          Navigator.of(context).pushNamed(
+            MenuPage.tag,
+            arguments: user.uid,
+          );
         },
         tooltip: 'New List',
         child: Icon(Icons.done),
