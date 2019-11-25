@@ -62,7 +62,7 @@ void createRecord(
   List<String> lists = [id];
 
   for(int i = 0; i < ids.length; i++)
-      await databaseRef.collection('users').document(ids[i]).updateData({'lists': FieldValue.arrayUnion(lists)});
+      await databaseRef.collection('users').document(ids[i].toString()).updateData({'lists': FieldValue.arrayUnion(lists)});
 }
 
 void putInListsDatabase(String listId, List<String> ids) async {
@@ -335,7 +335,7 @@ class _ListSetup extends State<ListSetup> {
         onPressed: () {
           userInfo();
           setState(() {
-            ids.add(id);
+            ids.add(user.uid);
           });
           setState(() {
             people.add(username);
