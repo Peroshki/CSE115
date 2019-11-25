@@ -34,7 +34,14 @@ class Arguments {
 
 // functions used to record user data -> database
 void createRecord(
-    String listName, int budget, List<String> people, String id) async {
+  String listName, int budget, List<String> people, String id, List<String> ids, BuildContext context) async {
+  //Gives access to the users lists.
+  final ref = Firestore.instance
+        .collection('users')
+        .document(ModalRoute.of(context).settings.arguments);
+    DocumentSnapshot user = await ref.get();
+
+  //Sets up the initial list and it's data in the database.
   await databaseRef.collection('lists').document(id.toString()).setData({
     'items': [
       {
@@ -56,6 +63,12 @@ void createRecord(
     }
   });
   globals.numList.add(id);
+
+  //Puts the list data in the list section.
+  List<String> lists = [id];
+
+  for(int i = 0; i < ids.length; i++)
+      await databaseRef.collection('users').document(ids[i]).updateData({'lists': FieldValue.arrayUnion(lists)});
 }
 
 void putInListsDatabase(String listId, List<String> ids) async {
@@ -77,7 +90,7 @@ class ListSetup extends StatefulWidget {
 //Main Widget
 class _ListSetup extends State<ListSetup> {
   //Initializing variables used throughout the page.
-  String name = '', part = '';
+  String name = '', part = '', id = '', username = '';
   int budget = -1;
   List<String> people = [];
   List<dynamic> friends = [];
@@ -115,18 +128,13 @@ class _ListSetup extends State<ListSetup> {
     });
   }
 
-  void getUser() async {
-    //Gets the users information.
+  Future<void> userInfo() async {
     final ref = Firestore.instance
         .collection('users')
         .document(ModalRoute.of(context).settings.arguments);
     DocumentSnapshot user = await ref.get();
-
-    onPressed(user.data['displayName']);
-
-    setState(() {
-      ids.add(user.data['uid']);
-    });
+    id = user.data['uid'];
+    username = user.data['displayName'];
   }
 
   //Create an in app version of the friends list.
@@ -331,9 +339,16 @@ class _ListSetup extends State<ListSetup> {
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          getUser();
+          userInfo();
+          setState(() {
+            ids.add(id);
+          });
+          setState(() {
+            people.add(username);
+          });
+          
           createRecord(name, budget, people,
-              uuid.v4()); // Instead of a random number, create a uid for the list.
+              uuid.v4(), ids, context); // Instead of a random number, create a uid for the list.
           Navigator.of(context).pushNamed(
             MenuPage.tag,
             arguments: user.uid,
