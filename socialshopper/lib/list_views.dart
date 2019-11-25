@@ -140,7 +140,7 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
     Widget indTotalWidget = Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20.0),
       child: Text(
-        '${indTotal.key}\'s Total: \$${(indTotal.value * 100).roundToDouble() / 100}',
+        '${indTotal.key}\'s Total: \$${((indTotal.value * 100).roundToDouble() / 100).toStringAsFixed(2)}',
         textAlign: TextAlign.center,
         textScaleFactor: 1.2,
         style: TextStyle(color: Colors.white),
