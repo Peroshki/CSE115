@@ -92,28 +92,30 @@ class _MenuPageState extends State<MenuPage> {
         .get();
     userId = ModalRoute.of(context).settings.arguments.toString();
     print(ModalRoute.of(context).settings.arguments.toString());
-    
+
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
-    if (user.data['lists'] != null) {
-      for (String list in user.data['lists']) {
-        docs.add(
-            results.documents.where((doc) => doc.documentID == list).first);
-      }
+    if (user.data != null) {
+      if (user.data['lists'] != null) {
+        for (String list in user.data['lists']) {
+          docs.add(
+              results.documents.where((doc) => doc.documentID == list).first);
+        }
 
-      var i = 0;
-      var val = '';
+        var i = 0;
+        var val = '';
 
-      if (numList.length < docs.length || numList.length > docs.length) {
-        numList.clear();
-        while (i < docs.length) {
-          val = docs.elementAt(i).documentID;
-          //documentId = docs.elementAt(i).documentID;
-          _addNewList(val);
-          i++;
+        if (numList.length < docs.length || numList.length > docs.length) {
+          numList.clear();
+          while (i < docs.length) {
+            val = docs.elementAt(i).documentID;
+            //documentId = docs.elementAt(i).documentID;
+            _addNewList(val);
+            i++;
+          }
         }
       }
     }

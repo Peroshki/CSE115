@@ -74,6 +74,7 @@ Widget createTotalWidget(double total) {
   return Text(
     'Total: \$$total',
     textScaleFactor: 1.2,
+    textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white),
   );
 }
@@ -137,9 +138,10 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
 
   for (var indTotal in indTotals.entries) {
     Widget indTotalWidget = Padding(
-      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 40.0),
+      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20.0),
       child: Text(
-        "${indTotal.key}'s Total: ${(indTotal.value * 100).roundToDouble() / 100}",
+        '${indTotal.key}\'s Total: \$${(indTotal.value * 100).roundToDouble() / 100}',
+        textAlign: TextAlign.center,
         textScaleFactor: 1.2,
         style: TextStyle(color: Colors.white),
       ),
@@ -159,7 +161,7 @@ Widget createFinishWidget(BuildContext context, double groupTotal,
 
   final Widget totalWidget = Row(
     mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
       Padding(
         padding: const EdgeInsets.only(bottom: 10.0, top: 15.0, left: 20.0),
