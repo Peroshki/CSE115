@@ -91,13 +91,12 @@ class _MenuPageState extends State<MenuPage> {
         .document(ModalRoute.of(context).settings.arguments.toString())
         .get();
     userId = ModalRoute.of(context).settings.arguments.toString();
-    print(ModalRoute.of(context).settings.arguments.toString());
-
     final QuerySnapshot results =
         await Firestore.instance.collection('lists').getDocuments();
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
+
     //Check if user has data
     if (user.data != null) {
       if (user.data['lists'] != null) {

@@ -1,18 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socialshopper/friends_list.dart';
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///      This file creates the basic list settings page of the app before any items can be added to it.
-/// All of the metadata collected from this page is put into a new list on the database with the list ID as it's
-/// name. This is for our convinience because it allows for the app to easily find the lists the users made
-/// in the database instead of searching by individual list names.
-///
-///   This file still needs some work. Here are the things it needs:
-/// * The file needs to look at all pre-existing list data and properly create a new List ID that is unique.
-///   Right now this is random, which is bad because it can overwrite other peoples lists.
-/// * There should be a functionality to add users in our database into the list instead of just using a text box
-/// * This should also get the store in the future and display that to the database.
-/// * The files time stamp looks strange, and I don't know how to parse it to become a timestamp in firebase.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +21,8 @@ class Arguments {
 
 // functions used to record user data -> database
 void createRecord(
-    String listName, int budget, List<String> people, String id) async {
+  String listName, int budget, List<String> people, String id, List<String> ids, BuildContext context) async {
+  //Sets up the initial list and it's data in the database.
   await databaseRef.collection('lists').document(id.toString()).setData({
     'items': [
       {
@@ -56,6 +44,12 @@ void createRecord(
     }
   });
   globals.numList.add(id);
+
+  //Puts the list data in the list section.
+  List<String> lists = [id];
+
+  for(int i = 0; i < ids.length; i++)
+      await databaseRef.collection('users').document(ids[i].toString()).updateData({'lists': FieldValue.arrayUnion(lists)});
 }
 
 void putInListsDatabase(String listId, List<String> ids) async {
@@ -77,7 +71,7 @@ class ListSetup extends StatefulWidget {
 //Main Widget
 class _ListSetup extends State<ListSetup> {
   //Initializing variables used throughout the page.
-  String name = '', part = '';
+  String name = '', part = '', id = '';
   int budget = -1;
   List<String> people = [];
   List<dynamic> friends = [];
@@ -112,20 +106,6 @@ class _ListSetup extends State<ListSetup> {
   void onPressed(String name) {
     setState(() {
       people.add(name);
-    });
-  }
-
-  void getUser() async {
-    //Gets the users information.
-    final ref = Firestore.instance
-        .collection('users')
-        .document(ModalRoute.of(context).settings.arguments);
-    DocumentSnapshot user = await ref.get();
-
-    onPressed(user.data['displayName']);
-
-    setState(() {
-      ids.add(user.data['uid']);
     });
   }
 
@@ -265,7 +245,7 @@ class _ListSetup extends State<ListSetup> {
                 ),
 
                 ListTile(
-                  title: Text('Add Other Participants',
+                  title: Text('Other Participants',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
@@ -330,10 +310,14 @@ class _ListSetup extends State<ListSetup> {
       // Button to move to the next page.
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
+        //Puts the User Id in the list of IDs
         onPressed: () {
-          getUser();
+          setState(() {
+            ids.add(user.uid);
+          });
+          
           createRecord(name, budget, people,
-              uuid.v4()); // Instead of a random number, create a uid for the list.
+              uuid.v4(), ids, context); // Instead of a random number, create a uid for the list.
           Navigator.of(context).pushNamed(
             MenuPage.tag,
             arguments: user.uid,
