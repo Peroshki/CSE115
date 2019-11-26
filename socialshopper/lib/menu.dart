@@ -96,7 +96,8 @@ class _MenuPageState extends State<MenuPage> {
 
     // Only add the lists to numLists which belong to the user
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
-    
+
+    //Check if user has data
     if (user.data != null) {
       if (user.data['lists'] != null) {
         for (String list in user.data['lists']) {

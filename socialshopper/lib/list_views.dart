@@ -72,7 +72,7 @@ class ShoppingList {
 // Generates a widget to display the total price for the entire shopping list
 Widget createTotalWidget(double total) {
   return Text(
-    'Total: \$$total',
+    'Total: \$${total.toStringAsFixed(2)}',
     textScaleFactor: 1.2,
     textAlign: TextAlign.center,
     style: TextStyle(color: Colors.white),
@@ -82,7 +82,7 @@ Widget createTotalWidget(double total) {
 // Generates a widget to display the budget for the shopping list
 Widget createBudgetWidget(double budget) {
   return Text(
-    'Budget: \$$budget',
+    'Budget: \$${budget.toStringAsFixed(2)}',
     textScaleFactor: 1.2,
     style: TextStyle(color: Colors.white),
   );
@@ -94,7 +94,7 @@ Widget createDifferenceWidget(double difference) {
   String text;
   Color textColor;
   if (difference < 0) {
-    text = '-(\$${difference.toString().substring(1)})';
+    text = '-(\$${difference.toStringAsFixed(2).substring(1)})';
     textColor = Colors.red;
   } else {
     text = '(\$$difference)';
@@ -140,7 +140,7 @@ List<Widget> createIndividualTotalWidget(Map<String, double> indTotals) {
     Widget indTotalWidget = Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20.0),
       child: Text(
-        '${indTotal.key}\'s Total: \$${(indTotal.value * 100).roundToDouble() / 100}',
+        '${indTotal.key}\'s Total: \$${((indTotal.value * 100).roundToDouble() / 100).toStringAsFixed(2)}',
         textAlign: TextAlign.center,
         textScaleFactor: 1.2,
         style: TextStyle(color: Colors.white),
@@ -221,9 +221,9 @@ List<Widget> createItemCardWidget(Item item) {
   final List<Widget> widgets = [
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[Text(item.name), Text('\$${totalPrice.toString()}')],
+      children: <Widget>[Text(item.name), Text('\$${totalPrice.toStringAsFixed(2)}')],
     ),
-    Text('Price: \$${item.price}'),
+    Text('Price: \$${item.price.toStringAsFixed(2)}'),
     Text('Quantity: ${item.quantity}'),
     Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
