@@ -16,61 +16,44 @@ import 'package:flutter/material.dart';
 import 'item_input.dart';
 import 'menu.dart' as globals;
 
-List<dynamic> produce_Item = [];
-List<dynamic> produce_Prices = [];
+// Classes that hold Database Data
+class Meat_Items {
+  List<dynamic> meat_Names;
+  List<dynamic> meat_Prices;
 
-List<String> drinks_Item = [];
-List<dynamic> drink_Prices = [];
-
-List<dynamic> snack_Item = [];
-List<dynamic> snack_Prices = [];
-
-List<dynamic> meat_Item = [];
-List<dynamic> meat_Prices = [];
-
-List<bool> inputs = new List<bool>();
-List<String> users = new List<String>();
-
-//Get Data For Each Category
-void getCategoryData(String Category) async {
-  DocumentReference ref =
-      Firestore.instance.collection('stores').document('SafewayMock');
-  DocumentSnapshot store = await ref.get();
-  Map<dynamic, dynamic> data = store.data[Category];
-  List<dynamic> keys = data.keys.toList();
-  List<dynamic> values = data.values.toList();
-
-  if (Category == 'Produce') {
-    produce_Item.clear();
-    produce_Prices.clear();
-    for (int i = 0; i < keys.length; i++) {
-      produce_Item.add(keys.elementAt(i));
-      produce_Prices.add(values.elementAt(i));
-    }
-  } else if (Category == 'Snacks') {
-    snack_Item.clear();
-    snack_Prices.clear();
-    for (int i = 0; i < keys.length; i++) {
-      snack_Item.add(keys.elementAt(i));
-      snack_Prices.add(values.elementAt(i));
-    }
-  } else if (Category == 'Drinks') {
-    drinks_Item.clear();
-    drink_Prices.clear();
-    for (int i = 0; i < keys.length; i++) {
-      drinks_Item.add(keys.elementAt(i));
-      drink_Prices.add(values.elementAt(i));
-    }
-  } else if (Category == 'Meat') {
-    meat_Item.clear();
-    meat_Prices.clear();
-
-    for (int i = 0; i < keys.length; i++) {
-      meat_Item.add(keys.elementAt(i));
-      meat_Prices.add(values.elementAt(i));
-    }
-  }
+  Meat_Items.fromSnapshot(DocumentSnapshot snapshot)
+      : meat_Names = Map.from(snapshot['Meat']).keys.toList(),
+        meat_Prices = Map.from(snapshot['Meat']).values.toList();
 }
+
+class Drink_Items {
+  List<dynamic> drink_Names;
+  List<dynamic> drink_Prices;
+
+  Drink_Items.fromSnapshot(DocumentSnapshot snapshot)
+      : drink_Names = Map.from(snapshot['Drinks']).keys.toList(),
+        drink_Prices = Map.from(snapshot['Drinks']).values.toList();
+}
+
+class Snack_Items {
+  List<dynamic> snack_Names;
+  List<dynamic> snack_Prices;
+
+  Snack_Items.fromSnapshot(DocumentSnapshot snapshot)
+      : snack_Names = Map.from(snapshot['Snacks']).keys.toList(),
+        snack_Prices = Map.from(snapshot['Snacks']).values.toList();
+}
+
+class Produce_Items {
+  List<dynamic> produce_Names;
+  List<dynamic> produce_Prices;
+
+  Produce_Items.fromSnapshot(DocumentSnapshot snapshot)
+      : produce_Names = Map.from(snapshot['Produce']).keys.toList(),
+        produce_Prices = Map.from(snapshot['Produce']).values.toList();
+}
+
+List<String> users = new List<String>();
 
 //Populates the database with the items selected by the user
 void populateDataBase(String itemName, double price, int quantity) async {
@@ -78,6 +61,10 @@ void populateDataBase(String itemName, double price, int quantity) async {
       Firestore.instance.collection('lists').document(globals.documentName);
   DocumentSnapshot doc = await ref.get();
   List tags = doc.data['items'];
+
+  if (users == Null) {
+    users = [];
+  }
   ref.updateData({
     'items': FieldValue.arrayUnion([
       {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
@@ -112,7 +99,7 @@ class Meat extends StatefulWidget {
 }
 // END OF STATEFUL WIDGET CREATION
 
-// UI for how checkbox are displayed on screen and for interaction 
+// UI for how checkbox are displayed on screen and for interaction
 class _UserCheckBox extends State<UserCheckBox> {
   @override
   void initState() {
@@ -165,62 +152,72 @@ class _UserCheckBox extends State<UserCheckBox> {
   }
 }
 
-//--------------------Meat 
-//UI for meat items
+//--------------------Meat
 class _Meat extends State<Meat> {
   var quan = 1;
   var priceString;
   var price;
-
-  @override
-  void initState() {
-    getCategoryData('Meat');
-  }
+  Meat_Items p;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: meat_Item.length,
-      itemBuilder: (BuildContext context, index) {
-        return Card(
-          child: GestureDetector(
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                new Expanded(
-                  flex: 3,
-                  child: Text(
-                    meat_Item.elementAt(index) +
-                        ' \n\$' +
-                        meat_Prices.elementAt(index).toString(),
-                    style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+    return Scaffold(
+      body: StreamBuilder(
+        stream: Firestore.instance
+            .collection('stores')
+            .document('SafewayMock')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Text('Loading data... Please wait.');
+          p = Meat_Items.fromSnapshot(snapshot.data);
+          if (p.meat_Names == null)
+            return Center(child: Text('List is empty.'));
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: p.meat_Names.length,
+            itemBuilder: (BuildContext context, index) {
+              return Card(
+                child: GestureDetector(
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      new Expanded(
+                        flex: 3,
+                        child: Text(
+                          p.meat_Names[index] +
+                              ' \n\$' +
+                              p.meat_Prices[index].toString(),
+                          style:
+                              TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                        ),
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: TextField(
+                            autofocus: false,
+                            maxLength: 3,
+                            maxLengthEnforced: true,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            onChanged: (val) {
+                              quan = int.parse(val);
+                              priceString = p.meat_Prices[index];
+                              price = double.tryParse(priceString);
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(), labelText: 'Qty'),
+                          )),
+                    ],
                   ),
+                  onDoubleTap: () {
+                    alertBoxForList(index);
+                  },
                 ),
-                Expanded(
-                    flex: 1,
-                    child: TextField(
-                      autofocus: false,
-                      maxLength: 3,
-                      maxLengthEnforced: true,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      onChanged: (val) {
-                        quan = int.parse(val);
-                        priceString = meat_Prices.elementAt(index).toString();
-                        price = double.tryParse(priceString);
-                      },
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(), labelText: 'Qty'),
-                    )),
-              ],
-            ),
-            onDoubleTap: () {
-              alertBoxForList(index);
+              );
             },
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -241,10 +238,9 @@ class _Meat extends State<Meat> {
             new FlatButton(
               child: new Text("Done"),
               onPressed: () {
-                priceString = meat_Prices.elementAt(index).toString();
+                priceString = p.meat_Prices[index].toString();
                 price = double.tryParse(priceString);
-                populateDataBase(
-                    meat_Item.elementAt(index).toString(), price, quan);
+                populateDataBase(p.meat_Names[index].toString(), price, quan);
                 Navigator.of(context).pop();
               },
             ),
@@ -261,55 +257,69 @@ class _Drinks extends State<Drinks> {
   var quan = 1;
   var priceString;
   var price;
-
-  @override
-  void initState() {
-    getCategoryData('Drinks');
-  }
+  Drink_Items p;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: drinks_Item.length,
-      itemBuilder: (BuildContext context, index) {
-        return Card(
-            child: GestureDetector(
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              new Expanded(
-                flex: 3,
-                child: Text(
-                  drinks_Item.elementAt(index) +
-                      ' \n\$' +
-                      drink_Prices.elementAt(index).toString(),
-                  style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+    return Scaffold(
+      body: StreamBuilder(
+        stream: Firestore.instance
+            .collection('stores')
+            .document('SafewayMock')
+            .snapshots(),
+        builder: (context, snapshot) {
+
+          if (!snapshot.hasData) return Text('Loading data... Please wait.');
+
+          p = Drink_Items.fromSnapshot(snapshot.data);
+
+          if (p.drink_Names == null)
+            return Center(child: Text('List is empty.'));
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: p.drink_Names.length,
+            itemBuilder: (BuildContext context, index) {
+              return Card(
+                  child: GestureDetector(
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    new Expanded(
+                      flex: 3,
+                      child: Text(
+                        p.drink_Names.elementAt(index) +
+                            ' \n\$' +
+                            p.drink_Prices.elementAt(index).toString(),
+                        style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: TextField(
+                          autofocus: false,
+                          maxLength: 3,
+                          maxLengthEnforced: true,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          onChanged: (val) {
+                            quan = int.parse(val);
+                            priceString =
+                                p.drink_Prices.elementAt(index).toString();
+                            price = double.tryParse(priceString);
+                          },
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(), labelText: 'Qty'),
+                        )),
+                  ],
                 ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: TextField(
-                    autofocus: false,
-                    maxLength: 3,
-                    maxLengthEnforced: true,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (val) {
-                      quan = int.parse(val);
-                      priceString = drink_Prices.elementAt(index).toString();
-                      price = double.tryParse(priceString);
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Qty'),
-                  )),
-            ],
-          ),
-          onDoubleTap: () {
-            alertBoxForList(index);
-          },
-        ));
-      },
+                onDoubleTap: () {
+                  alertBoxForList(index);
+                },
+              ));
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -328,12 +338,12 @@ class _Drinks extends State<Drinks> {
               },
             ),
             new FlatButton(
-              child: new Text("Done"), 
+              child: new Text("Done"),
               onPressed: () {
-                priceString = drink_Prices.elementAt(index).toString();
+                priceString = p.drink_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
                 populateDataBase(
-                    drinks_Item.elementAt(index).toString(), price, quan);
+                    p.drink_Names.elementAt(index).toString(), price, quan);
                 Navigator.of(context).pop();
               },
             ),
@@ -350,55 +360,71 @@ class _Snacks extends State<Snacks> {
   var quan = 1;
   var priceString;
   var price;
-
-  @override
-  void initState() {
-    getCategoryData('Snacks');
-  }
+  Snack_Items p;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: snack_Item.length,
-      itemBuilder: (BuildContext context, index) {
-        return Card(
-            child: GestureDetector(
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              new Expanded(
-                flex: 3,
-                child: Text(
-                  snack_Item.elementAt(index) +
-                      ' \n\$' +
-                      snack_Prices.elementAt(index).toString(),
-                  style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+    return Scaffold(
+      body: StreamBuilder(
+
+        stream: Firestore.instance
+            .collection('stores')
+            .document('SafewayMock')
+            .snapshots(),
+        builder: (context, snapshot) {
+
+          if (!snapshot.hasData) return Text('Loading data... Please wait.');
+
+          p = Snack_Items.fromSnapshot(snapshot.data);
+
+          if (p.snack_Names == null)
+            return Center(child: Text('List is empty.'));
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: p.snack_Names.length,
+            itemBuilder: (BuildContext context, index) {
+              return Card(
+                  child: GestureDetector(
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    new Expanded(
+                      flex: 3,
+                      child: Text(
+                        p.snack_Names.elementAt(index) +
+                            ' \n\$' +
+                            p.snack_Prices.elementAt(index).toString(),
+                        style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: TextField(
+                          autofocus: false,
+                          maxLength: 3,
+                          maxLengthEnforced: true,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          onChanged: (val) {
+                            quan = int.parse(val);
+                            priceString =
+                                p.snack_Prices.elementAt(index).toString();
+                            price = double.tryParse(priceString);
+                          },
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(), labelText: 'Qty'),
+                        )),
+                  ],
                 ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: TextField(
-                    autofocus: false,
-                    maxLength: 3,
-                    maxLengthEnforced: true,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (val) {
-                      quan = int.parse(val);
-                      priceString = snack_Prices.elementAt(index).toString();
-                      price = double.tryParse(priceString);
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Qty'),
-                  )),
-            ],
-          ),
-          onDoubleTap: () {
-            alertBoxForList(index);
-          },
-        ));
-      },
+                onDoubleTap: () {
+                  alertBoxForList(index);
+                },
+              ));
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -419,10 +445,10 @@ class _Snacks extends State<Snacks> {
             new FlatButton(
               child: new Text("Done"), // Cancel button
               onPressed: () {
-                priceString = snack_Prices.elementAt(index).toString();
+                priceString = p.snack_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
                 populateDataBase(
-                    snack_Item.elementAt(index).toString(), price, quan);
+                    p.snack_Names.elementAt(index).toString(), price, quan);
                 Navigator.of(context).pop();
               },
             ),
@@ -432,61 +458,78 @@ class _Snacks extends State<Snacks> {
     );
   }
 }
+
 //-----------------------------Produce--------
 // UI for Produce
 class _Produce extends State<Produce> {
   var quan = 1;
   var priceString;
   var price;
-
-  @override
-  void initState() {
-    getCategoryData('Produce');
-  }
+  Produce_Items p;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: produce_Item.length,
-      itemBuilder: (BuildContext context, index) {
-        return Card(
-            child: GestureDetector(
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              new Expanded(
-                flex: 3,
-                child: Text(
-                  produce_Item.elementAt(index) +
-                      ' \n\$' +
-                      produce_Prices.elementAt(index).toString(),
-                  style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+    return Scaffold(
+      body: StreamBuilder(
+        stream: Firestore.instance
+            .collection('stores')
+            .document('SafewayMock')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Text('Loading data... Please wait.');
+
+          p = Produce_Items.fromSnapshot(snapshot.data);
+
+          if (p.produce_Names == null)
+            return Center(child: Text('List is empty.'));
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: p.produce_Names.length,
+            itemBuilder: (BuildContext context, index) {
+              return Card(
+                child: GestureDetector(
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      new Expanded(
+                        flex: 3,
+                        child: Text(
+                          p.produce_Names.elementAt(index) +
+                              ' \n\$' +
+                              p.produce_Prices.elementAt(index).toString(),
+                          style:
+                              TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                        ),
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: TextField(
+                            autofocus: false,
+                            maxLength: 3,
+                            maxLengthEnforced: true,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            onChanged: (val) {
+                              quan = int.parse(val);
+                              priceString =
+                                  p.produce_Prices.elementAt(index).toString();
+                              price = double.tryParse(priceString);
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(), labelText: 'Qty'),
+                          )),
+                    ],
+                  ),
+                  onDoubleTap: () {
+                    alertBoxForList(index);
+                  },
                 ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: TextField(
-                    autofocus: false,
-                    maxLength: 3,
-                    maxLengthEnforced: true,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (val) {
-                      quan = int.parse(val);
-                      priceString = produce_Prices.elementAt(index).toString();
-                      price = double.tryParse(priceString);
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Qty'),
-                  )),
-            ],
-          ),
-          onDoubleTap: () {
-            alertBoxForList(index);
-          },
-        ));
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -507,10 +550,10 @@ class _Produce extends State<Produce> {
             new FlatButton(
               child: new Text("Done"),
               onPressed: () {
-                priceString = produce_Prices.elementAt(index).toString();
+                priceString = p.produce_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
                 populateDataBase(
-                    produce_Item.elementAt(index).toString(), price, quan);
+                    p.produce_Names.elementAt(index).toString(), price, quan);
                 Navigator.of(context).pop();
               },
             ),

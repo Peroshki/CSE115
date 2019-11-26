@@ -16,7 +16,7 @@ import 'menu.dart' as globals;
 //List<String> userNames = new List();
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
-var test;
+var test = '';
 
 //Create a state for checkbox
 class UserCheckBox extends StatefulWidget {
@@ -88,7 +88,7 @@ Widget getNameAndPrice(BuildContext context) {
   // final FocusNode nodeTwo = FocusNode();
   // final FocusNode nodeThree = FocusNode();
   // final FocusNode nodeFour = FocusNode();
-  var user = 'item';
+  //var user = 'item';
   var price = 0.0;
   var quan = 0;
   var p = 'Omar';
