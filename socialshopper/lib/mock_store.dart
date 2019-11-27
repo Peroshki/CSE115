@@ -177,25 +177,34 @@ class _Meat extends State<Meat> {
             itemCount: p.meat_Names.length,
             itemBuilder: (BuildContext context, index) {
               return Card(
+                elevation: 2,
                 child: GestureDetector(
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       new Expanded(
                         flex: 3,
-                        child: Text(
-                          p.meat_Names[index] +
-                              ' \n\$' +
-                              p.meat_Prices[index].toString(),
-                          style:
-                              TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                        child: RichText(
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(
+                                text: p.meat_Names.elementAt(index) + '\n',
+                                style: TextStyle(
+                                    fontSize: 25, color: Colors.black87)),
+                            TextSpan(
+                                text: '\t\t\$' +
+                                    p.meat_Prices.elementAt(index).toString(),
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  color: Colors.green,
+                                )),
+                          ]),
                         ),
                       ),
                       Expanded(
                           flex: 1,
                           child: TextField(
                             autofocus: false,
-                            maxLength: 3,
+                            maxLength: 6,
                             maxLengthEnforced: true,
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.done,
@@ -204,8 +213,7 @@ class _Meat extends State<Meat> {
                               priceString = p.meat_Prices[index];
                               price = double.tryParse(priceString);
                             },
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(), labelText: 'Qty'),
+                            decoration: InputDecoration(labelText: 'Qty'),
                           )),
                     ],
                   ),
@@ -285,18 +293,27 @@ class _Drinks extends State<Drinks> {
                   children: <Widget>[
                     new Expanded(
                       flex: 3,
-                      child: Text(
-                        p.drink_Names.elementAt(index) +
-                            ' \n\$' +
-                            p.drink_Prices.elementAt(index).toString(),
-                        style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                      child: RichText(
+                        text: TextSpan(children: <TextSpan>[
+                          TextSpan(
+                              text: p.drink_Names.elementAt(index) + '\n',
+                              style: TextStyle(
+                                  fontSize: 25, color: Colors.black87)),
+                          TextSpan(
+                              text: '\t\t\$' +
+                                  p.drink_Prices.elementAt(index).toString(),
+                              style: TextStyle(
+                                fontSize: 19,
+                                color: Colors.green,
+                              )),
+                        ]),
                       ),
                     ),
                     Expanded(
                         flex: 1,
                         child: TextField(
                           autofocus: false,
-                          maxLength: 3,
+                          maxLength: 6,
                           maxLengthEnforced: true,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
@@ -306,8 +323,7 @@ class _Drinks extends State<Drinks> {
                                 p.drink_Prices.elementAt(index).toString();
                             price = double.tryParse(priceString);
                           },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Qty'),
+                          decoration: InputDecoration(labelText: 'Qty'),
                         )),
                   ],
                 ),
@@ -382,42 +398,53 @@ class _Snacks extends State<Snacks> {
             itemCount: p.snack_Names.length,
             itemBuilder: (BuildContext context, index) {
               return Card(
+                  elevation: 2,
                   child: GestureDetector(
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    new Expanded(
-                      flex: 3,
-                      child: Text(
-                        p.snack_Names.elementAt(index) +
-                            ' \n\$' +
-                            p.snack_Prices.elementAt(index).toString(),
-                        style: TextStyle(fontFamily: 'Open Sans', fontSize: 25),
-                      ),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        new Expanded(
+                          flex: 3,
+                          child: RichText(
+                            text: TextSpan(children: <TextSpan>[
+                              TextSpan(
+                                  text: p.snack_Names.elementAt(index) + '\n',
+                                  style: TextStyle(
+                                      fontSize: 25, color: Colors.black87)),
+                              TextSpan(
+                                  text: '\t\t\$' +
+                                      p.snack_Prices
+                                          .elementAt(index)
+                                          .toString(),
+                                  style: TextStyle(
+                                    fontSize: 19,
+                                    color: Colors.green,
+                                  )),
+                            ]),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: TextField(
+                              autofocus: false,
+                              maxLength: 6,
+                              maxLengthEnforced: true,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                              onChanged: (val) {
+                                quan = int.parse(val);
+                                priceString =
+                                    p.snack_Prices.elementAt(index).toString();
+                                price = double.tryParse(priceString);
+                              },
+                              decoration: InputDecoration(labelText: 'Qty'),
+                            )),
+                      ],
                     ),
-                    Expanded(
-                        flex: 1,
-                        child: TextField(
-                          autofocus: false,
-                          maxLength: 3,
-                          maxLengthEnforced: true,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.done,
-                          onChanged: (val) {
-                            quan = int.parse(val);
-                            priceString =
-                                p.snack_Prices.elementAt(index).toString();
-                            price = double.tryParse(priceString);
-                          },
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Qty'),
-                        )),
-                  ],
-                ),
-                onDoubleTap: () {
-                  alertBoxForList(index);
-                },
-              ));
+                    onDoubleTap: () {
+                      alertBoxForList(index);
+                    },
+                  ));
             },
           );
         },
@@ -485,25 +512,37 @@ class _Produce extends State<Produce> {
             itemCount: p.produce_Names.length,
             itemBuilder: (BuildContext context, index) {
               return Card(
+                //color: Colors.blueAccent,
+                elevation: 2,
                 child: GestureDetector(
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       new Expanded(
                         flex: 3,
-                        child: Text(
-                          p.produce_Names.elementAt(index) +
-                              ' \n\$' +
-                              p.produce_Prices.elementAt(index).toString(),
-                          style:
-                              TextStyle(fontFamily: 'Open Sans', fontSize: 25),
+                        child: RichText(
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(
+                                text: p.produce_Names.elementAt(index) + '\n',
+                                style: TextStyle(
+                                    fontSize: 25, color: Colors.black87)),
+                            TextSpan(
+                                text: '\t\t\$' +
+                                    p.produce_Prices
+                                        .elementAt(index)
+                                        .toString(),
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  color: Colors.green,
+                                )),
+                          ]),
                         ),
                       ),
                       Expanded(
                           flex: 1,
                           child: TextField(
                             autofocus: false,
-                            maxLength: 3,
+                            maxLength: 6,
                             maxLengthEnforced: true,
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.done,
@@ -513,8 +552,7 @@ class _Produce extends State<Produce> {
                                   p.produce_Prices.elementAt(index).toString();
                               price = double.tryParse(priceString);
                             },
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(), labelText: 'Qty'),
+                            decoration: InputDecoration(labelText: 'Qty'),
                           )),
                     ],
                   ),
@@ -569,18 +607,23 @@ class MockStore extends StatefulWidget {
 }
 
 class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
-  List<display_Items> _Title = [display_Items(title: "Select Produce"), display_Items(title: "Select Snacks"), 
-  display_Items(title: "Select Drinks"),display_Items(title: "Select Meat"),display_Items(title: "Manual Entry") ];
+  List<display_Items> _Title = [
+    display_Items(title: "Select Produce"),
+    display_Items(title: "Select Snacks"),
+    display_Items(title: "Select Drinks"),
+    display_Items(title: "Select Meat"),
+    display_Items(title: "Manual Entry")
+  ];
   int selectedIndex = 1;
   TabController _tabController;
   display_Items _handler;
 
-  void initState(){
+  void initState() {
     selectedIndex = 1;
     _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(_onItemTapped);
     _handler = _Title[0];
-      super.initState();
+    super.initState();
   }
 
   void _onItemTapped() {
@@ -594,83 +637,103 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
     // return MaterialApp(
     //     home: DefaultTabController(
     //         length: 5,
-            return Scaffold(
-                appBar: AppBar(
-                  leading: IconButton(icon: Icon(Icons.arrow_back),
-                  onPressed: (){
-                    Navigator.of(context).pop();
-                  },),
-                    title: Text(_handler.title),
-                    centerTitle: true,
-                    bottom: TabBar(
-                      controller: _tabController,
-                      isScrollable: true,
-                      unselectedLabelColor: Colors.white,
-                      labelColor: Colors.amberAccent,
-                      tabs: <Widget>[
-                        Tab(icon: Icon(Icons.favorite), text: "Produce", ),
-                        Tab(icon: Icon(Icons.cake), text: "Snacks",),
-                        Tab(icon: Icon(Icons.free_breakfast), text: "Drinks",),
-                        Tab(icon: Icon(Icons.fastfood), text: "Meat",),
-                        Tab(icon: Icon(Icons.keyboard), text: "Custom",),
-                      ],
-                    )),
-                body: TabBarView(children: <Widget>[
-                  selectedBottomNav(0),
-                  selectedBottomNav(1),
-                  selectedBottomNav(2),
-                  selectedBottomNav(3),
-                  selectedBottomNav(4),
-                ],controller: _tabController,),
-                // bottomNavigationBar: BottomNavigationBar(
-                //   currentIndex: selectedIndex,
-                //   onTap: _onItemTapped,
-                //   type: BottomNavigationBarType.fixed,
-                //   items: const <BottomNavigationBarItem>[
-                //     BottomNavigationBarItem(
-                //       icon: Icon(
-                //         Icons.favorite,
-                //         color: Colors.black,
-                //       ),
-                //       title: Text(
-                //         'Produce',
-                //         style: TextStyle(color: Colors.black),
-                //       ),
-                //     ),
-                //     BottomNavigationBarItem(
-                //       icon: Icon(
-                //         Icons.cake,
-                //         color: Colors.black,
-                //       ),
-                //       title:
-                //           Text('Snacks', style: TextStyle(color: Colors.black)),
-                //     ),
-                //     BottomNavigationBarItem(
-                //         icon: Icon(
-                //           Icons.free_breakfast,
-                //           color: Colors.black,
-                //         ),
-                //         title: Text('Drinks',
-                //             style: TextStyle(color: Colors.black))),
-                //     BottomNavigationBarItem(
-                //         icon: Icon(
-                //           Icons.mood,
-                //           color: Colors.black,
-                //         ),
-                //         title: Text(
-                //           'Meat',
-                //           style: TextStyle(color: Colors.black),
-                //         )),
-                //     BottomNavigationBarItem(
-                //         icon: Icon(
-                //           Icons.keyboard,
-                //           color: Colors.black,
-                //         ),
-                //         title: Text('Enter',
-                //             style: TextStyle(color: Colors.black)))
-                //   ],
-                // )
-                );
+    return Scaffold(
+      appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          title: Text(_handler.title),
+          centerTitle: true,
+          bottom: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            unselectedLabelColor: Colors.white,
+            labelColor: Colors.amberAccent,
+            tabs: <Widget>[
+              Tab(
+                icon: Icon(Icons.favorite),
+                text: "Produce",
+              ),
+              Tab(
+                icon: Icon(Icons.cake),
+                text: "Snacks",
+              ),
+              Tab(
+                icon: Icon(Icons.free_breakfast),
+                text: "Drinks",
+              ),
+              Tab(
+                icon: Icon(Icons.fastfood),
+                text: "Meat",
+              ),
+              Tab(
+                icon: Icon(Icons.keyboard),
+                text: "Custom",
+              ),
+            ],
+          )),
+      body: TabBarView(
+        children: <Widget>[
+          selectedBottomNav(0),
+          selectedBottomNav(1),
+          selectedBottomNav(2),
+          selectedBottomNav(3),
+          selectedBottomNav(4),
+        ],
+        controller: _tabController,
+      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: selectedIndex,
+      //   onTap: _onItemTapped,
+      //   type: BottomNavigationBarType.fixed,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.favorite,
+      //         color: Colors.black,
+      //       ),
+      //       title: Text(
+      //         'Produce',
+      //         style: TextStyle(color: Colors.black),
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.cake,
+      //         color: Colors.black,
+      //       ),
+      //       title:
+      //           Text('Snacks', style: TextStyle(color: Colors.black)),
+      //     ),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(
+      //           Icons.free_breakfast,
+      //           color: Colors.black,
+      //         ),
+      //         title: Text('Drinks',
+      //             style: TextStyle(color: Colors.black))),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(
+      //           Icons.mood,
+      //           color: Colors.black,
+      //         ),
+      //         title: Text(
+      //           'Meat',
+      //           style: TextStyle(color: Colors.black),
+      //         )),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(
+      //           Icons.keyboard,
+      //           color: Colors.black,
+      //         ),
+      //         title: Text('Enter',
+      //             style: TextStyle(color: Colors.black)))
+      //   ],
+      // )
+    );
   }
 
   Widget selectedBottomNav(int index) {
@@ -721,8 +784,8 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
   }
 }
 
-class display_Items{
-      String title = "";
-      
-      display_Items({this.title});
-  }
+class display_Items {
+  String title = "";
+
+  display_Items({this.title});
+}
