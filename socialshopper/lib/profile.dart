@@ -11,14 +11,15 @@ FirebaseUser user;
 
 class Profile extends StatefulWidget {
   static String tag = 'Profile';
-
-  final String uid;
-
-  // Constructor
-  Profile({Key key, @required this.uid}) : super(key: key);
-
   //@override
   _ProfileState createState() => _ProfileState();
+}
+
+class Arguments {
+  final String uid;
+  final String photoUrl;
+
+  Arguments(this.uid, this.photoUrl);
 }
 
 class _ProfileState extends State<Profile> {
@@ -61,7 +62,7 @@ class _ProfileState extends State<Profile> {
           child: StreamBuilder(
             stream: Firestore.instance
                 .collection('users')
-                .document(widget.uid)
+                .document(user.uid)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -118,7 +119,7 @@ class _ProfileState extends State<Profile> {
                         onPressed: () {
                           Navigator.of(context).pushNamed(
                             Friends.tag,
-                            arguments: Arguments(widget.uid, snapshot.data['photoURL']),
+                            arguments: Arguments(user.uid, user.photoUrl),
                           );
                         },
                       ),
