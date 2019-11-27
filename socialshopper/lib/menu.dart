@@ -98,22 +98,24 @@ class _MenuPageState extends State<MenuPage> {
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
 
     //Check if user has data
-    if (user.data != null && user.data['lists'] != null) {
-      for (String list in user.data['lists']) {
-        docs.add(
-            results.documents.where((doc) => doc.documentID == list).first);
-      }
+    if (user.data != null) {
+      if (user.data['lists'] != null) {
+        for (String list in user.data['lists']) {
+          docs.add(
+              results.documents.where((doc) => doc.documentID == list).first);
+        }
 
-      var i = 0;
-      var val = '';
+        var i = 0;
+        var val = '';
 
-      if (numList.length < docs.length || numList.length > docs.length) {
-        numList.clear();
-        while (i < docs.length) {
-          val = docs.elementAt(i).documentID;
-          //documentId = docs.elementAt(i).documentID;
-          _addNewList(val);
-          i++;
+        if (numList.length < docs.length || numList.length > docs.length) {
+          numList.clear();
+          while (i < docs.length) {
+            val = docs.elementAt(i).documentID;
+            //documentId = docs.elementAt(i).documentID;
+            _addNewList(val);
+            i++;
+          }
         }
       }
     }
@@ -144,8 +146,8 @@ class _MenuPageState extends State<MenuPage> {
         .collection('users')
         .document(user)
         .updateData({'lists': temp});
-    databaseRef.collection('lists').document(numList[index]).delete();
-    putNamesOfListInAList();
+
+    databaseRef.collection('lists').document(listID).delete();
   }
 
 //allows to change state of the list appearing
@@ -193,6 +195,7 @@ class _MenuPageState extends State<MenuPage> {
                     _openList(index, lists[index].data['metadata']['name']);
                   },
                   onLongPress: () {
+                    print('PEEN ${index}');
                     alertBoxForList(index);
                   },
                 ),
