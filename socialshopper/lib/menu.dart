@@ -98,24 +98,22 @@ class _MenuPageState extends State<MenuPage> {
     final List<DocumentSnapshot> docs = List<DocumentSnapshot>();
 
     //Check if user has data
-    if (user.data != null) {
-      if (user.data['lists'] != null) {
-        for (String list in user.data['lists']) {
-          docs.add(
-              results.documents.where((doc) => doc.documentID == list).first);
-        }
+    if (user.data != null && user.data['lists'] != null) {
+      for (String list in user.data['lists']) {
+        docs.add(
+            results.documents.where((doc) => doc.documentID == list).first);
+      }
 
-        var i = 0;
-        var val = '';
+      var i = 0;
+      var val = '';
 
-        if (numList.length < docs.length || numList.length > docs.length) {
-          numList.clear();
-          while (i < docs.length) {
-            val = docs.elementAt(i).documentID;
-            //documentId = docs.elementAt(i).documentID;
-            _addNewList(val);
-            i++;
-          }
+      if (numList.length < docs.length || numList.length > docs.length) {
+        numList.clear();
+        while (i < docs.length) {
+          val = docs.elementAt(i).documentID;
+          //documentId = docs.elementAt(i).documentID;
+          _addNewList(val);
+          i++;
         }
       }
     }
@@ -128,7 +126,24 @@ class _MenuPageState extends State<MenuPage> {
 
 // Deletes list from database and updates array
 
-  void deleteList(int index) {
+  void deleteList(int index) async {
+    String user = ModalRoute.of(context).settings.arguments.toString();
+
+    String listID = databaseRef
+        .collection('lists')
+        .document(numList[index])
+        .documentID
+        .toString();
+
+    List temp = List();
+    DocumentSnapshot snap =
+        await databaseRef.collection('users').document(user).get();
+    temp = List.from(snap['lists']);
+    temp.removeWhere((item) => item == listID);
+    await Firestore.instance
+        .collection('users')
+        .document(user)
+        .updateData({'lists': temp});
     databaseRef.collection('lists').document(numList[index]).delete();
     putNamesOfListInAList();
   }
