@@ -268,7 +268,6 @@ class _Drinks extends State<Drinks> {
             .document('SafewayMock')
             .snapshots(),
         builder: (context, snapshot) {
-
           if (!snapshot.hasData) return Text('Loading data... Please wait.');
 
           p = Drink_Items.fromSnapshot(snapshot.data);
@@ -366,13 +365,11 @@ class _Snacks extends State<Snacks> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-
         stream: Firestore.instance
             .collection('stores')
             .document('SafewayMock')
             .snapshots(),
         builder: (context, snapshot) {
-
           if (!snapshot.hasData) return Text('Loading data... Please wait.');
 
           p = Snack_Items.fromSnapshot(snapshot.data);
@@ -571,81 +568,133 @@ class MockStore extends StatefulWidget {
   _MockStore createState() => _MockStore();
 }
 
-class _MockStore extends State<MockStore> {
+class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
+  List<display_Items> _Title = [display_Items(title: "Select Produce"), display_Items(title: "Select Snacks"), 
+  display_Items(title: "Select Drinks"),display_Items(title: "Select Meat"),display_Items(title: "Manual Entry") ];
   int selectedIndex = 1;
+  TabController _tabController;
+  display_Items _handler;
 
-  void _onItemTapped(int index) {
+  void initState(){
+    selectedIndex = 1;
+    _tabController = TabController(length: 5, vsync: this);
+    _tabController.addListener(_onItemTapped);
+    _handler = _Title[0];
+      super.initState();
+  }
+
+  void _onItemTapped() {
     setState(() {
-      selectedIndex = index;
+      _handler = _Title[_tabController.index];
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(topAppBar(selectedIndex)),
-          centerTitle: true,
-        ),
-        body: selectBottomNav(selectedIndex),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-                color: Colors.black,
-              ),
-              title: Text(
-                'Produce',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.cake,
-                color: Colors.black,
-              ),
-              title: Text('Snacks', style: TextStyle(color: Colors.black)),
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.free_breakfast,
-                  color: Colors.black,
-                ),
-                title: Text('Drinks', style: TextStyle(color: Colors.black))),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.mood,
-                  color: Colors.black,
-                ),
-                title: Text(
-                  'Meat',
-                  style: TextStyle(color: Colors.black),
-                )),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.keyboard,
-                  color: Colors.black,
-                ),
-                title: Text('Enter', style: TextStyle(color: Colors.black)))
-          ],
-        ));
+    // return MaterialApp(
+    //     home: DefaultTabController(
+    //         length: 5,
+            return Scaffold(
+                appBar: AppBar(
+                  leading: IconButton(icon: Icon(Icons.arrow_back),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },),
+                    title: Text(_handler.title),
+                    centerTitle: true,
+                    bottom: TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      unselectedLabelColor: Colors.white,
+                      labelColor: Colors.amberAccent,
+                      tabs: <Widget>[
+                        Tab(icon: Icon(Icons.favorite), text: "Produce", ),
+                        Tab(icon: Icon(Icons.cake), text: "Snacks",),
+                        Tab(icon: Icon(Icons.free_breakfast), text: "Drinks",),
+                        Tab(icon: Icon(Icons.fastfood), text: "Meat",),
+                        Tab(icon: Icon(Icons.keyboard), text: "Custom",),
+                      ],
+                    )),
+                body: TabBarView(children: <Widget>[
+                  selectedBottomNav(0),
+                  selectedBottomNav(1),
+                  selectedBottomNav(2),
+                  selectedBottomNav(3),
+                  selectedBottomNav(4),
+                ],controller: _tabController,),
+                // bottomNavigationBar: BottomNavigationBar(
+                //   currentIndex: selectedIndex,
+                //   onTap: _onItemTapped,
+                //   type: BottomNavigationBarType.fixed,
+                //   items: const <BottomNavigationBarItem>[
+                //     BottomNavigationBarItem(
+                //       icon: Icon(
+                //         Icons.favorite,
+                //         color: Colors.black,
+                //       ),
+                //       title: Text(
+                //         'Produce',
+                //         style: TextStyle(color: Colors.black),
+                //       ),
+                //     ),
+                //     BottomNavigationBarItem(
+                //       icon: Icon(
+                //         Icons.cake,
+                //         color: Colors.black,
+                //       ),
+                //       title:
+                //           Text('Snacks', style: TextStyle(color: Colors.black)),
+                //     ),
+                //     BottomNavigationBarItem(
+                //         icon: Icon(
+                //           Icons.free_breakfast,
+                //           color: Colors.black,
+                //         ),
+                //         title: Text('Drinks',
+                //             style: TextStyle(color: Colors.black))),
+                //     BottomNavigationBarItem(
+                //         icon: Icon(
+                //           Icons.mood,
+                //           color: Colors.black,
+                //         ),
+                //         title: Text(
+                //           'Meat',
+                //           style: TextStyle(color: Colors.black),
+                //         )),
+                //     BottomNavigationBarItem(
+                //         icon: Icon(
+                //           Icons.keyboard,
+                //           color: Colors.black,
+                //         ),
+                //         title: Text('Enter',
+                //             style: TextStyle(color: Colors.black)))
+                //   ],
+                // )
+                );
   }
 
-  Widget selectBottomNav(int selectedIndex) {
-    switch (selectedIndex) {
+  Widget selectedBottomNav(int index) {
+    var appBarVal;
+    switch (index) {
       case 0:
+        //appBarVal = 'Select Produce';
+        //_onItemTapped(0);
         return Produce();
       case 1:
+        //appBarVal = 'Select Snacks';
+        //_onItemTapped(1);
         return Snacks();
       case 2:
+        //appBarVal = 'Select Drinks';
+        //_onItemTapped(2);
         return Drinks();
       case 3:
+        appBarVal = 'Select Meat';
+        //_onItemTapped(3);
         return Meat();
       case 4:
+        appBarVal = 'Enter Item Description';
+        //_onItemTapped(4);
         return UserItemInput();
     }
   }
@@ -671,3 +720,9 @@ class _MockStore extends State<MockStore> {
     }
   }
 }
+
+class display_Items{
+      String title = "";
+      
+      display_Items({this.title});
+  }
