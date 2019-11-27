@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:socialshopper/friends_list.dart';
+
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'add_friend.dart';
-import 'globals.dart' as globals;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'menu.dart';
-import 'menu.dart' as menu;
+import 'add_friend.dart';
+import 'menu.dart' as globals;
 
 //Creates an instance in the database
 final databaseRef = Firestore.instance;
@@ -19,26 +20,30 @@ class Arguments {
 }
 
 // functions used to record user data -> database
-void createRecord(String listName, int budget, List<String> people, String id, List<String> ids, BuildContext context) async {
-  var users = [{'uid' : ids[0], 'name' : people[0]}];
-  for (int i = 1; i < ids.length; i++) {
-    users.add({'uid' : ids[i], 'name': people[i]});
-  }
-  //print(users);
-
+void createRecord(
+  String listName, int budget, List<String> people, String id, List<String> ids, BuildContext context) async {
   //Sets up the initial list and it's data in the database.
   await databaseRef.collection('lists').document(id.toString()).setData({
-    'items': [{}],
+    'items': [
+      {
+        'name': 'Banana',
+        'quantity': 2,
+        'price': 4,
+        'users': ['Alan', 'Omar']
+      }
+    ],
     'metadata': {
-      'uid': id, //Gets the timestamp
-      'timeCreated': DateTime.now(), // Change this. We don't need the precision of milliseconds since epoch
+      'uid': id,
+      //Gets the timestamp
+      'timeCreated': DateTime
+          .now(), // Change this. We don't need the precision of milliseconds since epoch
       'store': 'Safeway', // I don't know how to pass in the store select input
       'name': listName,
       'budget': budget,
-      'users': users
+      'users': people
     }
   });
-  menu.numList.add(id);
+  globals.numList.add(id);
 
   //Puts the list data in the list section.
   List<String> lists = [id];
@@ -108,7 +113,7 @@ class _ListSetup extends State<ListSetup> {
   Future<void> getFriends() async {
     final ref = Firestore.instance
         .collection('users')
-        .document(globals.userUID);
+        .document(ModalRoute.of(context).settings.arguments);
     DocumentSnapshot user = await ref.get();
     List<dynamic> friendsList = user.data['friends'];
     friends = friendsList;
@@ -180,263 +185,128 @@ class _ListSetup extends State<ListSetup> {
 
   @override
   Widget build(BuildContext context) {
-    //initUser();
+    initUser();
     final Uuid uuid = Uuid();
     return Scaffold(
       //Top bar of the app
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('New List'),
+        title: const Text('List Setup'),
         automaticallyImplyLeading: true,
-        actions: <Widget>[
-          StreamBuilder(
-            stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Text('Loading user data...');
-
-              //return Text('${snapshot.data['displayName'].toString()}');
-
-              return IconButton(
-                padding: const EdgeInsets.only(
-                    right: 10.0
-                ),
-                icon: Icon(Icons.done),
-                onPressed: () {
-                  setState(() {
-                    ids.add(globals.userUID);
-                    people.add(snapshot.data['displayName'].toString());
-                  });
-
-                  createRecord(name, budget, people,
-                      uuid.v4(), ids, context); // Instead of a random number, create a uid for the list.
-                  Navigator.of(context).pushNamed(
-                    MenuPage.tag,
-                    arguments: globals.userUID,
-                  );
-                },
-              );
-            },
-          ),
-        ],
       ),
 
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          /// Input for list name
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 30.0,
-              bottom: 20.0,
-              left: 60.0
-            ),
-            child: TextField(
-              onChanged: (String value) {
-                getName(value);
-              },
-              autocorrect: true,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Name',
-              ),
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.w600
-              ),
-            ),
-          ),
-
-          Divider(
-            thickness: 1.0,
-            color: Colors.black,
-          ),
-
-          /// Input for budget
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 10.0,
-                  left: 20.0
+      body: Container(
+          padding: const EdgeInsets.all(32.0),
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  title: Text('List Name',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        fontSize: 20,
+                      )),
                 ),
-                child: Text(
-                  '\$',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w600
-                  ),
-                ),
-              ),
-              Flexible(
-                child: Container(
-                  padding: const EdgeInsets.only(
-                    top: 30.0,
-                    left: 10.0,
-                    bottom: 20.0
-                  ),
-                  width: 100,
+
+                //Allows the user to enter the name of the list.
+                Container(
                   child: TextField(
-                    keyboardType: TextInputType.number,
                     onChanged: (String value) {
                       getName(value);
                     },
                     autocorrect: true,
-                    decoration: InputDecoration.collapsed(
-                      hintText: 'Budget',
-                    ),
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w600
+                    decoration: InputDecoration(
+                      hintText: 'Name the List',
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
 
-          Divider(
-            thickness: 1.0,
-            color: Colors.black,
-          ),
+                ListTile(
+                  title: Text('Set Budget',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        fontSize: 20,
+                      )),
+                ),
 
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 20.0,
-              left: 20.0
+                // Allows user to set the budget.
+                Container(
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    onChanged: (String value) {
+                      getBudget(value);
+                    },
+                    decoration: InputDecoration(
+                      hintText: '0',
+                    ),
+                  ),
+                ),
+
+                ListTile(
+                  title: Text('Other Participants',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        fontSize: 20,
+                      )),
+                ),
+
+                //Displays the people in the list.
+                Expanded(
+                    child: ListView.builder(
+                  itemCount: people.length,
+                  itemBuilder: (context, int index) {
+                    return Row(
+                      textDirection: TextDirection.rtl,
+                      children: <Widget>[
+                        //Creates the button to remove participants from the list.
+                        Expanded(
+                            child: FlatButton(
+                                onPressed: () {
+                                  setState(() {
+                                    people.removeAt(index);
+                                  });
+                                  setState(() {
+                                    ids.removeAt(index);
+                                  });
+                                },
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: const Text(
+                                    'Remove',
+                                    style: TextStyle(
+                                        fontSize: 15.0, color: Colors.red),
+                                  ),
+                                ))),
+
+                        //Displays the names of the participants on screen
+                        Expanded(
+                          child: ListTile(title: Text(people[index])),
+                        ),
+                      ],
+                    );
+                  },
+                )),
+
+                //Button to add new participants to the list.
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  onPressed: () async {
+                    await getFriends();
+                    createAlert(context);
+                  },
+                  padding: const EdgeInsets.all(12),
+                  color: Colors.lightBlueAccent,
+                  child: Text('Add New Member',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
-            child: Text(
-              'Shoppers: ',
-              style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w600
-              ),
-            ),
-          ),
-
-          StreamBuilder(
-            stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Text('Loading user data...');
-
-              return Text('${snapshot.data['displayName'].toString()}');
-            },
-          )
-        ],
-      ),
-//      Container(
-//          padding: const EdgeInsets.all(32.0),
-//          child: Center(
-//            child: Column(
-//              children: <Widget>[
-//                ListTile(
-//                  title: Text('List Name',
-//                      style: TextStyle(
-//                        fontWeight: FontWeight.bold,
-//                        decoration: TextDecoration.underline,
-//                        fontSize: 20,
-//                      )),
-//                ),
-//
-//                //Allows the user to enter the name of the list.
-//                Container(
-//                  child: TextField(
-//                    onChanged: (String value) {
-//                      getName(value);
-//                    },
-//                    autocorrect: true,
-//                    decoration: InputDecoration(
-//                      hintText: 'Name the List',
-//                    ),
-//                  ),
-//                ),
-//
-//                ListTile(
-//                  title: Text('Set Budget',
-//                      style: TextStyle(
-//                        fontWeight: FontWeight.bold,
-//                        decoration: TextDecoration.underline,
-//                        fontSize: 20,
-//                      )),
-//                ),
-//
-//                // Allows user to set the budget.
-//                Container(
-//                  child: TextField(
-//                    keyboardType: TextInputType.number,
-//                    onChanged: (String value) {
-//                      getBudget(value);
-//                    },
-//                    decoration: InputDecoration(
-//                      hintText: '0',
-//                    ),
-//                  ),
-//                ),
-//
-//                ListTile(
-//                  title: Text('Other Participants',
-//                      style: TextStyle(
-//                        fontWeight: FontWeight.bold,
-//                        decoration: TextDecoration.underline,
-//                        fontSize: 20,
-//                      )),
-//                ),
-//
-//                //Displays the people in the list.
-//                Expanded(
-//                    child: ListView.builder(
-//                      itemCount: people.length,
-//                      itemBuilder: (context, int index) {
-//                        return Row(
-//                          textDirection: TextDirection.rtl,
-//                          children: <Widget>[
-//                            //Creates the button to remove participants from the list.
-//                            Expanded(
-//                                child: FlatButton(
-//                                    onPressed: () {
-//                                      setState(() {
-//                                        people.removeAt(index);
-//                                      });
-//                                      setState(() {
-//                                        ids.removeAt(index);
-//                                      });
-//                                    },
-//                                    child: Align(
-//                                      alignment: Alignment.centerRight,
-//                                      child: const Text(
-//                                        'Remove',
-//                                        style: TextStyle(
-//                                            fontSize: 15.0, color: Colors.red),
-//                                      ),
-//                                    ))),
-//
-//                            //Displays the names of the participants on screen
-//                            Expanded(
-//                              child: ListTile(title: Text(people[index])),
-//                            ),
-//                          ],
-//                        );
-//                      },
-//                    )
-//                  ),
-//
-//                //Button to add new participants to the list.
-//                RaisedButton(
-//                  shape: RoundedRectangleBorder(
-//                    borderRadius: BorderRadius.circular(24),
-//                  ),
-//                  onPressed: () async {
-//                    await getFriends();
-//                    createAlert(context);
-//                  },
-//                  padding: const EdgeInsets.all(12),
-//                  color: Colors.lightBlueAccent,
-//                  child: Text('Add New Member',
-//                      style: TextStyle(color: Colors.white)),
-//                ),
-//              ],
-//            ),
-//          )),
+          )),
       // Button to move to the next page.
       // Have it routed to main because I don't know where the list propogation is going to be held.
       floatingActionButton: FloatingActionButton(
