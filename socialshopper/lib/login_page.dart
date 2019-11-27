@@ -5,12 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'auth.dart';
+import 'globals.dart' as globals;
 import 'menu.dart';
 import 'signup_page.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _db = Firestore.instance;
+FirebaseUser user;
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -26,7 +28,8 @@ class _LoginPageState extends State<LoginPage> {
       borderRadius: 24,
       //This has been changed in order to allow for the argument uid to be passed into the menu page.
       onPressed: () async {
-        FirebaseUser user = await authService.googleSignIn();
+        user = await authService.googleSignIn();
+        globals.userUID = user.uid;
         Navigator.of(context).pushNamed(MenuPage.tag, arguments: user.uid);
         ;
       },
@@ -194,11 +197,12 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     String reason;
     //Try the following. Throws PlatformException error if invalid email, wrong password, or nonexisting account.
     try {
-      final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+      user = (await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       ))
           .user;
+      globals.userUID = user.uid;
       if (user != null) {
         setState(() {
           _success = true;
