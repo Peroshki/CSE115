@@ -14,9 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:socialshopper/list_setup.dart';
 import 'app_settings.dart';
-import 'globals.dart' as globals;
 import 'list_views.dart';
 import 'profile.dart';
 import 'store_select.dart';
@@ -31,7 +29,6 @@ List<String> userNames = new List();
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = '';
-List<DocumentSnapshot> myLists;
 
 class callUser {
   static void getUsersOfList() async {
@@ -168,14 +165,14 @@ class _MenuPageState extends State<MenuPage> {
     documentName = numList[index];
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-        body: ListViews(listName: myLists[index].documentID),
+        body: ListViews(listName: numList[index]),
       );
     }));
   }
 
 //This is the whole list
   Widget _buildList() {
-    //putNamesOfListInAList();
+    putNamesOfListInAList();
     return StreamBuilder(
       stream: Firestore.instance.collection('lists').snapshots(),
       builder: (context, snapshot) {
@@ -184,35 +181,16 @@ class _MenuPageState extends State<MenuPage> {
 
         // Only display the lists that belong to the user
         List<DocumentSnapshot> lists = snapshot.data.documents;
-        myLists = List();
-        for (var list in lists) {
-          Map<dynamic, dynamic> metadata = list.data['metadata'];
-          if (metadata.containsKey('users') && (metadata['users'].length != 0)) {
-            for (var user in metadata['users']) {
-              print(user.toString());
-              if (user is Map && user.containsValue(globals.userUID)) {
-                myLists.add(list);
-              }
-            }
-          }
-        }
-
-        if (myLists.isEmpty) {
-          return Center(
-            child: Text(
-              'Press + to add a new list.'
-            ),
-          );
-        }
+        lists = lists.where((doc) => numList.contains(doc.documentID)).toList();
 
         return ListView.builder(
-            itemCount: myLists.length,
+            itemCount: lists.length,
             itemBuilder: (context, index) {
               return Card(
                 child: ListTile(
-                  title: Text(myLists[index].data['metadata']['name']),
+                  title: Text(lists[index].data['metadata']['name']),
                   onTap: () {
-                    _openList(index, myLists[index].data['metadata']['uid']);
+                    _openList(index, lists[index].data['metadata']['name']);
                   },
                   onLongPress: () {
                     alertBoxForList(index);
@@ -279,7 +257,6 @@ class _MenuPageState extends State<MenuPage> {
 //Scaffold is the main container for main page
   @override
   Widget build(BuildContext context) {
-    print('global uid: ' + globals.userUID);
     return Scaffold(
       body: _getBody(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -320,7 +297,7 @@ class _MenuPageState extends State<MenuPage> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                      ListSetup.tag,
+                      StoreSelect.tag,
                       arguments: userId,
                     );
                   }),
@@ -331,7 +308,7 @@ class _MenuPageState extends State<MenuPage> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.of(context).pushNamed(
-                ListSetup.tag,
+                StoreSelect.tag,
                 arguments: userId,
               );
             },
@@ -340,7 +317,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
         );
       case 2:
-        return Profile(uid: ModalRoute.of(context).settings.arguments.toString());
+        return Profile();
     }
     return Center(
       child: const Text('No body for selected tab'),
