@@ -15,6 +15,17 @@ class Friend {
         photo = data['photo'];
 }
 
+class Arguments {
+  String uid;
+  String photoURL;
+
+  Arguments(uid, photoURL)
+  {
+    this.uid = uid;
+    this.photoURL = photoURL;
+  }
+}
+
 class Friends extends StatefulWidget {
   static String tag = "friends_list";
   _friendState createState() => _friendState();
