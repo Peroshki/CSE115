@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+Color mainColor = const Color.fromARGB(255, 43, 190, 254);
 
 String userUID;
 

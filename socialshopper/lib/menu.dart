@@ -150,10 +150,10 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index, String name) {
     // Open up a single list
-    documentName = numList[index];
+    documentName = myLists[index].documentID;
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-        body: ListViews(listName: myLists[index].documentID),
+        body: ListViews(listName: documentName),
       );
     }));
   }
@@ -312,17 +312,7 @@ class _MenuPageState extends State<MenuPage> {
             ],
             automaticallyImplyLeading: false,
           ),
-          body: _buildList(),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                ListSetup.tag,
-                arguments: userId,
-              );
-            },
-            tooltip: 'Create List',
-            child: Icon(Icons.add),
-          ),
+          body: _buildList()
         );
       case 2:
         return Profile(uid: ModalRoute.of(context).settings.arguments.toString());

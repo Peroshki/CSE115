@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 import 'list_setup.dart';
 import 'menu.dart';
 
@@ -40,10 +41,7 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(
-                ListSetup.tag,
-                arguments: ModalRoute.of(context).settings.arguments,
-              );
+          Navigator.pop(context, 'Safeway');
         },
         padding: EdgeInsets.all(12),
         color: Colors.red[100],
@@ -59,7 +57,7 @@ class _StoreSelectState extends State<StoreSelect> {
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(ListSetup.tag);
+          Navigator.pop(context, 'Best Buy');
         },
         padding: EdgeInsets.all(12),
         color: Colors.lightBlue[100],
@@ -94,7 +92,7 @@ class _StoreSelectState extends State<StoreSelect> {
           createAlert(context);
         },
         padding: EdgeInsets.all(12),
-        color: Colors.lightBlue[50],
+        color: Colors.green[50],
         child: Text('Party City', style: TextStyle(color: Colors.black)),
       ),
     );
@@ -105,6 +103,7 @@ class _StoreSelectState extends State<StoreSelect> {
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: globals.mainColor,
             title: const Text('Store Select Screen'),
 
             //Allows for the page to have a "go back" button
