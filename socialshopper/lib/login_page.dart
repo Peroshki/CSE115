@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'auth.dart';
+import 'globals.dart' as globals;
 import 'menu.dart';
 import 'signup_page.dart';
 
@@ -27,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       //This has been changed in order to allow for the argument uid to be passed into the menu page.
       onPressed: () async {
         FirebaseUser user = await authService.googleSignIn();
+        globals.userUID = user.uid;
         Navigator.of(context).pushNamed(MenuPage.tag, arguments: user.uid);
         ;
       },
@@ -205,6 +207,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           _userEmail = user.email;
         });
         logInUpdateUserData(user);
+        globals.userUID = user.uid;
         Navigator.of(context).pushNamed(MenuPage.tag,
             // Pass the users uid as an argument to the main menu page
             arguments: user.uid);

@@ -31,7 +31,7 @@ Future<void> createRecord(String listName, String storeName, int budget, List<St
       'store': storeName,
       'name': listName,
       'budget': budget,
-      'users': people
+      'users': users
     }
   });
 
@@ -46,11 +46,11 @@ Future<void> createRecord(String listName, String storeName, int budget, List<St
 /// Alerts the user that a shopper is already part of their list.
 Future<void> personInList(BuildContext context) {
   return showDialog<void>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        content: const Text('This person is already in the list!'));
-    }
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+            content: const Text('This person is already in the list!'));
+      }
   );
 }
 
@@ -66,51 +66,51 @@ class ListSetup extends StatefulWidget {
 class _ListSetup extends State<ListSetup> {
   Widget createShoppersWidget(List<String> users) {
     return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: users.length,
-      itemBuilder: (context, index) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 10.0
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CircleAvatar(
-                    child: Icon(Icons.person),
-                    backgroundColor: globals.mainColor,
-                    foregroundColor: Colors.white,
-                  ),
-                  Padding(
-                    child: Text('${users[index]}'),
-                    padding: const EdgeInsets.only(
-                      left: 10.0
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: users.length,
+        itemBuilder: (context, index) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 10.0
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    CircleAvatar(
+                      child: Icon(Icons.person),
+                      backgroundColor: globals.mainColor,
+                      foregroundColor: Colors.white,
                     ),
-                  ),
-                ],
+                    Padding(
+                      child: Text('${users[index]}'),
+                      padding: const EdgeInsets.only(
+                          left: 10.0
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            IconButton(
-              icon: Icon(Icons.cancel),
-              onPressed: () {
-                if (index - 1 < 0)
-                  return;
+              IconButton(
+                icon: Icon(Icons.cancel),
+                onPressed: () {
+                  if (index - 1 < 0)
+                    return;
 
-                setState(() {
-                  people.removeAt(index - 1);
-                  ids.removeAt(index - 1);
-                });
-              },
-            )
-          ],
-        );
-      }
+                  setState(() {
+                    people.removeAt(index - 1);
+                    ids.removeAt(index - 1);
+                  });
+                },
+              )
+            ],
+          );
+        }
     );
   }
 
@@ -195,8 +195,8 @@ class _ListSetup extends State<ListSetup> {
     }
 
     return Text(
-      '$store',
-      style: tStyle
+        '$store',
+        style: tStyle
     );
   }
 
@@ -226,254 +226,368 @@ class _ListSetup extends State<ListSetup> {
   Widget build(BuildContext context) {
     /// Unique ID generator
     final Uuid uuid = Uuid();
-    
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: globals.mainColor,
-        centerTitle: true,
-        title: const Text('List Setup'),
-        automaticallyImplyLeading: true,
-        actions: <Widget>[
-          StreamBuilder(
-            stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return const Text('Loading user data...');
-
-              return IconButton(
-                padding: const EdgeInsets.only(
-                  right: 10.0
-                ),
-                icon: Icon(Icons.done),
-                onPressed: () {
-                  if (store == '') {
-                    return showDialog<void>(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                            content: const Text('Please select a store.')
-                        );
-                      }
-                    );
-                  }
-
-                  if (name == '') {
-                    return showDialog<void>(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: const Text('Please give your list a name.')
-                        );
-                      }
-                    );
-                  }
-
-                  if (budget == -1) {
-                    return showDialog<void>(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: const Text('Please give your list a budget.')
-                        );
-                      }
-                    );
-                  }
-
-                  ids.insert(0, globals.userUID);
-                  people.insert(0, snapshot.data['displayName'].toString());
-
-                  // Create a list with a unique ID.
-                  createRecord(name, store, budget, people,
-                    uuid.v4(), ids, context);
-                  Navigator.of(context).pushNamed(
-                    MenuPage.tag,
-                    arguments: globals.userUID,
-                  );
-                },
-              );
-            },
-          ),
-        ],
-      ),
-
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 25.0,
-                    bottom: 20.0
-                  ),
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      _navigateAndDisplaySelection(context);
-                    },
-                    child: getStoreSelectButton(),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: globals.mainColor,
-                    padding: const EdgeInsets.all(50.0),
-                  ),
-                ),
-                Container()
-              ],
-            ),
-
-            Divider(
-              thickness: 1.0,
-              color: Colors.black,
-            ),
-
-            /// Input for list name
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 20.0,
-                bottom: 20.0,
-                left: 45.0
-              ),
-              child: TextField(
-                onChanged: (String value) {
-                  name = value;
-                  print(name);
-                },
-                autocorrect: true,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Name',
-                ),
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w600
-                ),
-              ),
-            ),
-
-            Divider(
-              thickness: 1.0,
-              color: Colors.black,
-            ),
-
-            /// Input for budget
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0
-                  ),
-                  child: Text(
-                    '\$',
-                    style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w600
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                        top: 20.0,
-                        left: 10.0,
-                        bottom: 20.0
-                    ),
-                    width: 100,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        LengthLimitingTextInputFormatter(6),
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      onChanged: (String value) {
-                        if (value == '')
-                        {
-                          budget = -1;
-                          return;
-                        }
-
-                        budget = int.parse(value);
-                      },
-                      autocorrect: true,
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Budget',
-                      ),
-                      style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.w600
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Divider(
-              thickness: 1.0,
-              color: Colors.black,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 25.0,
-                  left: 47.5
-              ),
-              child: Text(
-                'Shoppers: ',
-                style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w600
-                ),
-              ),
-            ),
-
-            Divider(
-              thickness: 1.0,
-              color: Colors.transparent,
-            ),
-
+        appBar: AppBar(
+          backgroundColor: globals.mainColor,
+          centerTitle: true,
+          title: const Text('New List'),
+          automaticallyImplyLeading: true,
+          actions: <Widget>[
             StreamBuilder(
               stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData)
                   return const Text('Loading user data...');
 
-                List<String> users = [];
-                users.add(snapshot.data['displayName']);
+                return IconButton(
+                  padding: const EdgeInsets.only(
+                      right: 10.0
+                  ),
+                  icon: Icon(Icons.done),
+                  onPressed: () {
+                    if (store == '') {
+                      return showDialog<void>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                content: const Text('Please select a store.')
+                            );
+                          }
+                      );
+                    }
 
-                for (String p in people) {
-                  users.add(p);
-                }
+                    if (name == '') {
+                      return showDialog<void>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                content: const Text('Please give your list a name.')
+                            );
+                          }
+                      );
+                    }
 
-                return createShoppersWidget(users);
+                    if (budget == -1) {
+                      return showDialog<void>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                content: const Text('Please give your list a budget.')
+                            );
+                          }
+                      );
+                    }
+
+                    ids.insert(0, globals.userUID);
+                    people.insert(0, snapshot.data['displayName'].toString());
+
+                    // Create a list with a unique ID.
+                    createRecord(name, store, budget, people,
+                        uuid.v4(), ids, context);
+                    Navigator.of(context).pushNamed(
+                      MenuPage.tag,
+                      arguments: globals.userUID,
+                    );
+                  },
+                );
               },
-            ),
-
-            Divider(
-              thickness: 5.0,
-              color: Colors.transparent,
-            ),
-
-            /// Button to add new participants to the list.
-            Center(
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                onPressed: () async {
-                  await getFriends();
-                  createAlert(context);
-                },
-                padding: const EdgeInsets.all(12),
-                color: globals.mainColor,
-                child: Text('Add Shopper',
-                    style: TextStyle(color: Colors.white)),
-              ),
             ),
           ],
         ),
-      )
+
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 25.0,
+                        bottom: 20.0
+                    ),
+                    child: RawMaterialButton(
+                      onPressed: () {
+                        _navigateAndDisplaySelection(context);
+                      },
+                      child: getStoreSelectButton(),
+                      shape: CircleBorder(),
+                      elevation: 2.0,
+                      fillColor: globals.mainColor,
+                      padding: const EdgeInsets.all(50.0),
+                    ),
+                  ),
+                  Container()
+                ],
+              ),
+
+              Divider(
+                thickness: 1.0,
+                color: Colors.black,
+              ),
+
+              /// Input for list name
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 20.0,
+                    bottom: 20.0,
+                    left: 45.0
+                ),
+                child: TextField(
+                  onChanged: (String value) {
+                    name = value;
+                    print(name);
+                  },
+                  autocorrect: true,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Name',
+                  ),
+                  style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.w600
+                  ),
+                ),
+              ),
+
+              Divider(
+                thickness: 1.0,
+                color: Colors.black,
+              ),
+
+              /// Input for budget
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20.0
+                    ),
+                    child: Text(
+                      '\$',
+                      style: TextStyle(
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.w600
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                          top: 20.0,
+                          left: 10.0,
+                          bottom: 20.0
+                      ),
+                      width: 100,
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          LengthLimitingTextInputFormatter(6),
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (String value) {
+                          if (value == '')
+                          {
+                            budget = -1;
+                            return;
+                          }
+
+                          budget = int.parse(value);
+                        },
+                        autocorrect: true,
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Budget',
+                        ),
+                        style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              Divider(
+                thickness: 1.0,
+                color: Colors.black,
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 25.0,
+                    left: 47.5
+                ),
+                child: Text(
+                  'Shoppers: ',
+                  style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.w600
+                  ),
+                ),
+              ),
+
+              Divider(
+                thickness: 1.0,
+                color: Colors.transparent,
+              ),
+
+              StreamBuilder(
+                stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return const Text('Loading user data...');
+
+                  List<String> users = [];
+                  users.add(snapshot.data['displayName']);
+
+                  for (String p in people) {
+                    users.add(p);
+                  }
+
+                  return createShoppersWidget(users);
+                },
+              ),
+
+              Divider(
+                thickness: 5.0,
+                color: Colors.transparent,
+              ),
+
+              /// Button to add new participants to the list.
+              Center(
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  onPressed: () async {
+                    await getFriends();
+                    createAlert(context);
+                  },
+                  padding: const EdgeInsets.all(12),
+                  color: globals.mainColor,
+                  child: Text('Add Shopper',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
+        )
+
+//      Container(
+//          padding: const EdgeInsets.all(32.0),
+//          child: Center(
+//            child: Column(
+//              children: <Widget>[
+//                ListTile(
+//                  title: Text('List Name',
+//                      style: TextStyle(
+//                        fontWeight: FontWeight.bold,
+//                        decoration: TextDecoration.underline,
+//                        fontSize: 20,
+//                      )),
+//                ),
+//
+//                //Allows the user to enter the name of the list.
+//                Container(
+//                  child: TextField(
+//                    onChanged: (String value) {
+//                      getName(value);
+//                    },
+//                    autocorrect: true,
+//                    decoration: InputDecoration(
+//                      hintText: 'Name the List',
+//                    ),
+//                  ),
+//                ),
+//
+//                ListTile(
+//                  title: Text('Set Budget',
+//                      style: TextStyle(
+//                        fontWeight: FontWeight.bold,
+//                        decoration: TextDecoration.underline,
+//                        fontSize: 20,
+//                      )),
+//                ),
+//
+//                // Allows user to set the budget.
+//                Container(
+//                  child: TextField(
+//                    keyboardType: TextInputType.number,
+//                    onChanged: (String value) {
+//                      getBudget(value);
+//                    },
+//                    decoration: InputDecoration(
+//                      hintText: '0',
+//                    ),
+//                  ),
+//                ),
+//
+//                ListTile(
+//                  title: Text('Other Participants',
+//                      style: TextStyle(
+//                        fontWeight: FontWeight.bold,
+//                        decoration: TextDecoration.underline,
+//                        fontSize: 20,
+//                      )),
+//                ),
+//
+//                //Displays the people in the list.
+//                Expanded(
+//                    child: ListView.builder(
+//                      itemCount: people.length,
+//                      itemBuilder: (context, int index) {
+//                        return Row(
+//                          textDirection: TextDirection.rtl,
+//                          children: <Widget>[
+//                            //Creates the button to remove participants from the list.
+//                            Expanded(
+//                                child: FlatButton(
+//                                    onPressed: () {
+//                                      setState(() {
+//                                        people.removeAt(index);
+//                                      });
+//                                      setState(() {
+//                                        ids.removeAt(index);
+//                                      });
+//                                    },
+//                                    child: Align(
+//                                      alignment: Alignment.centerRight,
+//                                      child: const Text(
+//                                        'Remove',
+//                                        style: TextStyle(
+//                                            fontSize: 15.0, color: Colors.red),
+//                                      ),
+//                                    ))),
+//
+//                            //Displays the names of the participants on screen
+//                            Expanded(
+//                              child: ListTile(title: Text(people[index])),
+//                            ),
+//                          ],
+//                        );
+//                      },
+//                    )
+//                  ),
+//
+//                //Button to add new participants to the list.
+//                RaisedButton(
+//                  shape: RoundedRectangleBorder(
+//                    borderRadius: BorderRadius.circular(24),
+//                  ),
+//                  onPressed: () async {
+//                    await getFriends();
+//                    createAlert(context);
+//                  },
+//                  padding: const EdgeInsets.all(12),
+//                  color: Colors.lightBlueAccent,
+//                  child: Text('Add New Member',
+//                      style: TextStyle(color: Colors.white)),
+//                ),
+//              ],
+//            ),
+//          )),
     );
   }
 }

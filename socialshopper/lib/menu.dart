@@ -14,7 +14,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:socialshopper/list_setup.dart';
 import 'app_settings.dart';
+import 'globals.dart' as globals;
 import 'list_views.dart';
 import 'profile.dart';
 import 'store_select.dart';
@@ -128,9 +130,22 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // Deletes list from database and updates array
-  void deleteList(int index) {
-    databaseRef.collection('lists').document(myLists[index].data['metadata']['uid']).delete();
-    putNamesOfListInAList();
+  void deleteList(int index) async {
+    String user = ModalRoute.of(context).settings.arguments.toString();
+
+    String listID = myLists[index].documentID;
+
+    List temp = List();
+    DocumentSnapshot snap =
+    await databaseRef.collection('users').document(user).get();
+    temp = List.from(snap['lists']);
+    temp.removeWhere((item) => item == listID);
+    await Firestore.instance
+        .collection('users')
+        .document(user)
+        .updateData({'lists': temp});
+
+    databaseRef.collection('lists').document(listID).delete();
   }
 
 //allows to change state of the list appearing
@@ -166,19 +181,37 @@ class _MenuPageState extends State<MenuPage> {
 
         // Only display the lists that belong to the user
         List<DocumentSnapshot> lists = snapshot.data.documents;
-        lists = lists.where((doc) => numList.contains(doc.documentID)).toList();
+        myLists = List();
+        for (var list in lists) {
+          Map<dynamic, dynamic> metadata = list.data['metadata'];
+          if (metadata.containsKey('users') && (metadata['users'].length != 0)) {
+            for (var user in metadata['users']) {
+              print(user.toString());
+              if (user is Map && user.containsValue(globals.userUID)) {
+                myLists.add(list);
+              }
+            }
+          }
+        }
+
+        if (myLists.isEmpty) {
+          return Center(
+            child: Text(
+                'Press + to add a new list.'
+            ),
+          );
+        }
 
         return ListView.builder(
-            itemCount: lists.length,
+            itemCount: myLists.length,
             itemBuilder: (context, index) {
               return Card(
                 child: ListTile(
-                  title: Text(lists[index].data['metadata']['name']),
+                  title: Text(myLists[index].data['metadata']['name']),
                   onTap: () {
-                    _openList(index, lists[index].data['metadata']['name']);
+                    _openList(index, myLists[index].data['metadata']['uid']);
                   },
                   onLongPress: () {
-                    print('PEEN ${index}');
                     alertBoxForList(index);
                   },
                 ),
@@ -283,8 +316,7 @@ class _MenuPageState extends State<MenuPage> {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                      StoreSelect.tag,
-                      arguments: userId,
+                      ListSetup.tag
                     );
                   }),
             ],

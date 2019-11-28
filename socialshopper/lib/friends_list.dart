@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialshopper/add_friend.dart';
+import 'globals.dart' as globals;
 import 'profile.dart';
 
 
@@ -13,6 +14,17 @@ class Friend {
       : name = data['name'],
         uid = data['uid'],
         photo = data['photo'];
+}
+
+class Arguments {
+  String uid;
+  String photoURL;
+
+  Arguments(uid, photoURL)
+  {
+    this.uid = uid;
+    this.photoURL = photoURL;
+  }
 }
 
 class Friends extends StatefulWidget {
@@ -30,7 +42,7 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
             image:  DecorationImage(
                 fit: BoxFit.fill,
                 image: NetworkImage(
-                   '$photo'
+                    '$photo'
                 )
             )
         )
@@ -93,7 +105,7 @@ class _friendState extends State<Friends> {
       ),
       body: StreamBuilder(
         // TODO: Get the current users account to get their friends list
-        stream: Firestore.instance.collection('users').document(args.uid.toString()).snapshots(),
+        stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Text('error');
