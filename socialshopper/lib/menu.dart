@@ -29,6 +29,7 @@ List<String> userNames = new List();
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = '';
+List<DocumentSnapshot> myLists;
 
 class callUser {
   static void getUsersOfList() async {
@@ -127,27 +128,9 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // Deletes list from database and updates array
-
-  void deleteList(int index) async {
-    String user = ModalRoute.of(context).settings.arguments.toString();
-
-    String listID = databaseRef
-        .collection('lists')
-        .document(numList[index])
-        .documentID
-        .toString();
-
-    List temp = List();
-    DocumentSnapshot snap =
-        await databaseRef.collection('users').document(user).get();
-    temp = List.from(snap['lists']);
-    temp.removeWhere((item) => item == listID);
-    await Firestore.instance
-        .collection('users')
-        .document(user)
-        .updateData({'lists': temp});
-
-    databaseRef.collection('lists').document(listID).delete();
+  void deleteList(int index) {
+    databaseRef.collection('lists').document(myLists[index].data['metadata']['uid']).delete();
+    putNamesOfListInAList();
   }
 
 //allows to change state of the list appearing
@@ -164,10 +147,10 @@ class _MenuPageState extends State<MenuPage> {
 
   void _openList(int index, String name) {
     // Open up a single list
-    documentName = numList[index];
+    documentName = myLists[index].documentID;
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Scaffold(
-        body: ListViews(listName: numList[index]),
+        body: ListViews(listName: documentName),
       );
     }));
   }
@@ -307,17 +290,7 @@ class _MenuPageState extends State<MenuPage> {
             ],
             automaticallyImplyLeading: false,
           ),
-          body: _buildList(),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                StoreSelect.tag,
-                arguments: userId,
-              );
-            },
-            tooltip: 'Create List',
-            child: Icon(Icons.add),
-          ),
+          body: _buildList()
         );
       case 2:
         return Profile();
