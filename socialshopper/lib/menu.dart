@@ -132,7 +132,7 @@ class _MenuPageState extends State<MenuPage> {
 // Deletes list from database and updates array
 
   void deleteList(int index) {
-    databaseRef.collection('lists').document(numList[index]).delete();
+    databaseRef.collection('lists').document(myLists[index].data['metadata']['uid']).delete();
     putNamesOfListInAList();
   }
 
