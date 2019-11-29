@@ -5,6 +5,7 @@ import 'package:socialshopper/store_select.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'add_friend.dart';
 import 'friends_list.dart';
+import 'globals.dart' as globals;
 import 'item_input.dart';
 import 'list_setup.dart';
 import 'login_page.dart';
@@ -17,8 +18,14 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+void init() async {
+  FirebaseUser user = await _auth.currentUser();
+  if (user != null) {
+    globals.userUID = user.uid;
+  }
+}
 
+class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     MenuPage.tag: (context) => MenuPage(),
@@ -34,11 +41,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    init();
     return MaterialApp(
       title: 'SocialShopper',
-      home: _auth.currentUser() == null
-      ? LoginPage()
-      : MenuPage(),
+      home: _auth.currentUser() == null ? LoginPage() : MenuPage(),
       routes: routes,
     );
   }
