@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socialshopper/item_input.dart';
 import 'package:socialshopper/payment.dart';
 import 'package:socialshopper/store_select.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'add_friend.dart';
 import 'friends_list.dart';
 import 'item_input.dart';
@@ -12,9 +13,12 @@ import 'mock_store.dart';
 import 'signup_page.dart';
 import 'store_select.dart';
 
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     MenuPage.tag: (context) => MenuPage(),
@@ -32,7 +36,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SocialShopper',
-      home: LoginPage(),
+      home: _auth.currentUser() == null
+      ? LoginPage()
+      : MenuPage(),
       routes: routes,
     );
   }
