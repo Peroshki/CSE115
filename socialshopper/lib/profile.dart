@@ -38,6 +38,7 @@ class _ProfileState extends State<Profile> {
   //Get the user that is currently logged in.
   initUser() async {
     user = await _auth.currentUser();
+    print(globals.userUID);
     return user;
   }
 
@@ -73,7 +74,7 @@ class _ProfileState extends State<Profile> {
                       shrinkWrap: true,
                       children: <Widget>[
                         Text(
-                          'Hello, ${userDocument["displayName"]}!',
+                          'Hello, ${userDocument['displayName']}!',
                           style: TextStyle(fontSize: 30.0),
                           textAlign: TextAlign.center,
                         ),
