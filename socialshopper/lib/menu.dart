@@ -53,13 +53,12 @@ class callUser {
     List<String> k = values.split(new RegExp(r'(\W+)'));
 
     print(k);
-  
+
     var four = 4;
     for (int i = 0; i < k.length; i++) {
-
       if (i == four) {
         userNames.add(k.elementAt(i));
-        four +=4;
+        four += 4;
       }
     }
     //print(userNames);
@@ -175,7 +174,60 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-//This is the whole list
+  //Get Total for list
+  TextSpan getTotal(DocumentSnapshot myList) {
+    List<dynamic> items = myList.data['items'];
+
+    globals.ShoppingList s = globals.ShoppingList.fromSnapshot(myList);
+
+    if (items.isEmpty) {
+      return TextSpan(
+          text: '\$0.0',
+          style: TextStyle(
+              color: Colors.green, fontSize: 25, fontWeight: FontWeight.bold));
+    }
+
+    double totalVar = 0;
+    for (int i = 0; i < s.items.length; i++) {
+      totalVar += s.items[i].price * s.items[i].quantity;
+    }
+
+    final double budget = s.metadata.budget;
+    print(totalVar);
+    if (budget > totalVar) {
+      return TextSpan(
+          text: '\$' + totalVar.toString(),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 25, color: Colors.green));
+    } else {
+      return TextSpan(
+          text: '\$' + totalVar.toString(),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red));
+    }
+  }
+
+  DecorationImage storeType(DocumentSnapshot type) {
+    Map<dynamic, dynamic> metadata = type.data['metadata'];
+
+    globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
+
+    if (s.metadata.store.toString() == 'Safeway') {
+      return DecorationImage(
+          fit: BoxFit.fill,
+          image: AssetImage(
+            'assets/images/SAFEWAY.png',
+          ));
+    } else {
+      return DecorationImage(
+          fit: BoxFit.fill,
+          image: AssetImage(
+            'assets/images/BestBuy.png',
+          ));
+    }
+  }
+
+  //This is the whole list
   Widget _buildList() {
     putNamesOfListInAList();
     return StreamBuilder(
@@ -210,14 +262,47 @@ class _MenuPageState extends State<MenuPage> {
             itemCount: myLists.length,
             itemBuilder: (context, index) {
               return Card(
-                child: ListTile(
-                  title: Text(myLists[index].data['metadata']['name']),
-                  onTap: () {
-                    _openList(index, myLists[index].data['metadata']['uid']);
-                  },
-                  onLongPress: () {
-                    alertBoxForList(index);
-                  },
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: new Container(
+                        height: 80,
+                        width: 90,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: storeType(lists[index])
+                                ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: ListTile(
+                        title: RichText(
+                            text: TextSpan(children: <TextSpan>[
+                          TextSpan(
+                            text: '\t' + myLists[index].data['metadata']['name'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30,
+                                color: Colors.black87),
+                          ),
+                          TextSpan(text: '\n'),
+                        ])),
+                        onTap: () {
+                          _openList(
+                              index, myLists[index].data['metadata']['uid']);
+                        },
+                        onLongPress: () {
+                          alertBoxForList(index);
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RichText(
+                          text: TextSpan(
+                              children: <TextSpan>[getTotal(lists[index])])),
+                    ),
+                  ],
                 ),
               );
             });
@@ -225,7 +310,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-// Displays an alert box before deleting list
+  // Displays an alert box before deleting list
   void alertBoxForList(int index) {
     showDialog(
       context: context,
@@ -277,7 +362,7 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-//Scaffold is the main container for main page
+  //Scaffold is the main container for main page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -301,7 +386,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-//Menu Page
+  //Menu Page
   Widget _getBody(int index) {
     switch (index) {
       case 0:
@@ -333,3 +418,5 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 }
+
+class DecorateImage {}
