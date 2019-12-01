@@ -15,15 +15,21 @@ import 'signup_page.dart';
 import 'store_select.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-
+FirebaseUser user;
 void main() => runApp(MyApp());
 
-void init() async {
-  FirebaseUser user = await _auth.currentUser();
-  if (user != null) {
-    globals.userUID = user.uid;
-  }
-}
+
+// Future<FirebaseUser> init() async {
+//  user = await _auth.currentUser();
+//   if (user == null) {
+//     return null;
+//   }
+//   else{
+//     globals.userUID = user.uid;
+//     return user;
+//   }
+// }
+
 
 class MyApp extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
@@ -41,10 +47,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    init();
     return MaterialApp(
       title: 'SocialShopper',
-      home: _auth.currentUser() == null ? LoginPage() : MenuPage(),
+      home: FutureBuilder(
+        future: FirebaseAuth.instance.currentUser(),
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
+          if (snapshot.hasData) {
+            globals.userUID = snapshot.data.uid;
+            return MenuPage();
+          }
+          return LoginPage();
+        },
+      ),
       routes: routes,
     );
   }
