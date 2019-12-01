@@ -12,7 +12,7 @@
 */
 
 import 'dart:async';
-
+import 'globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -313,6 +313,7 @@ class _ListViewsState extends State<ListViews> {
         },
       ),
       appBar: AppBar(
+        backgroundColor: globals.mainColor,
         title: StreamBuilder(
             stream: docRef.snapshots(),
             builder: (context, snapshot) {

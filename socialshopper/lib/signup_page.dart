@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:socialshopper/menu.dart';
 import 'auth.dart';
+import 'globals.dart' as globals;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _db = Firestore.instance;
@@ -32,6 +33,7 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
+        backgroundColor: globals.mainColor,
         centerTitle: true,
       ),
       body: Form(

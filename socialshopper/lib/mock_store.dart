@@ -15,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'item_input.dart';
 import 'menu.dart' as globals;
+import 'globals.dart' as wth;
 
 // Classes that hold Database Data
 class Meat_Items {
@@ -639,6 +640,7 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
     //         length: 5,
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: wth.mainColor,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {

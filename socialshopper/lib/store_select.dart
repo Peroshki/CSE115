@@ -98,13 +98,11 @@ class _StoreSelectState extends State<StoreSelect> {
     );
 
     //Starts the desplay to the screen
-    return MaterialApp(
-      title: title,
-      home: Scaffold(
-        backgroundColor: Colors.white,
+    return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           backgroundColor: globals.mainColor,
-            title: const Text('Store Select Screen'),
+            title: const Text('Store Select Screen',),
 
             //Allows for the page to have a "go back" button
             automaticallyImplyLeading: true,
@@ -142,7 +140,6 @@ class _StoreSelectState extends State<StoreSelect> {
             ],
           ),
         ),
-      ),
     );
   }
 }

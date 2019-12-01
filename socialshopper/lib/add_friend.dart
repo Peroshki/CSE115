@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'globals.dart' as globals;
 class AddFriend extends StatefulWidget {
   static String tag = 'add_friend';
 
@@ -136,6 +136,7 @@ class _AddFriendState extends State<AddFriend> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: globals.mainColor,
         title: const Text('Add a Friend')
       ),
       body: Column(

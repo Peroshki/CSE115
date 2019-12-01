@@ -89,7 +89,7 @@ class _friendState extends State<Friends> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: globals.mainColor,
         title: Text('Friends'),
         actions: <Widget>[
           IconButton(

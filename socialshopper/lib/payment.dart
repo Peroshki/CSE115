@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
-
+import 'globals.dart' as globals;
 class Payment extends StatefulWidget {
   static String tag = 'payment';
   @override
@@ -19,6 +19,7 @@ class _PaymentState extends State<Payment> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Applications'),
+        backgroundColor: globals.mainColor,
       ),
       body: _PaymentContent(
           includeSystemApps: _showSystemApps,
