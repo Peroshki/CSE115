@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:socialshopper/list_setup.dart';
+import 'package:socialshopper/mock_store.dart';
 import 'app_settings.dart';
 import 'globals.dart' as globals;
 import 'list_views.dart';
@@ -47,14 +48,18 @@ class callUser {
     tags.remove('store');
     tags.remove('budget');
     tags.forEach((Key, value) => test.add(value.toString()));
-    print(test);
+
     String values = test.elementAt(0);
-    print(values);
     List<String> k = values.split(new RegExp(r'(\W+)'));
 
+    print(k);
+  
+    var four = 4;
     for (int i = 0; i < k.length; i++) {
-      if (i > 0 && i < k.length - 1) {
+
+      if (i == four) {
         userNames.add(k.elementAt(i));
+        four +=4;
       }
     }
     //print(userNames);
@@ -137,7 +142,7 @@ class _MenuPageState extends State<MenuPage> {
 
     List temp = List();
     DocumentSnapshot snap =
-    await databaseRef.collection('users').document(user).get();
+        await databaseRef.collection('users').document(user).get();
     temp = List.from(snap['lists']);
     temp.removeWhere((item) => item == listID);
     await Firestore.instance
@@ -184,9 +189,10 @@ class _MenuPageState extends State<MenuPage> {
         myLists = List();
         for (var list in lists) {
           Map<dynamic, dynamic> metadata = list.data['metadata'];
-          if (metadata.containsKey('users') && (metadata['users'].length != 0)) {
+          if (metadata.containsKey('users') &&
+              (metadata['users'].length != 0)) {
             for (var user in metadata['users']) {
-              print(user.toString());
+              //print(user.toString());
               if (user is Map && user.containsValue(globals.userUID)) {
                 myLists.add(list);
               }
@@ -196,9 +202,7 @@ class _MenuPageState extends State<MenuPage> {
 
         if (myLists.isEmpty) {
           return Center(
-            child: Text(
-                'Press + to add a new list.'
-            ),
+            child: Text('Press + to add a new list.'),
           );
         }
 
@@ -304,26 +308,23 @@ class _MenuPageState extends State<MenuPage> {
         return Settings();
       case 1:
         return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text('Lists'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: null,
-              ),
-              IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      ListSetup.tag
-                    );
-                  }),
-            ],
-            automaticallyImplyLeading: false,
-          ),
-          body: _buildList()
-        );
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text('Lists'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: null,
+                ),
+                IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(ListSetup.tag);
+                    }),
+              ],
+              automaticallyImplyLeading: false,
+            ),
+            body: _buildList());
       case 2:
         return Profile();
     }
