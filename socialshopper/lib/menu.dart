@@ -184,7 +184,7 @@ class _MenuPageState extends State<MenuPage> {
       return TextSpan(
           text: '\$0.0',
           style: TextStyle(
-              color: Colors.green, fontSize: 25, fontWeight: FontWeight.bold));
+              color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold));
     }
 
     double totalVar = 0;
@@ -198,12 +198,12 @@ class _MenuPageState extends State<MenuPage> {
       return TextSpan(
           text: '\$' + totalVar.toString(),
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 25, color: Colors.green));
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.green));
     } else {
       return TextSpan(
           text: '\$' + totalVar.toString(),
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 25, color: Colors.red));
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.red));
     }
   }
 
@@ -276,7 +276,7 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                     Expanded(
                       flex: 3,
-                      child: ListTile(
+                        child: ListTile(
                         title: RichText(
                             text: TextSpan(children: <TextSpan>[
                           TextSpan(
