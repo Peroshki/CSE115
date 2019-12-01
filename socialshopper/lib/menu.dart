@@ -174,7 +174,7 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-  //Get Total for list
+  //Get Total for list and return it back to list
   TextSpan getTotal(DocumentSnapshot myList) {
     List<dynamic> items = myList.data['items'];
 
@@ -207,6 +207,7 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
+// Get the store associated with the list and display it on screen
   DecorationImage storeType(DocumentSnapshot type) {
     Map<dynamic, dynamic> metadata = type.data['metadata'];
 
@@ -225,6 +226,15 @@ class _MenuPageState extends State<MenuPage> {
             'assets/images/BestBuy.png',
           ));
     }
+  }
+
+  //Find out how many people are in the list
+  peopleInList(DocumentSnapshot type){
+    List<dynamic> metadata = type.data['metadata'];
+
+    globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
+
+
   }
 
   //This is the whole list
@@ -262,46 +272,64 @@ class _MenuPageState extends State<MenuPage> {
             itemCount: myLists.length,
             itemBuilder: (context, index) {
               return Card(
-                child: Row(
+                child: Column(
                   children: <Widget>[
-                    Expanded(
-                      child: new Container(
-                        height: 80,
-                        width: 90,
+                    //Expanded(
+                    //flex: 3,
+                    ListTile(
+                      leading: new Container(
+                        height: 70,
+                        width: 60,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: storeType(lists[index])
-                                ),
+                            image: storeType(lists[index])),
                       ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                        child: ListTile(
-                        title: RichText(
-                            text: TextSpan(children: <TextSpan>[
-                          TextSpan(
-                            text: '\t' + myLists[index].data['metadata']['name'],
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                color: Colors.black87),
-                          ),
-                          TextSpan(text: '\n'),
-                        ])),
-                        onTap: () {
-                          _openList(
-                              index, myLists[index].data['metadata']['uid']);
-                        },
-                        onLongPress: () {
-                          alertBoxForList(index);
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: RichText(
+                      trailing: RichText(
                           text: TextSpan(
                               children: <TextSpan>[getTotal(lists[index])])),
+                      title: RichText(
+                          text: TextSpan(children: [
+                        TextSpan(
+                          text: '\t' + myLists[index].data['metadata']['name'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                              color: Colors.black87),
+                        ),
+                        TextSpan(text: '\n'),
+                      ])),
+                      onTap: () {
+                        _openList(
+                            index, myLists[index].data['metadata']['uid']);
+                      },
+                      onLongPress: () {
+                        alertBoxForList(index);
+                      },
                     ),
+                    //),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: <Widget>[
+                    //     Flexible(
+                    //       child: Icon(
+                    //         Icons.account_circle,
+                    //         size: 30,
+                    //       ),
+                    //     ),
+                    //     Flexible(
+                    //       child: Icon(
+                    //         Icons.account_circle,
+                    //         size: 30,
+                    //       ),
+                    //     ),
+                    //     Flexible(
+                    //       child: Icon(
+                    //         Icons.account_circle,
+                    //         size: 30,
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
                   ],
                 ),
               );
