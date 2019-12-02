@@ -39,15 +39,15 @@ void main(){
       var darkModeOn = prefs.getBool('dark') ?? true;
       runApp(
         ChangeNotifierProvider<ThemeNotifier>(
-          builder: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
-          child: MyApp(),
+          create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+          child: MaterialApp(home: MyApp()),
         ),
       );
     });
   
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget with ChangeNotifier {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     MenuPage.tag: (context) => MenuPage(),
