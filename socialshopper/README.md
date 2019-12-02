@@ -1,8 +1,8 @@
 # Readme
 
-## SocialShopper
+### SocialShopper
 ---
-## Getting Started
+### Getting Started
 
 Theoretically, install application straight from the Google Play Store!
 
