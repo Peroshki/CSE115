@@ -374,7 +374,7 @@ class _MenuPageState extends State<MenuPage> {
         // as adding a back button to close it
         MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(title: const Text('Add a new task')),
+          appBar: AppBar(title: const Text('Add a new task'),backgroundColor: globals.mainColor,),
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
@@ -421,23 +421,27 @@ class _MenuPageState extends State<MenuPage> {
         return Settings();
       case 1:
         return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: const Text('Lists'),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: null,
-                ),
-                IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(ListSetup.tag);
-                    }),
-              ],
-              automaticallyImplyLeading: false,
-            ),
-            body: _buildList());
+          appBar: AppBar(
+            backgroundColor: globals.mainColor,
+            centerTitle: true,
+            title: const Text('Lists'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: null,
+              ),
+              IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      ListSetup.tag
+                    );
+                  }),
+            ],
+            automaticallyImplyLeading: false,
+          ),
+          body: _buildList()
+        );
       case 2:
         return Profile();
     }

@@ -26,7 +26,8 @@ dependencies:
   cloud_firestore: ^0.12.9+5
   flutter_auth_buttons: ^0.6.0
   device_apps: ^1.0.8
-
+  shared_preferences: ^0.5.4+6
+  provider: ^3.1.0
   rxdart: ^0.22.4
   uuid: ^2.0.2
   

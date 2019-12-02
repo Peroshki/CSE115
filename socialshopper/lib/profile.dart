@@ -49,10 +49,10 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     initUser();
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.blue,
+          backgroundColor: globals.mainColor,
           title: const Text('Profile'),
           automaticallyImplyLeading: false,
           //code for back button
