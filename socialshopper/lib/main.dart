@@ -3,9 +3,12 @@ import 'package:socialshopper/item_input.dart';
 import 'package:socialshopper/payment.dart';
 import 'package:socialshopper/store_select.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'add_friend.dart';
 import 'friends_list.dart';
 import 'globals.dart' as globals;
+import 'theme.dart';
+import 'package:provider/provider.dart';
 import 'item_input.dart';
 import 'list_setup.dart';
 import 'login_page.dart';
@@ -15,17 +18,35 @@ import 'signup_page.dart';
 import 'store_select.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+FirebaseUser user;
+var prefs;
 
-void main() => runApp(MyApp());
+class ThemeNotifier with ChangeNotifier {
+  ThemeData _themeData;
 
-void init() async {
-  FirebaseUser user = await _auth.currentUser();
-  if (user != null) {
-    globals.userUID = user.uid;
+  ThemeNotifier(this._themeData);
+
+  getTheme() => _themeData;
+
+  setTheme(ThemeData themeData) async {
+    _themeData = themeData;
+    notifyListeners();
   }
 }
 
-class MyApp extends StatelessWidget {
+void main() {
+  SharedPreferences.getInstance().then((prefs) {
+    var darkModeOn = prefs.getBool('dark') ?? true;
+    runApp(
+      ChangeNotifierProvider<ThemeNotifier>(
+        create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+        child: MaterialApp(home: MyApp()),
+      ),
+    );
+  });
+}
+
+class MyApp extends StatelessWidget with ChangeNotifier {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     MenuPage.tag: (context) => MenuPage(),
@@ -41,10 +62,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    init();
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
+      theme: themeNotifier.getTheme(),
       title: 'SocialShopper',
-      home: _auth.currentUser() == null ? LoginPage() : MenuPage(),
+      home: FutureBuilder(
+        future: FirebaseAuth.instance.currentUser(),
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
+            globals.userUID = snapshot.data.uid;
+            return MenuPage();
+          }
+          return LoginPage();
+        },
+      ),
       routes: routes,
     );
   }

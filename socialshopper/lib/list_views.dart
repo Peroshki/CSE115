@@ -11,12 +11,12 @@
 *     listName: The name of the shopping list you wish to view
 */
 
-import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:socialshopper/payment.dart';
+
+import 'globals.dart' as globals;
 import 'globals.dart';
 import 'menu.dart';
 import 'mock_store.dart';
@@ -51,7 +51,7 @@ Widget createDifferenceWidget(double difference) {
     text = '-(\$${difference.toStringAsFixed(2).substring(1)})';
     textColor = Colors.red;
   } else {
-    text = '(\$$difference)';
+    text = '(\$${difference.toStringAsFixed(2)})';
     textColor = Colors.green;
   }
 
@@ -175,14 +175,16 @@ List<Widget> createItemCardWidget(Item item) {
   final List<Widget> widgets = [
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[Text(item.name), Text('\$${totalPrice.toStringAsFixed(2)}')],
+      children: <Widget>[
+        Text(item.name),
+        Text('\$${totalPrice.toStringAsFixed(2)}')
+      ],
     ),
     Text('Price: \$${item.price.toStringAsFixed(2)}'),
     Text('Quantity: ${item.quantity}'),
     Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
-        child: Text('Shoppers: ${item.users.toString()}')
-    )
+        child: Text('Shoppers: ${item.users.toString()}'))
   ];
 
   return widgets;
@@ -228,7 +230,7 @@ class _ListViewsState extends State<ListViews> {
   void removeFromDatabase(int index) {
     Firestore.instance.runTransaction((Transaction tx) async {
       final DocumentReference postRef =
-      Firestore.instance.collection('lists').document(widget.listName);
+          Firestore.instance.collection('lists').document(widget.listName);
       final DocumentSnapshot postSnapshot = await tx.get(postRef);
       if (postSnapshot.exists) {
         var doc = postSnapshot.data;
@@ -289,7 +291,8 @@ class _ListViewsState extends State<ListViews> {
           if (!snapshot.hasData) return Text('Loading data... Please wait.');
 
           // If the list has no items, notify the user that the list is empty
-          if (snapshot.data["items"].length == 0) return Center(child: Text('List is empty.'));
+          if (snapshot.data["items"].length == 0)
+            return Center(child: Text('List is empty.'));
 
           // Create a shopping list object from the list data
           final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
@@ -308,11 +311,11 @@ class _ListViewsState extends State<ListViews> {
                       title: widgets.first,
                       children: widgets.sublist(1)),
                 );
-              }
-          );
+              });
         },
       ),
       appBar: AppBar(
+        backgroundColor: globals.mainColor,
         title: StreamBuilder(
             stream: docRef.snapshots(),
             builder: (context, snapshot) {
@@ -320,15 +323,15 @@ class _ListViewsState extends State<ListViews> {
               if (!snapshot.hasData) return Text('Name loading...');
 
               // If the list has no items, notify the user that the list is empty
-              if (snapshot.data['items'].length == 0) return Text(snapshot.data['metadata']['name']);
+              if (snapshot.data['items'].length == 0)
+                return Text(snapshot.data['metadata']['name']);
 
               // Create a shopping list object from the list data
               ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
               // Create a text widget with the list name
               return Text(s.metadata.name);
-            }
-        ),
+            }),
         actions: <Widget>[
           // A button which routes to the new item page
           IconButton(
@@ -342,37 +345,37 @@ class _ListViewsState extends State<ListViews> {
       ),
       bottomNavigationBar: BottomAppBar(
           child: FlatButton(
-            color: Colors.blueGrey,
-            highlightColor: Colors.transparent,
-            onPressed: activateBottomSheet,
-            child: StreamBuilder(
-              stream: docRef.snapshots(),
-              builder: (context, snapshot) {
-                // If the list has no data, return an error message
-                if (snapshot.data == null) return Text("Error");
+        color: Colors.blueGrey,
+        highlightColor: Colors.transparent,
+        onPressed: activateBottomSheet,
+        child: StreamBuilder(
+          stream: docRef.snapshots(),
+          builder: (context, snapshot) {
+            // If the list has no data, return an error message
+            if (snapshot.data == null) return Text("Error");
 
-                // If the list has no items, notify the user that the list is empty
-                if (snapshot.data['items'].length == 0) return createDetailsWidget(0, 0, 0);
+            // If the list has no items, notify the user that the list is empty
+            if (snapshot.data['items'].length == 0)
+              return createDetailsWidget(0, 0, 0);
 
-                // Create a shopping list object from the list data
-                final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
+            // Create a shopping list object from the list data
+            final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
-                // Calculate the total price for the list
-                double total = 0.0;
-                for (Item i in s.items) {
-                  total += i.price * i.quantity;
-                }
+            // Calculate the total price for the list
+            double total = 0.0;
+            for (Item i in s.items) {
+              total += i.price * i.quantity;
+            }
 
-                // Compare it to the budget to get the difference
-                final double budget = s.metadata.budget;
-                final double difference = budget - total;
+            // Compare it to the budget to get the difference
+            final double budget = s.metadata.budget;
+            final double difference = budget - total;
 
-                // Create a widget to display the total, budget and difference
-                return createDetailsWidget(total, budget, difference);
-              },
-            ),
-          )
-      ),
+            // Create a widget to display the total, budget and difference
+            return createDetailsWidget(total, budget, difference);
+          },
+        ),
+      )),
     );
   }
 
@@ -380,50 +383,51 @@ class _ListViewsState extends State<ListViews> {
     showBottomSheet(
         context: context,
         builder: (context) => StreamBuilder(
-          stream: docRef.snapshots(),
-          builder: (context, snapshot) {
-            // If there is no data in the shopping list,
-            // return an empty container with 0 height
-            if (snapshot?.data == null) return Container(height: 0);
+              stream: docRef.snapshots(),
+              builder: (context, snapshot) {
+                // If there is no data in the shopping list,
+                // return an empty container with 0 height
+                if (snapshot?.data == null) return Container(height: 0);
 
-            // If the list has no items, notify the user that the list is empty
-            if (snapshot.data['items'].length == 0) return createFinishWidget(context, 0, {}, 0);
+                // If the list has no items, notify the user that the list is empty
+                if (snapshot.data['items'].length == 0)
+                  return createFinishWidget(context, 0, {}, 0);
 
-            // Create a shopping list object from the list data
-            final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
+                // Create a shopping list object from the list data
+                final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
-            double groupTotal = 0.0;
-            double indTotal = 0.0;
-            Map<String, double> indTotals = <String, double>{};
+                double groupTotal = 0.0;
+                double indTotal = 0.0;
+                Map<String, double> indTotals = <String, double>{};
 
-            // Calculate every users individual total
-            for (ListUser user in s.metadata.users) {
-              indTotal = 0.0;
+                // Calculate every users individual total
+                for (ListUser user in s.metadata.users) {
+                  indTotal = 0.0;
 
-              for (Item i in s.items) {
-                if (i.users.contains(user)) {
-                  // The price for an individual user of an item is
-                  // (total price * quantity) / (number of users of the item)
-                  indTotal +=
-                      (i.price.toDouble() * i.quantity) / i.users.length;
+                  for (Item i in s.items) {
+                    if (i.users.contains(user)) {
+                      // The price for an individual user of an item is
+                      // (total price * quantity) / (number of users of the item)
+                      indTotal +=
+                          (i.price.toDouble() * i.quantity) / i.users.length;
+                    }
+                  }
+
+                  indTotals[user.name] = indTotal;
                 }
-              }
 
-              indTotals[user.name] = indTotal;
-            }
+                // Calculate the group total
+                for (Item i in s.items) {
+                  groupTotal += i.price * i.quantity;
+                }
 
-            // Calculate the group total
-            for (Item i in s.items) {
-              groupTotal += i.price * i.quantity;
-            }
+                final double budget = s.metadata.budget;
 
-            final double budget = s.metadata.budget;
-
-            // Create a final display widget which shows the group and
-            // individual totals, and provides a button to initiate payment
-            return createFinishWidget(
-                context, groupTotal, indTotals, budget);
-          },
-        ));
+                // Create a final display widget which shows the group and
+                // individual totals, and provides a button to initiate payment
+                return createFinishWidget(
+                    context, groupTotal, indTotals, budget);
+              },
+            ));
   }
 }

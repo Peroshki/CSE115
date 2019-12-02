@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialshopper/add_friend.dart';
-import 'globals.dart' as globals;
-import 'profile.dart';
 
+import 'globals.dart' as globals;
 
 class Friend {
   String name;
   String uid;
   String photo;
+
   Friend.fromMap(Map<dynamic, dynamic> data)
       : name = data['name'],
         uid = data['uid'],
@@ -20,8 +19,7 @@ class Arguments {
   String uid;
   String photoURL;
 
-  Arguments(uid, photoURL)
-  {
+  Arguments(uid, photoURL) {
     this.uid = uid;
     this.photoURL = photoURL;
   }
@@ -29,6 +27,7 @@ class Arguments {
 
 class Friends extends StatefulWidget {
   static String tag = "friends_list";
+
   _friendState createState() => _friendState();
 }
 
@@ -39,21 +38,15 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
         height: 40.0,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            image:  DecorationImage(
-                fit: BoxFit.fill,
-                image: NetworkImage(
-                    '$photo'
-                )
-            )
-        )
-    ),
+            image: DecorationImage(
+                fit: BoxFit.fill, image: NetworkImage('$photo')))),
     title: Text(name),
     trailing: IconButton(
       icon: Icon(Icons.more_vert),
-      onPressed: (){
+      onPressed: () {
         showDialog(
             context: context,
-            builder: (BuildContext context){
+            builder: (BuildContext context) {
               //ensures user wants to delete this
               return AlertDialog(
                 title: Text('Deleting friends'),
@@ -61,22 +54,20 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Delete'),
-                    onPressed: (){
+                    onPressed: () {
                       //removes from database
                       Navigator.of(context).pop();
                     },
                   ),
-
                   FlatButton(
                     child: Text('Cancel'),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.of(context).pop();
                     },
                   )
                 ],
               );
-            }
-        );
+            });
       },
     ),
   );
@@ -89,35 +80,36 @@ class _friendState extends State<Friends> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: globals.mainColor,
         title: Text('Friends'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context).pushNamed(
-                  AddFriend.tag,
-                  arguments: args.uid
-              );
+              Navigator.of(context)
+                  .pushNamed(AddFriend.tag, arguments: args.uid);
             },
           )
         ],
       ),
       body: StreamBuilder(
         // TODO: Get the current users account to get their friends list
-        stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
+        stream: Firestore.instance
+            .collection('users')
+            .document(globals.userUID)
+            .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return const Text('error');
+          if (!snapshot.hasData) return const Text('error');
 
-          List<Friend> friends = List.from(snapshot.data['friends'].map((friend) => Friend.fromMap(friend)));
+          List<Friend> friends = List.from(
+              snapshot.data['friends'].map((friend) => Friend.fromMap(friend)));
 
           return ListView.builder(
               itemCount: friends.length,
               itemBuilder: (context, index) {
-                return generateFriendWidget(friends[index].name,friends[index].photo, context);
-              }
-          );
+                return generateFriendWidget(
+                    friends[index].name, friends[index].photo, context);
+              });
         },
       ),
     );

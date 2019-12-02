@@ -1,25 +1,29 @@
 //Creates the sign up page, including its sign up form.
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:socialshopper/menu.dart';
-import 'auth.dart';
+
+import 'globals.dart' as globals;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _db = Firestore.instance;
 
 class SignupPage extends StatefulWidget {
   static String tag = 'signup-page';
+
   @override
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   //These notify listeners of change in text input.
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
   //Two password controllers in order to assure that user is correctly entering desired password.
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordControllerRedux =
@@ -27,11 +31,13 @@ class _SignupPageState extends State<SignupPage> {
 
   bool _success;
   String _userEmail;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
+        backgroundColor: globals.mainColor,
         centerTitle: true,
       ),
       body: Form(
@@ -190,20 +196,21 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-    List<String> friends = [];
-    List<String> lists = [];
-    signUpUpdateUserData(FirebaseUser user) async {
+  List<String> friends = [];
+  List<String> lists = [];
+
+  signUpUpdateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
     //Map data to database fields
     return ref.setData({
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
-      'displayName': _nameController
-          .text, //This is the yucky workaround. Name is forced to be updated using text from controller.
+      'displayName': _nameController.text,
+      //This is the yucky workaround. Name is forced to be updated using text from controller.
       'lastSeen': DateTime.now(),
-      'friends' : friends,
-      'lists' : lists
+      'friends': friends,
+      'lists': lists
     }, merge: true); //Merges data so old data isn't overwritten
   }
 }

@@ -13,6 +13,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'globals.dart' as wth;
 import 'item_input.dart';
 import 'menu.dart' as globals;
 
@@ -602,6 +604,7 @@ class _Produce extends State<Produce> {
 //-----------------------Entire Page Setup
 class MockStore extends StatefulWidget {
   static String tag = 'mock-store';
+
   @override
   _MockStore createState() => _MockStore();
 }
@@ -639,6 +642,7 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
     //         length: 5,
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: wth.mainColor,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {

@@ -10,25 +10,21 @@
 // import 'dart:convert';
 // import 'dart:ffi';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter/src/material/page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socialshopper/list_setup.dart';
-import 'package:socialshopper/mock_store.dart';
+
 import 'app_settings.dart';
 import 'globals.dart' as globals;
 import 'list_views.dart';
 import 'profile.dart';
-import 'store_select.dart';
-import 'package:flutter/src/material/page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'item_input.dart';
 
 //var documentId = '';
 List<String> numList = new List(); //Array to hold the list names
 List<String> userNames = new List();
-
+var darkModeOn;
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = '';
@@ -179,10 +175,9 @@ class _MenuPageState extends State<MenuPage> {
     List<dynamic> items = myList.data['items'];
 
     globals.ShoppingList s = globals.ShoppingList.fromSnapshot(myList);
-
     if (items.isEmpty) {
       return TextSpan(
-          text: '\$0.0',
+          text: '\$0.00',
           style: TextStyle(
               color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold));
     }
@@ -193,7 +188,7 @@ class _MenuPageState extends State<MenuPage> {
     }
     
     final double budget = s.metadata.budget;
-  
+    
     if (budget > totalVar) {
       return TextSpan(
           text: '\$' + totalVar.toStringAsFixed(2),
@@ -208,37 +203,54 @@ class _MenuPageState extends State<MenuPage> {
   }
 
 // Get the store associated with the list and display it on screen
-  DecorationImage storeType(DocumentSnapshot type) {
+  Container storeType(DocumentSnapshot type) {
     Map<dynamic, dynamic> metadata = type.data['metadata'];
 
     globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
 
     if (s.metadata.store.toString() == 'Safeway') {
-      return DecorationImage(
-          fit: BoxFit.fill,
-          image: AssetImage(
-            'assets/images/SAFEWAY.png',
-          ));
+      return Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: const BorderRadius.all(Radius.circular(100))),
+        child: Center(
+          child: const Text(
+            'S',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 30, color: Colors.white),
+          ),
+        ),
+      );
     } else {
-      return DecorationImage(
-          fit: BoxFit.fill,
-          image: AssetImage(
-            'assets/images/BestBuy.png',
-          ));
+      return Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: const BorderRadius.all(Radius.circular(100))),
+        child: Center(
+          child: const Text('BB',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 30, color: Colors.white)),
+        ),
+      );
     }
   }
 
   //Find out how many people are in the list
-  peopleInList(DocumentSnapshot type){
+  peopleInList(DocumentSnapshot type) {
     List<dynamic> metadata = type.data['metadata'];
 
     globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
-
-
   }
 
   //This is the whole list
   Widget _buildList() {
+    SharedPreferences.getInstance().then((prefs) {
+      darkModeOn = prefs.getBool('dark') ?? true;
+    });
     putNamesOfListInAList();
     return StreamBuilder(
       stream: Firestore.instance.collection('lists').snapshots(),
@@ -254,7 +266,6 @@ class _MenuPageState extends State<MenuPage> {
           if (metadata.containsKey('users') &&
               (metadata['users'].length != 0)) {
             for (var user in metadata['users']) {
-              //print(user.toString());
               if (user is Map && user.containsValue(globals.userUID)) {
                 myLists.add(list);
               }
@@ -277,27 +288,25 @@ class _MenuPageState extends State<MenuPage> {
                     //Expanded(
                     //flex: 3,
                     ListTile(
-                      leading: new Container(
-                        height: 70,
-                        width: 60,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: storeType(lists[index])),
-                      ),
+                      leading: storeType(myLists[index]),
                       trailing: RichText(
                           text: TextSpan(
-                              children: <TextSpan>[getTotal(lists[index])])),
+                              children: <TextSpan>[getTotal(myLists[index])])),
                       title: RichText(
-                          text: TextSpan(children: [
-                        TextSpan(
-                          text: '\t' + myLists[index].data['metadata']['name'],
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30,
-                              color: Colors.black87),
-                        ),
-                        TextSpan(text: '\n'),
-                      ])),
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text:
+                                '\t' + myLists[index].data['metadata']['name'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30,
+                                color: darkModeOn == true
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        ]),
+                        textAlign: TextAlign.center,
+                      ),
                       onTap: () {
                         _openList(
                             index, myLists[index].data['metadata']['uid']);
@@ -374,7 +383,10 @@ class _MenuPageState extends State<MenuPage> {
         // as adding a back button to close it
         MaterialPageRoute<dynamic>(builder: (context) {
       return Scaffold(
-          appBar: AppBar(title: const Text('Add a new task')),
+          appBar: AppBar(
+            title: const Text('Add a new task'),
+            backgroundColor: globals.mainColor,
+          ),
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
@@ -422,6 +434,7 @@ class _MenuPageState extends State<MenuPage> {
       case 1:
         return Scaffold(
             appBar: AppBar(
+              backgroundColor: globals.mainColor,
               centerTitle: true,
               title: const Text('Lists'),
               actions: <Widget>[
@@ -446,5 +459,3 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 }
-
-class DecorateImage {}
