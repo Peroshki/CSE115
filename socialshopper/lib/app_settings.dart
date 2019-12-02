@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'globals.dart' as globals;
 import 'main.dart';
 import 'theme.dart';
+
 class Settings extends StatefulWidget {
   static String tag = 'settings-page';
 
@@ -58,8 +60,8 @@ class _Settings extends State<Settings> {
           onChanged: (val) {
             setState(() {
               _darkTheme = val;
-    });
-    onThemeChanged(val, themeNotifier);
+            });
+            onThemeChanged(val, themeNotifier);
           },
         ),
 
@@ -137,6 +139,7 @@ class _Settings extends State<Settings> {
       ])),
     );
   }
+
   void onThemeChanged(bool value, ThemeNotifier themeNotifier) async {
     (value)
         ? themeNotifier.setTheme(darkTheme)

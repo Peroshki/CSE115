@@ -34,17 +34,16 @@ class ThemeNotifier with ChangeNotifier {
   }
 }
 
-void main(){
-    SharedPreferences.getInstance().then((prefs) {
-      var darkModeOn = prefs.getBool('dark') ?? true;
-      runApp(
-        ChangeNotifierProvider<ThemeNotifier>(
-          create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
-          child: MaterialApp(home: MyApp()),
-        ),
-      );
-    });
-  
+void main() {
+  SharedPreferences.getInstance().then((prefs) {
+    var darkModeOn = prefs.getBool('dark') ?? true;
+    runApp(
+      ChangeNotifierProvider<ThemeNotifier>(
+        create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+        child: MaterialApp(home: MyApp()),
+      ),
+    );
+  });
 }
 
 class MyApp extends StatelessWidget with ChangeNotifier {
@@ -60,6 +59,7 @@ class MyApp extends StatelessWidget with ChangeNotifier {
     AddFriend.tag: (context) => AddFriend(),
     Payment.tag: (context) => Payment(),
   };
+
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);

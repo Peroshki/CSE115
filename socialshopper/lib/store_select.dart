@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+
 import 'globals.dart' as globals;
-import 'list_setup.dart';
-import 'menu.dart';
 
 class StoreSelect extends StatefulWidget {
   static String tag = 'store-select';
+
   @override
   _StoreSelectState createState() => _StoreSelectState();
 }
 
-class Arguments{
+class Arguments {
   String userId;
+
   Arguments(this.userId);
 }
 
@@ -30,7 +31,7 @@ class _StoreSelectState extends State<StoreSelect> {
   @override
   Widget build(BuildContext context) {
     const String title = 'Store Select';
-    
+
     //final Arguments args = ModalRoute.of(context).settings.arguments;
 
     //Creates the Safeway Button
@@ -99,47 +100,49 @@ class _StoreSelectState extends State<StoreSelect> {
 
     //Starts the desplay to the screen
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
           centerTitle: true,
           backgroundColor: globals.mainColor,
-            title: const Text('Store Select Screen',),
-
-            //Allows for the page to have a "go back" button
-            automaticallyImplyLeading: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context, false),
-            )),
-
-        //Creates the grid of buttons
-        body: Center(
-          heightFactor: 10,
-          child: GridView.count(
-            primary: false,
-            padding: const EdgeInsets.all(20),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            crossAxisCount: 2,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: safewayButton,
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: bestbuyButton,
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: homeDepotButton,
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: partyCityButton,
-              ),
-            ],
+          title: const Text(
+            'Store Select Screen',
           ),
+
+          //Allows for the page to have a "go back" button
+          automaticallyImplyLeading: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false),
+          )),
+
+      //Creates the grid of buttons
+      body: Center(
+        heightFactor: 10,
+        child: GridView.count(
+          primary: false,
+          padding: const EdgeInsets.all(20),
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: safewayButton,
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: bestbuyButton,
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: homeDepotButton,
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: partyCityButton,
+            ),
+          ],
         ),
+      ),
     );
   }
 }

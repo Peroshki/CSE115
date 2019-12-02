@@ -13,13 +13,22 @@ import 'menu.dart';
 final Firestore databaseRef = Firestore.instance;
 
 /// Creates a list using the provided data and writes it to the database.
-Future<void> createRecord(String listName, String storeName, int budget, List<String> people, String id, List<String> ids, BuildContext context) async {
+Future<void> createRecord(
+    String listName,
+    String storeName,
+    int budget,
+    List<String> people,
+    String id,
+    List<String> ids,
+    BuildContext context) async {
   // Add the primary user to the users array
-  var users = [{'uid' : ids[0], 'name' : people[0]}];
+  var users = [
+    {'uid': ids[0], 'name': people[0]}
+  ];
 
   // Add the rest of the shoppers to the users array
   for (int i = 1; i < ids.length; i++) {
-    users.add({'uid' : ids[i], 'name': people[i]});
+    users.add({'uid': ids[i], 'name': people[i]});
   }
 
   // Set up a list with the users data and an empty items array
@@ -39,8 +48,11 @@ Future<void> createRecord(String listName, String storeName, int budget, List<St
   final List<String> lists = [id];
 
   // Add the lists ID to every shoppers profile
-  for(int i = 0; i < ids.length; i++)
-    await databaseRef.collection('users').document(ids[i].toString()).updateData({'lists': FieldValue.arrayUnion(lists)});
+  for (int i = 0; i < ids.length; i++)
+    await databaseRef
+        .collection('users')
+        .document(ids[i].toString())
+        .updateData({'lists': FieldValue.arrayUnion(lists)});
 }
 
 /// Alerts the user that a shopper is already part of their list.
@@ -50,8 +62,7 @@ Future<void> personInList(BuildContext context) {
       builder: (context) {
         return AlertDialog(
             content: const Text('This person is already in the list!'));
-      }
-  );
+      });
 }
 
 /// Sets up the page and the path to get to it.
@@ -75,9 +86,7 @@ class _ListSetup extends State<ListSetup> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 10.0
-                ),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -88,19 +97,15 @@ class _ListSetup extends State<ListSetup> {
                     ),
                     Padding(
                       child: Text('${users[index]}'),
-                      padding: const EdgeInsets.only(
-                          left: 10.0
-                      ),
+                      padding: const EdgeInsets.only(left: 10.0),
                     ),
                   ],
                 ),
               ),
-
               IconButton(
                 icon: Icon(Icons.cancel),
                 onPressed: () {
-                  if (index - 1 < 0)
-                    return;
+                  if (index - 1 < 0) return;
 
                   setState(() {
                     people.removeAt(index - 1);
@@ -110,15 +115,13 @@ class _ListSetup extends State<ListSetup> {
               )
             ],
           );
-        }
-    );
+        });
   }
 
   /// Create an in app version of the friends list.
   Future<void> getFriends() async {
-    final DocumentReference ref = Firestore.instance
-        .collection('users')
-        .document(globals.userUID);
+    final DocumentReference ref =
+        Firestore.instance.collection('users').document(globals.userUID);
     final DocumentSnapshot user = await ref.get();
 
     final List<dynamic> friendsList = user.data['friends'];
@@ -135,69 +138,58 @@ class _ListSetup extends State<ListSetup> {
                   padding: const EdgeInsets.all(32.0),
                   child: Center(
                       child: Column(children: <Widget>[
+                    //Allows user to get friends from their list
+                    Container(
+                      child: Column(children: [
+                        //For Loop creates tiles for all of the friends to appear on the alert dialog
+                        for (int i = 0; i < friends.length; i++)
+                          GestureDetector(
+                              child: ListTile(title: Text(friends[i]['name'])),
+                              onTap: () {
+                                //If the person is already in the list don't add them again
+                                if (people.contains(friends[i]['name'])) {
+                                  Navigator.of(context).pop();
+                                  personInList(context);
+                                } else {
+                                  //Add the participants name to the people list
+                                  people.add(friends[i]['name']);
+                                  //Adds the participant's user ID to another list to use later.
+                                  setState(() {
+                                    ids.add(friends[i]['uid']);
+                                  });
+                                  //Leave the alert dialog
+                                  Navigator.of(context).pop();
+                                }
+                              })
+                      ]),
+                    ),
 
-                        //Allows user to get friends from their list
-                        Container(
-                          child: Column(children: [
-                            //For Loop creates tiles for all of the friends to appear on the alert dialog
-                            for (int i = 0; i < friends.length; i++)
-                              GestureDetector(
-                                  child: ListTile(title: Text(friends[i]['name'])),
-                                  onTap: () {
-                                    //If the person is already in the list don't add them again
-                                    if (people.contains(friends[i]['name'])) {
-                                      Navigator.of(context).pop();
-                                      personInList(context);
-                                    }
-                                    else {
-                                      //Add the participants name to the people list
-                                      people.add(friends[i]['name']);
-                                      //Adds the participant's user ID to another list to use later.
-                                      setState(() {
-                                        ids.add(friends[i]['uid']);
-                                      });
-                                      //Leave the alert dialog
-                                      Navigator.of(context).pop();
-                                    }
-                                  })
-                          ]),
-                        ),
-
-                        //Navigates to the add friends page
-                        RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(AddFriend.tag);
-                          },
-                          padding: const EdgeInsets.all(12),
-                          color: Colors.lightBlueAccent,
-                          child: Text('Add New Friends',
-                              style: TextStyle(color: Colors.white)),
-                        )
-                      ]))));
+                    //Navigates to the add friends page
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(AddFriend.tag);
+                      },
+                      padding: const EdgeInsets.all(12),
+                      color: Colors.lightBlueAccent,
+                      child: Text('Add New Friends',
+                          style: TextStyle(color: Colors.white)),
+                    )
+                  ]))));
         });
   }
 
   Widget getStoreSelectButton() {
     TextStyle tStyle = TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w600,
-        color: Colors.white
-    );
+        fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.white);
 
     if (store == '') {
-      return Text(
-          'Select Store',
-          style: tStyle
-      );
+      return Text('Select Store', style: tStyle);
     }
 
-    return Text(
-        '$store',
-        style: tStyle
-    );
+    return Text('$store', style: tStyle);
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
@@ -210,8 +202,7 @@ class _ListSetup extends State<ListSetup> {
 
     // After the Selection Screen returns a result, hide any previous snackbars
     // and show the new result.
-    if (result.toString() == 'false')
-      return;
+    if (result.toString() == 'false') return;
     store = result.toString();
   }
 
@@ -235,15 +226,16 @@ class _ListSetup extends State<ListSetup> {
           automaticallyImplyLeading: true,
           actions: <Widget>[
             StreamBuilder(
-              stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
+              stream: Firestore.instance
+                  .collection('users')
+                  .document(globals.userUID)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData)
                   return const Text('Loading user data...');
 
                 return IconButton(
-                  padding: const EdgeInsets.only(
-                      right: 10.0
-                  ),
+                  padding: const EdgeInsets.only(right: 10.0),
                   icon: Icon(Icons.done),
                   onPressed: () {
                     if (store == '') {
@@ -251,10 +243,8 @@ class _ListSetup extends State<ListSetup> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                                content: const Text('Please select a store.')
-                            );
-                          }
-                      );
+                                content: const Text('Please select a store.'));
+                          });
                     }
 
                     if (name == '') {
@@ -262,10 +252,9 @@ class _ListSetup extends State<ListSetup> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                                content: const Text('Please give your list a name.')
-                            );
-                          }
-                      );
+                                content: const Text(
+                                    'Please give your list a name.'));
+                          });
                     }
 
                     if (budget == -1) {
@@ -273,18 +262,17 @@ class _ListSetup extends State<ListSetup> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                                content: const Text('Please give your list a budget.')
-                            );
-                          }
-                      );
+                                content: const Text(
+                                    'Please give your list a budget.'));
+                          });
                     }
 
                     ids.insert(0, globals.userUID);
                     people.insert(0, snapshot.data['displayName'].toString());
 
                     // Create a list with a unique ID.
-                    createRecord(name, store, budget, people,
-                        uuid.v4(), ids, context);
+                    createRecord(
+                        name, store, budget, people, uuid.v4(), ids, context);
                     Navigator.of(context).pushNamed(
                       MenuPage.tag,
                       arguments: globals.userUID,
@@ -295,7 +283,6 @@ class _ListSetup extends State<ListSetup> {
             ),
           ],
         ),
-
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,10 +292,7 @@ class _ListSetup extends State<ListSetup> {
                 children: <Widget>[
                   Container(),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: 25.0,
-                        bottom: 20.0
-                    ),
+                    padding: const EdgeInsets.only(top: 25.0, bottom: 20.0),
                     child: RawMaterialButton(
                       onPressed: () {
                         _navigateAndDisplaySelection(context);
@@ -331,11 +315,8 @@ class _ListSetup extends State<ListSetup> {
 
               /// Input for list name
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 20.0,
-                    bottom: 20.0,
-                    left: 45.0
-                ),
+                padding:
+                    const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 45.0),
                 child: TextField(
                   onChanged: (String value) {
                     name = value;
@@ -345,10 +326,7 @@ class _ListSetup extends State<ListSetup> {
                   decoration: InputDecoration.collapsed(
                     hintText: 'Name',
                   ),
-                  style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w600
-                  ),
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
                 ),
               ),
 
@@ -361,24 +339,17 @@ class _ListSetup extends State<ListSetup> {
               Row(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20.0
-                    ),
+                    padding: const EdgeInsets.only(left: 20.0),
                     child: Text(
                       '\$',
                       style: TextStyle(
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.w600
-                      ),
+                          fontSize: 25.0, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Flexible(
                     child: Container(
                       padding: const EdgeInsets.only(
-                          top: 20.0,
-                          left: 10.0,
-                          bottom: 20.0
-                      ),
+                          top: 20.0, left: 10.0, bottom: 20.0),
                       width: 100,
                       child: TextField(
                         keyboardType: TextInputType.number,
@@ -387,8 +358,7 @@ class _ListSetup extends State<ListSetup> {
                           WhitelistingTextInputFormatter.digitsOnly
                         ],
                         onChanged: (String value) {
-                          if (value == '')
-                          {
+                          if (value == '') {
                             budget = -1;
                             return;
                           }
@@ -400,9 +370,7 @@ class _ListSetup extends State<ListSetup> {
                           hintText: 'Budget',
                         ),
                         style: TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.w600
-                        ),
+                            fontSize: 24.0, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -415,16 +383,10 @@ class _ListSetup extends State<ListSetup> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 25.0,
-                    left: 47.5
-                ),
+                padding: const EdgeInsets.only(top: 25.0, left: 47.5),
                 child: Text(
                   'Shoppers: ',
-                  style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w600
-                  ),
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
                 ),
               ),
 
@@ -434,7 +396,10 @@ class _ListSetup extends State<ListSetup> {
               ),
 
               StreamBuilder(
-                stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
+                stream: Firestore.instance
+                    .collection('users')
+                    .document(globals.userUID)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
                     return const Text('Loading user data...');
@@ -588,6 +553,6 @@ class _ListSetup extends State<ListSetup> {
 //              ],
 //            ),
 //          )),
-    );
+        );
   }
 }

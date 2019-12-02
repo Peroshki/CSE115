@@ -1,11 +1,14 @@
 // This file creates a page in which the user can select which app they want to use to pay. The app could either be Cash App
 // or Venmo. This is done by getting the apps installed on the phone and displaying Venmo and/or Cash App if they are available.
+import 'package:device_apps/device_apps.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:device_apps/device_apps.dart';
+
 import 'globals.dart' as globals;
+
 class Payment extends StatefulWidget {
   static String tag = 'payment';
+
   @override
   _PaymentState createState() => _PaymentState();
 }
@@ -61,7 +64,7 @@ class _PaymentContent extends StatelessWidget {
                     i = -1;
                   }
                 }
-              } 
+              }
             }
             if (apps.isNotEmpty) {
               return ListView.builder(

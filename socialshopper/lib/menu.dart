@@ -10,21 +10,16 @@
 // import 'dart:convert';
 // import 'dart:ffi';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter/src/material/page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socialshopper/list_setup.dart';
-import 'package:socialshopper/mock_store.dart';
+
 import 'app_settings.dart';
 import 'globals.dart' as globals;
 import 'list_views.dart';
 import 'profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'store_select.dart';
-import 'package:flutter/src/material/page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'item_input.dart';
 
 //var documentId = '';
 List<String> numList = new List(); //Array to hold the list names
@@ -236,7 +231,8 @@ class _MenuPageState extends State<MenuPage> {
             borderRadius: const BorderRadius.all(Radius.circular(100))),
         child: Center(
           child: const Text('BB',
-              textAlign: TextAlign.center, style: TextStyle(fontSize: 30, color: Colors.white)),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 30, color: Colors.white)),
         ),
       );
     }
@@ -248,12 +244,12 @@ class _MenuPageState extends State<MenuPage> {
 
     globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
   }
-  
+
   //This is the whole list
   Widget _buildList() {
-     SharedPreferences.getInstance().then((prefs){
-           darkModeOn = prefs.getBool('dark') ?? true;
-        });
+    SharedPreferences.getInstance().then((prefs) {
+      darkModeOn = prefs.getBool('dark') ?? true;
+    });
     putNamesOfListInAList();
     return StreamBuilder(
       stream: Firestore.instance.collection('lists').snapshots(),
@@ -296,17 +292,19 @@ class _MenuPageState extends State<MenuPage> {
                           text: TextSpan(
                               children: <TextSpan>[getTotal(myLists[index])])),
                       title: RichText(
-                          text: TextSpan(children: [
-                        TextSpan(
-                          text: '\t' + myLists[index].data['metadata']['name'],
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30,
-                              color: darkModeOn == true ? Colors.white : Colors.black
-                              ),
-                        ),
-                      ]),
-                      textAlign: TextAlign.center,
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text:
+                                '\t' + myLists[index].data['metadata']['name'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30,
+                                color: darkModeOn == true
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        ]),
+                        textAlign: TextAlign.center,
                       ),
                       onTap: () {
                         _openList(
