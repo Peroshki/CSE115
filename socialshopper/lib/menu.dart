@@ -186,8 +186,9 @@ class _MenuPageState extends State<MenuPage> {
     for (int i = 0; i < s.items.length; i++) {
       totalVar += s.items[i].price * s.items[i].quantity;
     }
-
+    
     final double budget = s.metadata.budget;
+    
     if (budget > totalVar) {
       return TextSpan(
           text: '\$' + totalVar.toStringAsFixed(2),
@@ -284,8 +285,6 @@ class _MenuPageState extends State<MenuPage> {
               return Card(
                 child: Column(
                   children: <Widget>[
-                    //Expanded(
-                    //flex: 3,
                     ListTile(
                       leading: storeType(myLists[index]),
                       trailing: RichText(
@@ -314,30 +313,6 @@ class _MenuPageState extends State<MenuPage> {
                         alertBoxForList(index);
                       },
                     ),
-                    //),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: <Widget>[
-                    //     Flexible(
-                    //       child: Icon(
-                    //         Icons.account_circle,
-                    //         size: 30,
-                    //       ),
-                    //     ),
-                    //     Flexible(
-                    //       child: Icon(
-                    //         Icons.account_circle,
-                    //         size: 30,
-                    //       ),
-                    //     ),
-                    //     Flexible(
-                    //       child: Icon(
-                    //         Icons.account_circle,
-                    //         size: 30,
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
                   ],
                 ),
               );
