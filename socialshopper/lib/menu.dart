@@ -285,8 +285,6 @@ class _MenuPageState extends State<MenuPage> {
               return Card(
                 child: Column(
                   children: <Widget>[
-                    //Expanded(
-                    //flex: 3,
                     ListTile(
                       leading: storeType(myLists[index]),
                       trailing: RichText(
@@ -315,30 +313,6 @@ class _MenuPageState extends State<MenuPage> {
                         alertBoxForList(index);
                       },
                     ),
-                    //),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: <Widget>[
-                    //     Flexible(
-                    //       child: Icon(
-                    //         Icons.account_circle,
-                    //         size: 30,
-                    //       ),
-                    //     ),
-                    //     Flexible(
-                    //       child: Icon(
-                    //         Icons.account_circle,
-                    //         size: 30,
-                    //       ),
-                    //     ),
-                    //     Flexible(
-                    //       child: Icon(
-                    //         Icons.account_circle,
-                    //         size: 30,
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
                   ],
                 ),
               );
