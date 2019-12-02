@@ -191,17 +191,17 @@ class _MenuPageState extends State<MenuPage> {
     for (int i = 0; i < s.items.length; i++) {
       totalVar += s.items[i].price * s.items[i].quantity;
     }
-
+    
     final double budget = s.metadata.budget;
-    print(totalVar);
+  
     if (budget > totalVar) {
       return TextSpan(
-          text: '\$' + totalVar.toString(),
+          text: '\$' + totalVar.toStringAsFixed(2),
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.green));
     } else {
       return TextSpan(
-          text: '\$' + totalVar.toString(),
+          text: '\$' + totalVar.toStringAsFixed(2),
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.red));
     }
