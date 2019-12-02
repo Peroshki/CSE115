@@ -38,7 +38,7 @@ class _ProfileState extends State<Profile> {
   //Get the user that is currently logged in.
   initUser() async {
     user = await _auth.currentUser();
-    print(globals.userUID);
+    //print(globals.userUID);
     return user;
   }
 

@@ -51,7 +51,7 @@ Widget createDifferenceWidget(double difference) {
     text = '-(\$${difference.toStringAsFixed(2).substring(1)})';
     textColor = Colors.red;
   } else {
-    text = '(\$$difference)';
+    text = '(\$${difference.toStringAsFixed(2)})';
     textColor = Colors.green;
   }
 
