@@ -97,7 +97,6 @@ class _Settings extends State<Settings> {
           },
         ),
 
-        //
         ListTile(
           title: Text('Permissions',
               style: TextStyle(

@@ -190,10 +190,6 @@ List<Widget> createItemCardWidget(Item item) {
   return widgets;
 }
 
-// Widget createTitleWidget(String name) {
-
-// }
-
 /*** END WIDGET GENERATORS ***/
 
 class ListViews extends StatefulWidget {

@@ -30,9 +30,6 @@ class _StoreSelectState extends State<StoreSelect> {
 
   @override
   Widget build(BuildContext context) {
-    const String title = 'Store Select';
-
-    //final Arguments args = ModalRoute.of(context).settings.arguments;
 
     //Creates the Safeway Button
     final safewayButton = Padding(
