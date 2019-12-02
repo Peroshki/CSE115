@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:socialshopper/list_setup.dart';
+import 'package:socialshopper/mock_store.dart';
 import 'app_settings.dart';
 import 'globals.dart' as globals;
 import 'list_views.dart';
@@ -47,14 +48,17 @@ class callUser {
     tags.remove('store');
     tags.remove('budget');
     tags.forEach((Key, value) => test.add(value.toString()));
-    print(test);
+
     String values = test.elementAt(0);
-    print(values);
     List<String> k = values.split(new RegExp(r'(\W+)'));
 
+    print(k);
+
+    var four = 4;
     for (int i = 0; i < k.length; i++) {
-      if (i > 0 && i < k.length - 1) {
+      if (i == four) {
         userNames.add(k.elementAt(i));
+        four += 4;
       }
     }
     //print(userNames);
@@ -137,7 +141,7 @@ class _MenuPageState extends State<MenuPage> {
 
     List temp = List();
     DocumentSnapshot snap =
-    await databaseRef.collection('users').document(user).get();
+        await databaseRef.collection('users').document(user).get();
     temp = List.from(snap['lists']);
     temp.removeWhere((item) => item == listID);
     await Firestore.instance
@@ -170,7 +174,70 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-//This is the whole list
+  //Get Total for list and return it back to list
+  TextSpan getTotal(DocumentSnapshot myList) {
+    List<dynamic> items = myList.data['items'];
+
+    globals.ShoppingList s = globals.ShoppingList.fromSnapshot(myList);
+
+    if (items.isEmpty) {
+      return TextSpan(
+          text: '\$0.0',
+          style: TextStyle(
+              color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold));
+    }
+
+    double totalVar = 0;
+    for (int i = 0; i < s.items.length; i++) {
+      totalVar += s.items[i].price * s.items[i].quantity;
+    }
+
+    final double budget = s.metadata.budget;
+    print(totalVar);
+    if (budget > totalVar) {
+      return TextSpan(
+          text: '\$' + totalVar.toString(),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.green));
+    } else {
+      return TextSpan(
+          text: '\$' + totalVar.toString(),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.red));
+    }
+  }
+
+// Get the store associated with the list and display it on screen
+  DecorationImage storeType(DocumentSnapshot type) {
+    Map<dynamic, dynamic> metadata = type.data['metadata'];
+
+    globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
+
+    if (s.metadata.store.toString() == 'Safeway') {
+      return DecorationImage(
+          fit: BoxFit.fill,
+          image: AssetImage(
+            'assets/images/SAFEWAY.png',
+          ));
+    } else {
+      return DecorationImage(
+          fit: BoxFit.fill,
+          image: AssetImage(
+            'assets/images/BestBuy.png',
+          ));
+    }
+  }
+
+  //Find out how many people are in the list
+  peopleInList(DocumentSnapshot type){
+    List<dynamic> metadata = type.data['metadata'];
+
+    globals.ShoppingList s = globals.ShoppingList.fromSnapshot(type);
+
+
+  }
+
+  //This is the whole list
   Widget _buildList() {
     putNamesOfListInAList();
     return StreamBuilder(
@@ -184,9 +251,10 @@ class _MenuPageState extends State<MenuPage> {
         myLists = List();
         for (var list in lists) {
           Map<dynamic, dynamic> metadata = list.data['metadata'];
-          if (metadata.containsKey('users') && (metadata['users'].length != 0)) {
+          if (metadata.containsKey('users') &&
+              (metadata['users'].length != 0)) {
             for (var user in metadata['users']) {
-              print(user.toString());
+              //print(user.toString());
               if (user is Map && user.containsValue(globals.userUID)) {
                 myLists.add(list);
               }
@@ -196,9 +264,7 @@ class _MenuPageState extends State<MenuPage> {
 
         if (myLists.isEmpty) {
           return Center(
-            child: Text(
-                'Press + to add a new list.'
-            ),
+            child: Text('Press + to add a new list.'),
           );
         }
 
@@ -206,14 +272,65 @@ class _MenuPageState extends State<MenuPage> {
             itemCount: myLists.length,
             itemBuilder: (context, index) {
               return Card(
-                child: ListTile(
-                  title: Text(myLists[index].data['metadata']['name']),
-                  onTap: () {
-                    _openList(index, myLists[index].data['metadata']['uid']);
-                  },
-                  onLongPress: () {
-                    alertBoxForList(index);
-                  },
+                child: Column(
+                  children: <Widget>[
+                    //Expanded(
+                    //flex: 3,
+                    ListTile(
+                      leading: new Container(
+                        height: 70,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: storeType(lists[index])),
+                      ),
+                      trailing: RichText(
+                          text: TextSpan(
+                              children: <TextSpan>[getTotal(lists[index])])),
+                      title: RichText(
+                          text: TextSpan(children: [
+                        TextSpan(
+                          text: '\t' + myLists[index].data['metadata']['name'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                              color: Colors.black87),
+                        ),
+                        TextSpan(text: '\n'),
+                      ])),
+                      onTap: () {
+                        _openList(
+                            index, myLists[index].data['metadata']['uid']);
+                      },
+                      onLongPress: () {
+                        alertBoxForList(index);
+                      },
+                    ),
+                    //),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: <Widget>[
+                    //     Flexible(
+                    //       child: Icon(
+                    //         Icons.account_circle,
+                    //         size: 30,
+                    //       ),
+                    //     ),
+                    //     Flexible(
+                    //       child: Icon(
+                    //         Icons.account_circle,
+                    //         size: 30,
+                    //       ),
+                    //     ),
+                    //     Flexible(
+                    //       child: Icon(
+                    //         Icons.account_circle,
+                    //         size: 30,
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                  ],
                 ),
               );
             });
@@ -221,7 +338,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-// Displays an alert box before deleting list
+  // Displays an alert box before deleting list
   void alertBoxForList(int index) {
     showDialog(
       context: context,
@@ -273,7 +390,7 @@ class _MenuPageState extends State<MenuPage> {
     }));
   }
 
-//Scaffold is the main container for main page
+  //Scaffold is the main container for main page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -297,33 +414,30 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-//Menu Page
+  //Menu Page
   Widget _getBody(int index) {
     switch (index) {
       case 0:
         return Settings();
       case 1:
         return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text('Lists'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: null,
-              ),
-              IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      ListSetup.tag
-                    );
-                  }),
-            ],
-            automaticallyImplyLeading: false,
-          ),
-          body: _buildList()
-        );
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text('Lists'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: null,
+                ),
+                IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(ListSetup.tag);
+                    }),
+              ],
+              automaticallyImplyLeading: false,
+            ),
+            body: _buildList());
       case 2:
         return Profile();
     }
@@ -332,3 +446,5 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 }
+
+class DecorateImage {}
