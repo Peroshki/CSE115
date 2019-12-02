@@ -1,16 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 /**
- * This file creates a new page that allows 
+ * This file creates a new page that allows
  * the user to manually enter the name of an item,
  * the price of an item, and the quantity of an item.
- * It also has a checkbox that allows the user to select 
- * users who want that item. Lastly, it has a save button 
+ * It also has a checkbox that allows the user to select
+ * users who want that item. Lastly, it has a save button
  * that redirects the user back to the list items view page
  * and populates the information the user provided to the database.
  */
 
 import 'package:flutter/cupertino.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'menu.dart' as globals;
 
 //List<String> userNames = new List();
@@ -94,7 +95,7 @@ Widget getNameAndPrice(BuildContext context) {
   var p = 'Omar';
 
   return Scaffold(
-    body:  Container(
+    body: Container(
         decoration: BoxDecoration(),
         child: Column(
           children: <Widget>[
@@ -107,9 +108,7 @@ Widget getNameAndPrice(BuildContext context) {
                 maxLengthEnforced: true,
                 textInputAction: TextInputAction.done,
                 onChanged: (String userItem) {
-
                   test = userItem;
-
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Item Name',
@@ -196,6 +195,7 @@ Widget getNameAndPrice(BuildContext context) {
 // Main class of page
 class UserItemInput extends StatefulWidget {
   static String tag = 'user-input';
+
   @override
   _UserItemInput createState() => _UserItemInput();
 }

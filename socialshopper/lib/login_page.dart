@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'auth.dart';
 import 'globals.dart' as globals;
 import 'menu.dart';
@@ -15,12 +16,14 @@ final Firestore _db = Firestore.instance;
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   bool _succ = false;
+
   @override
   Widget build(BuildContext context) {
     final googleButton = GoogleSignInButton(
@@ -87,6 +90,7 @@ class _EmailPasswordForm extends StatefulWidget {
 
 class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   //These notify listeners of change in text input.
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -97,6 +101,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
 
   bool _success;
   String _userEmail;
+
   @override
   Widget build(BuildContext context) {
     final loginButton = ButtonTheme(

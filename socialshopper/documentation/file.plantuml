@@ -1,0 +1,527 @@
+@startuml
+set namespaceSeparator ::
+
+class "socialshopper::friends_list.dart::Friend" {
+  +String name
+  +String uid
+  +String photo
+}
+
+class "socialshopper::friends_list.dart::Arguments" {
+  +String uid
+  +String photoURL
+}
+
+class "socialshopper::friends_list.dart::Friends" {
+  {static} +String tag
+  +_friendState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::friends_list.dart::Friends"
+
+class "socialshopper::friends_list.dart::_friendState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::friends_list.dart::_friendState"
+
+class "socialshopper::auth.dart::AuthService" {
+  -GoogleSignIn _googleSignIn
+  -FirebaseAuth _auth
+  -Firestore _db
+  +Observable<FirebaseUser> user
+  +Observable<Map<String, dynamic>> profile
+  +PublishSubject loading
+  +List<String> friends
+  +List<String> lists
+  +Future googleSignIn()
+  +void updateUserData()
+  +void signOut()
+}
+
+"socialshopper::auth.dart::AuthService" o-- "google_sign_in::google_sign_in.dart::GoogleSignIn"
+"socialshopper::auth.dart::AuthService" o-- "firebase_auth::firebase_auth.dart::FirebaseAuth"
+"socialshopper::auth.dart::AuthService" o-- "cloud_firestore::cloud_firestore.dart::Firestore"
+"socialshopper::auth.dart::AuthService" o-- "rxdart::src::observables::observable.dart::Observable<FirebaseUser>"
+"socialshopper::auth.dart::AuthService" o-- "rxdart::src::observables::observable.dart::Observable<Map<String, dynamic>>"
+"socialshopper::auth.dart::AuthService" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject"
+
+class "socialshopper::app_settings.dart::Settings" {
+  {static} +String tag
+  +_Settings createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::app_settings.dart::Settings"
+
+class "socialshopper::app_settings.dart::_Settings" {
+  -bool _darkTheme
+  +Future createAlert()
+  +Widget build()
+  +void onThemeChanged()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::app_settings.dart::_Settings"
+
+class "socialshopper::profile.dart::Profile" {
+  {static} +String tag
+  +String uid
+  +_ProfileState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::profile.dart::Profile"
+
+class "socialshopper::profile.dart::_ProfileState" {
+  +bool isSwitched
+  +String imageInit()
+  +dynamic initUser()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::profile.dart::_ProfileState"
+
+class "socialshopper::signup_page.dart::SignupPage" {
+  {static} +String tag
+  +_SignupPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::signup_page.dart::SignupPage"
+
+class "socialshopper::signup_page.dart::_SignupPageState" {
+  -GlobalKey<FormState> _formKey
+  -TextEditingController _nameController
+  -TextEditingController _emailController
+  -TextEditingController _passwordController
+  -TextEditingController _passwordControllerRedux
+  -bool _success
+  -String _userEmail
+  +List<String> friends
+  +List<String> lists
+  +Widget build()
+  +dynamic createAlert()
+  +void dispose()
+  -void _register()
+  +dynamic signUpUpdateUserData()
+}
+
+"socialshopper::signup_page.dart::_SignupPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"socialshopper::signup_page.dart::_SignupPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::signup_page.dart::_SignupPageState"
+
+class "socialshopper::menu.dart::callUser" {
+  {static} +void getUsersOfList()
+}
+
+class "socialshopper::menu.dart::MenuPage" {
+  {static} +String tag
+  +_MenuPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::menu.dart::MenuPage"
+
+class "socialshopper::menu.dart::_MenuPageState" {
+  -int _selectedIndex
+  +String userId
+  -void _onItemTapped()
+  +void listPress()
+  +void putNamesOfListInAList()
+  +void createRecord()
+  +void deleteList()
+  -void _addNewList()
+  -void _getIndex()
+  -void _openList()
+  +TextSpan getTotal()
+  +Container storeType()
+  +dynamic peopleInList()
+  -Widget _buildList()
+  +void alertBoxForList()
+  -void _tapAddMoreItems()
+  +Widget build()
+  -Widget _getBody()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::menu.dart::_MenuPageState"
+
+class "socialshopper::payment.dart::Payment" {
+  {static} +String tag
+  +_PaymentState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::payment.dart::Payment"
+
+class "socialshopper::payment.dart::_PaymentState" {
+  -bool _showSystemApps
+  -bool _onlyLaunchableApps
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::payment.dart::_PaymentState"
+
+class "socialshopper::payment.dart::_PaymentContent" {
+  +bool includeSystemApps
+  +bool onlyAppsWithLaunchIntent
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "socialshopper::payment.dart::_PaymentContent"
+
+class "socialshopper::add_friend.dart::AddFriend" {
+  {static} +String tag
+  +_AddFriendState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::add_friend.dart::AddFriend"
+
+class "socialshopper::add_friend.dart::_AddFriendState" {
+  +String filter
+  +void getFilter()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::add_friend.dart::_AddFriendState"
+
+class "socialshopper::creating_new_list.dart::NewList" {
+  {static} +String tag
+  +_NewList createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::creating_new_list.dart::NewList"
+
+class "socialshopper::creating_new_list.dart::_NewList" {
+  +List<String> shoppinglist
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::creating_new_list.dart::_NewList"
+
+class "socialshopper::main.dart::ThemeNotifier" {
+  -ThemeData _themeData
+  +dynamic getTheme()
+  +dynamic setTheme()
+}
+
+"socialshopper::main.dart::ThemeNotifier" o-- "flutter::src::material::theme_data.dart::ThemeData"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "socialshopper::main.dart::ThemeNotifier"
+
+class "socialshopper::main.dart::MyApp" {
+  +Map<String, Widget Function(BuildContext)> routes
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "socialshopper::main.dart::MyApp"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "socialshopper::main.dart::MyApp"
+
+class "socialshopper::login_page.dart::LoginPage" {
+  {static} +String tag
+  +_LoginPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::login_page.dart::LoginPage"
+
+class "socialshopper::login_page.dart::_LoginPageState" {
+  -bool _succ
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::login_page.dart::_LoginPageState"
+
+class "socialshopper::login_page.dart::_EmailPasswordForm" {
+  +State createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::login_page.dart::_EmailPasswordForm"
+
+class "socialshopper::login_page.dart::_EmailPasswordFormState" {
+  -GlobalKey<FormState> _formKey
+  -TextEditingController _emailController
+  -TextEditingController _passwordController
+  +FocusNode focusPassword
+  -bool _success
+  -String _userEmail
+  +Widget build()
+  +dynamic createAlert()
+  +void dispose()
+  -void _signInWithEmailAndPassword()
+  +void logInUpdateUserData()
+}
+
+"socialshopper::login_page.dart::_EmailPasswordFormState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"socialshopper::login_page.dart::_EmailPasswordFormState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"socialshopper::login_page.dart::_EmailPasswordFormState" o-- "flutter::src::widgets::focus_manager.dart::FocusNode"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::login_page.dart::_EmailPasswordFormState"
+
+class "socialshopper::globals.dart::Friend" {
+  +String name
+  +String photo
+  +String uid
+  +Timestamp lastSeen
+}
+
+"socialshopper::globals.dart::Friend" o-- "cloud_firestore::cloud_firestore.dart::Timestamp"
+
+class "socialshopper::globals.dart::User" {
+  +String displayName
+  +String email
+  +List<Friend> friends
+  +List<String> lists
+  +String photoURL
+  +String uid
+}
+
+class "socialshopper::globals.dart::ListUser" {
+  +String name
+  +String uid
+}
+
+class "socialshopper::globals.dart::Item" {
+  +String name
+  +double price
+  +int quantity
+  +List<String> users
+}
+
+class "socialshopper::globals.dart::Metadata" {
+  +double budget
+  +String store
+  +Timestamp timeCreated
+  +String uid
+  +String name
+  +List<ListUser> users
+}
+
+"socialshopper::globals.dart::Metadata" o-- "cloud_firestore::cloud_firestore.dart::Timestamp"
+
+class "socialshopper::globals.dart::ShoppingList" {
+  +String documentID
+  +List<Item> items
+  +Metadata metadata
+}
+
+"socialshopper::globals.dart::ShoppingList" o-- "socialshopper::globals.dart::Metadata"
+
+class "socialshopper::item_input.dart::UserCheckBox" {
+  +_UserCheckBox createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::item_input.dart::UserCheckBox"
+
+class "socialshopper::item_input.dart::_UserCheckBox" {
+  +void initState()
+  +void ChangeVal()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::item_input.dart::_UserCheckBox"
+
+class "socialshopper::item_input.dart::UserItemInput" {
+  {static} +String tag
+  +_UserItemInput createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::item_input.dart::UserItemInput"
+
+class "socialshopper::item_input.dart::_UserItemInput" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::item_input.dart::_UserItemInput"
+
+class "socialshopper::list_setup.dart::ListSetup" {
+  {static} +String tag
+  +_ListSetup createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::list_setup.dart::ListSetup"
+
+class "socialshopper::list_setup.dart::_ListSetup" {
+  +String name
+  +String part
+  +String id
+  +String store
+  +int budget
+  +List<String> people
+  +List friends
+  +List<String> ids
+  +Widget createShoppersWidget()
+  +Future getFriends()
+  +Future createAlert()
+  +Widget getStoreSelectButton()
+  -dynamic _navigateAndDisplaySelection()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::list_setup.dart::_ListSetup"
+
+class "socialshopper::store_select.dart::StoreSelect" {
+  {static} +String tag
+  +_StoreSelectState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::store_select.dart::StoreSelect"
+
+class "socialshopper::store_select.dart::Arguments" {
+  +String userId
+}
+
+class "socialshopper::store_select.dart::_StoreSelectState" {
+  +Future createAlert()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::store_select.dart::_StoreSelectState"
+
+class "socialshopper::list_views.dart::ListViews" {
+  {static} +String tag
+  +String listName
+  +_ListViewsState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::list_views.dart::ListViews"
+
+class "socialshopper::list_views.dart::_ListViewsState" {
+  +DocumentReference docRef
+  +void initState()
+  +void removeFromDatabase()
+  +void deleteItemDialog()
+  +Widget build()
+  +void activateBottomSheet()
+}
+
+"socialshopper::list_views.dart::_ListViewsState" o-- "cloud_firestore::cloud_firestore.dart::DocumentReference"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::list_views.dart::_ListViewsState"
+
+class "socialshopper::mock_store.dart::Meat_Items" {
+  +List meat_Names
+  +List meat_Prices
+}
+
+class "socialshopper::mock_store.dart::Drink_Items" {
+  +List drink_Names
+  +List drink_Prices
+}
+
+class "socialshopper::mock_store.dart::Snack_Items" {
+  +List snack_Names
+  +List snack_Prices
+}
+
+class "socialshopper::mock_store.dart::Produce_Items" {
+  +List produce_Names
+  +List produce_Prices
+}
+
+class "socialshopper::mock_store.dart::UserCheckBox" {
+  +_UserCheckBox createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::mock_store.dart::UserCheckBox"
+
+class "socialshopper::mock_store.dart::Produce" {
+  +_Produce createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::mock_store.dart::Produce"
+
+class "socialshopper::mock_store.dart::Snacks" {
+  +_Snacks createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::mock_store.dart::Snacks"
+
+class "socialshopper::mock_store.dart::Drinks" {
+  +_Drinks createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::mock_store.dart::Drinks"
+
+class "socialshopper::mock_store.dart::Meat" {
+  +_Meat createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::mock_store.dart::Meat"
+
+class "socialshopper::mock_store.dart::_UserCheckBox" {
+  +void initState()
+  +void ChangeVal()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::mock_store.dart::_UserCheckBox"
+
+class "socialshopper::mock_store.dart::_Meat" {
+  +int quan
+  +dynamic priceString
+  +dynamic price
+  +Meat_Items p
+  +Widget build()
+  +void alertBoxForList()
+}
+
+"socialshopper::mock_store.dart::_Meat" o-- "socialshopper::mock_store.dart::Meat_Items"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::mock_store.dart::_Meat"
+
+class "socialshopper::mock_store.dart::_Drinks" {
+  +int quan
+  +dynamic priceString
+  +dynamic price
+  +Drink_Items p
+  +Widget build()
+  +void alertBoxForList()
+}
+
+"socialshopper::mock_store.dart::_Drinks" o-- "socialshopper::mock_store.dart::Drink_Items"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::mock_store.dart::_Drinks"
+
+class "socialshopper::mock_store.dart::_Snacks" {
+  +int quan
+  +dynamic priceString
+  +dynamic price
+  +Snack_Items p
+  +Widget build()
+  +void alertBoxForList()
+}
+
+"socialshopper::mock_store.dart::_Snacks" o-- "socialshopper::mock_store.dart::Snack_Items"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::mock_store.dart::_Snacks"
+
+class "socialshopper::mock_store.dart::_Produce" {
+  +int quan
+  +dynamic priceString
+  +dynamic price
+  +Produce_Items p
+  +Widget build()
+  +void alertBoxForList()
+}
+
+"socialshopper::mock_store.dart::_Produce" o-- "socialshopper::mock_store.dart::Produce_Items"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::mock_store.dart::_Produce"
+
+class "socialshopper::mock_store.dart::MockStore" {
+  {static} +String tag
+  +_MockStore createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "socialshopper::mock_store.dart::MockStore"
+
+class "socialshopper::mock_store.dart::_MockStore" {
+  -List<display_Items> _Title
+  +int selectedIndex
+  -TabController _tabController
+  -display_Items _handler
+  +void initState()
+  -void _onItemTapped()
+  +Widget build()
+  +Widget selectedBottomNav()
+  +String topAppBar()
+}
+
+"socialshopper::mock_store.dart::_MockStore" o-- "flutter::src::material::tab_controller.dart::TabController"
+"socialshopper::mock_store.dart::_MockStore" o-- "socialshopper::mock_store.dart::display_Items"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "socialshopper::mock_store.dart::_MockStore"
+"flutter::src::widgets::ticker_provider.dart::SingleTickerProviderStateMixin<T>" <|-- "socialshopper::mock_store.dart::_MockStore"
+
+class "socialshopper::mock_store.dart::display_Items" {
+  +String title
+}
+
+
+@enduml

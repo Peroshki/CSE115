@@ -4,9 +4,8 @@
 
 //Necessary packages
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//The following is a real time dart package. Documentation here: https://pub.dev/packages/rxdart
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthService {
@@ -17,6 +16,7 @@ class AuthService {
   //Initialize Observable objects
   Observable<FirebaseUser> user;
   Observable<Map<String, dynamic>> profile;
+
   //Status for listeners. Is it in process of signing in or not?
   PublishSubject loading = PublishSubject<dynamic>();
 
@@ -47,8 +47,7 @@ class AuthService {
     );
     //Use credentials from before to login to Firebase
     //Store result of sign-in in result
-    final AuthResult result =
-        await _auth.signInWithCredential(credential);
+    final AuthResult result = await _auth.signInWithCredential(credential);
     //Create Firebase user with the result.
     final FirebaseUser user = result.user;
     //Check result's additional returned user of isNewUser
@@ -58,7 +57,7 @@ class AuthService {
     assert(user.displayName != null);
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
-  
+
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
     //Update user data
@@ -72,6 +71,7 @@ class AuthService {
   //Store user's data
   List<String> friends = [];
   List<String> lists = [];
+
   //Added a bool argument which says whether or not the user is new
   void updateUserData(FirebaseUser user, bool isNewUser) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
@@ -87,7 +87,7 @@ class AuthService {
         'friends': friends,
         'lists': lists,
       }, merge: true); //Merges data so old data isn't overwritten
-    //If the user already exists in Firebase auth then:
+      //If the user already exists in Firebase auth then:
     } else {
       return ref.setData({
         'uid': user.uid,
