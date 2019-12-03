@@ -71,6 +71,10 @@ class _ProfileState extends State<Profile> {
                 return Center(child: CircularProgressIndicator());
               } else {
                 var userDocument = snapshot.data;
+
+                int numFriends = userDocument['friends'].toList().length;
+                int numLists = userDocument['lists'].toList().length;
+
                 return ListView(
                   shrinkWrap: true,
                   children: <Widget>[
@@ -84,46 +88,47 @@ class _ProfileState extends State<Profile> {
                         child: CircleAvatar(
                             radius: 100,
                             backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(imageInit()))),
+                            backgroundImage: NetworkImage(imageInit() ?? globals.anonPhoto))),
                     Text(
-                      'You currently have: 0 Lists',
+                      (numLists == 1 && numFriends == 1) ? '$numFriends Friend, $numLists List'
+                      : (numFriends == 1) ? '$numFriends Friend          $numLists Lists'
+                      : (numLists == 1) ? '$numFriends Friends          $numLists List'
+                      : '$numFriends Friends          $numLists Lists',
                       style: TextStyle(fontSize: 20.0),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 10.0),
-                    Text(
-                      '${userDocument["email"]}',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 10.0),
+                    SizedBox(height: 50.0),
                     Column(children: <Widget>[
                       FlatButton(
-                        color: Colors.blue,
-                        child: Text(
-                          'Logout',
-                          style: TextStyle(fontSize: 20.0, color: Colors.white),
-                        ),
-                        onPressed: () {
-                          authService.signOut();
-                          Navigator.of(context).pushNamed(LoginPage.tag);
-                        },
-                      ),
-                      FlatButton(
-                        color: Colors.blue,
+                        color: globals.mainColor,
                         textColor: Colors.white,
-                        padding: const EdgeInsets.all(6.0),
+                        padding: const EdgeInsets.only(
+                          top: 10.0,
+                          bottom: 10.0,
+                          left: 12.0,
+                          right: 12.0
+                        ),
                         child: Text(
-                          'View Friends',
+                          'Friends',
                           style: TextStyle(fontSize: 20.0),
                         ),
                         onPressed: () {
                           Navigator.of(context).pushNamed(
                             Friends.tag,
-                            arguments: Arguments(
-                                widget.uid, snapshot.data['photoURL']),
                           );
+                        },
+                      ),
+                      SizedBox(height: 10.0),
+                      FlatButton(
+                        color: globals.mainColor,
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          'Log Out',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                        onPressed: () {
+                          authService.signOut();
+                          Navigator.of(context).pushNamed(LoginPage.tag);
                         },
                       ),
                     ]),

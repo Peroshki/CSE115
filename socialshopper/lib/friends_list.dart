@@ -4,58 +4,54 @@ import 'package:socialshopper/add_friend.dart';
 
 import 'globals.dart' as globals;
 
-class Friend {
-  String name;
-  String uid;
-  String photo;
-
-  Friend.fromMap(Map<dynamic, dynamic> data)
-      : name = data['name'],
-        uid = data['uid'],
-        photo = data['photo'];
-}
-
-class Arguments {
-  String uid;
-  String photoURL;
-
-  Arguments(uid, photoURL) {
-    this.uid = uid;
-    this.photoURL = photoURL;
-  }
-}
-
 class Friends extends StatefulWidget {
   static String tag = "friends_list";
 
   _friendState createState() => _friendState();
 }
 
+List<globals.Friend> friends;
+
+void removeFriend(String name) {
+  Firestore.instance.runTransaction((Transaction tx) async {
+    // Grab the users document from the 'users' collection
+    final DocumentReference postRef =
+    Firestore.instance.collection('users').document(globals.userUID);
+
+    final DocumentSnapshot postSnapshot = await tx.get(postRef);
+    if (postSnapshot.exists) {
+      var doc = postSnapshot.data;
+
+      // Grab the users friends list from their user page
+      List<dynamic> friendsList = List();
+      friendsList = doc['friends'].toList();
+      print(friendsList.toString());
+      friendsList.removeWhere((item) => item['name'] == name);
+      print(friendsList.toString());
+
+      // Update the users friends list
+      await postRef.updateData({'friends': friendsList});
+    }
+  });
+}
+
 Widget generateFriendWidget(String name, String photo, BuildContext context) {
-  return ListTile(
-    leading: Container(
-        width: 40.0,
-        height: 40.0,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-                fit: BoxFit.fill, image: NetworkImage('$photo')))),
-    title: Text(name),
-    trailing: IconButton(
-      icon: Icon(Icons.more_vert),
-      onPressed: () {
-        showDialog(
+  return Card(
+    child: ListTile(
+      onLongPress: () {
+        return showDialog(
             context: context,
             builder: (BuildContext context) {
               //ensures user wants to delete this
               return AlertDialog(
-                title: Text('Deleting friends'),
-                content: Text('Are you sure you want to delete: $name?'),
+                title: Text('Delete Friend'),
+                content: Text('Are you sure you want to remove $name from your friend list?'),
                 actions: <Widget>[
                   FlatButton(
                     child: Text('Delete'),
                     onPressed: () {
                       //removes from database
+                      removeFriend(name);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -67,8 +63,14 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
                   )
                 ],
               );
-            });
+            }
+        );
       },
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(photo ?? globals.anonPhoto),
+        backgroundColor: Colors.transparent,
+      ),
+      title: Text(name),
     ),
   );
 }
@@ -76,7 +78,6 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
 class _friendState extends State<Friends> {
   @override
   Widget build(BuildContext context) {
-    final Arguments args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -86,30 +87,32 @@ class _friendState extends State<Friends> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(AddFriend.tag, arguments: args.uid);
+              Navigator.of(context).pushNamed(AddFriend.tag);
             },
           )
         ],
       ),
       body: StreamBuilder(
         // TODO: Get the current users account to get their friends list
-        stream: Firestore.instance
-            .collection('users')
-            .document(globals.userUID)
-            .snapshots(),
+        stream: Firestore.instance.collection('users').document(globals.userUID).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const Text('error');
 
-          List<Friend> friends = List.from(
-              snapshot.data['friends'].map((friend) => Friend.fromMap(friend)));
+          friends = List.from(snapshot.data['friends'].map((friend) => globals.Friend.fromMap(friend)));
+
+          if (friends.isEmpty){
+            return Center(
+              child: const Text('Press + to add a friend.'),
+            );
+          }
 
           return ListView.builder(
-              itemCount: friends.length,
-              itemBuilder: (context, index) {
-                return generateFriendWidget(
-                    friends[index].name, friends[index].photo, context);
-              });
+            itemCount: friends.length,
+            itemBuilder: (context, index) {
+              return generateFriendWidget(
+                friends[index].name, friends[index].photo, context);
+            }
+          );
         },
       ),
     );
