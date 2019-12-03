@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'globals.dart' as globals;
+
 
 class ThemeNotifier with ChangeNotifier {
   ThemeData _themeData;

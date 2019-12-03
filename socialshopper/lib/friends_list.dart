@@ -48,7 +48,12 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
                 content: Text('Are you sure you want to remove $name from your friend list?'),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text('Delete'),
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(
+                          color: globals.mainColor
+                      ),
+                    ),
                     onPressed: () {
                       //removes from database
                       removeFriend(name);
@@ -56,7 +61,12 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
                     },
                   ),
                   FlatButton(
-                    child: Text('Cancel'),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                          color: globals.mainColor
+                      ),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

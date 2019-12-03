@@ -11,6 +11,8 @@
 *     listName: The name of the shopping list you wish to view
 */
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,10 +68,11 @@ Widget createDifferenceWidget(double difference) {
 // the group total, budget and their difference
 Widget createDetailsWidget(double total, double budget, double difference) {
   return Container(
-    color: Colors.blueGrey,
+    color: globals.mainColor,
     height: 70,
-    padding: const EdgeInsets.only(left: 5, right: 5, top: 12),
+    padding: const EdgeInsets.only(top: 5),
     child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      Icon(Icons.arrow_drop_up),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -78,10 +81,6 @@ Widget createDetailsWidget(double total, double budget, double difference) {
           createBudgetWidget(budget)
         ],
       ),
-      Padding(
-        padding: EdgeInsets.all(6),
-        child: Icon(Icons.arrow_drop_up),
-      )
     ]),
   );
 }
@@ -113,33 +112,36 @@ Widget createFinishWidget(BuildContext context, double groupTotal,
     Map<String, double> indTotals, double budget) {
   List<Widget> colWidgets = createIndividualTotalWidget(indTotals);
 
-  final Widget totalWidget = Row(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.only(bottom: 10.0, top: 15.0, left: 20.0),
-        child: createTotalWidget(groupTotal),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 5),
-        child: IconButton(
-          icon: Icon(
-            Icons.arrow_drop_down,
-            color: Colors.white,
-          ),
-          onPressed: () {
+  final Widget totalWidget = Container(
+    color: globals.mainColor,
+    height: 80,
+    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.arrow_drop_down),
+          onPressed: (){
             Navigator.of(context).pop();
           },
         ),
-      )
-    ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            createTotalWidget(groupTotal),
+            createDifferenceWidget(budget - groupTotal),
+            createBudgetWidget(budget)
+          ],
+        ),
+      ]
+    ),
   );
   colWidgets.insert(0, totalWidget);
 
   final Widget divider = Divider(
     thickness: 5.0,
-    color: Colors.grey,
+    color: Colors.white,
   );
   colWidgets.insert(1, divider);
   colWidgets.add(divider);
@@ -159,7 +161,7 @@ Widget createFinishWidget(BuildContext context, double groupTotal,
   colWidgets.add(payButton);
 
   return Container(
-    color: Colors.blueGrey,
+    color: globals.mainColor,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -168,26 +170,100 @@ Widget createFinishWidget(BuildContext context, double groupTotal,
   );
 }
 
-// Generates a list of widgets, one for each item in the shopping list
-List<Widget> createItemCardWidget(Item item) {
-  final double totalPrice = item.price * item.quantity;
+List<Widget> createUserWidget(List<String> users) {
+  List<Widget> widgets = List();
 
-  final List<Widget> widgets = [
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(item.name),
-        Text('\$${totalPrice.toStringAsFixed(2)}')
-      ],
-    ),
-    Text('Price: \$${item.price.toStringAsFixed(2)}'),
-    Text('Quantity: ${item.quantity}'),
-    Padding(
-        padding: const EdgeInsets.only(bottom: 5.0),
-        child: Text('Shoppers: ${item.users.toString()}'))
-  ];
+  for (String user in users) {
+    widgets.add(
+      Text('$user')
+    );
+  }
 
   return widgets;
+}
+
+// Generates a list of widgets, one for each item in the shopping list
+Widget createItemCardWidget(Item item) {
+  bool expanded = false;
+  final double totalPrice = item.price * item.quantity;
+
+  final Widget widget = Column(
+    children: <Widget>[
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+              item.name,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: NetworkImage(globals.anonPhoto),
+                backgroundColor: Colors.transparent,
+                radius: 16.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 10.0
+                ),
+                child: Text(
+                  'x ${item.users.length}',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.white
+                  ),
+                  overflow: TextOverflow.clip,
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+
+      const SizedBox(height: 5.0),
+
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            '\$${item.price.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 24.0,
+              color: Colors.white
+            ),
+            overflow: TextOverflow.clip,
+          ),
+          Text(
+            'x ${item.quantity}',
+            style: TextStyle(
+              fontSize: 24.0,
+              color: Colors.white
+            ),
+            overflow: TextOverflow.clip,
+          ),
+          Text(
+            '= \$${totalPrice.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 24.0,
+              color: Colors.white
+            ),
+            overflow: TextOverflow.clip,
+          ),
+        ],
+      )
+    ],
+  );
+
+  return widget;
 }
 
 /*** END WIDGET GENERATORS ***/
@@ -258,13 +334,23 @@ class _ListViewsState extends State<ListViews> {
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
               FlatButton(
-                  child: Text('YES'),
+                  child: Text(
+                    'YES',
+                    style: TextStyle(
+                      color: globals.mainColor
+                    ),
+                  ),
                   onPressed: () async {
                     removeFromDatabase(index);
                     Navigator.of(context).pop();
                   }),
               FlatButton(
-                child: Text('NO'),
+                child: Text(
+                  'NO',
+                  style: TextStyle(
+                      color: globals.mainColor
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -288,26 +374,32 @@ class _ListViewsState extends State<ListViews> {
 
           // If the list has no items, notify the user that the list is empty
           if (snapshot.data["items"].length == 0)
-            return Center(child: Text('List is empty.'));
+            return Center(child: Text('Press + to add an item.'));
 
           // Create a shopping list object from the list data
           final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
           // Build the list of items
           return ListView.builder(
-              itemCount: s.items.length,
-              itemBuilder: (BuildContext context, int index) {
-                List<Widget> widgets = createItemCardWidget(s.items[index]);
-                return Center(
+            itemCount: s.items.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Center(
+                child: Card(
                   child: ExpansionTile(
-                      trailing: IconButton(
-                        icon: Icon(Icons.cancel),
-                        onPressed: () => deleteItemDialog(index),
-                      ),
-                      title: widgets.first,
-                      children: widgets.sublist(1)),
-                );
-              });
+                    trailing: IconButton(
+                      icon: Icon(Icons.cancel),
+                      color: Colors.grey,
+                      onPressed: () {
+                        deleteItemDialog(index);
+                      },
+                    ),
+                    title: createItemCardWidget(s.items[index]),
+                    children: createUserWidget(s.items[index].users),
+                  ),
+                )
+              );
+            }
+          );
         },
       ),
       appBar: AppBar(
@@ -341,7 +433,7 @@ class _ListViewsState extends State<ListViews> {
       ),
       bottomNavigationBar: BottomAppBar(
           child: FlatButton(
-        color: Colors.blueGrey,
+        color: globals.mainColor,
         highlightColor: Colors.transparent,
         onPressed: activateBottomSheet,
         child: StreamBuilder(
@@ -349,10 +441,6 @@ class _ListViewsState extends State<ListViews> {
           builder: (context, snapshot) {
             // If the list has no data, return an error message
             if (snapshot.data == null) return Text("Error");
-
-            // If the list has no items, notify the user that the list is empty
-            if (snapshot.data['items'].length == 0)
-              return createDetailsWidget(0, 0, 0);
 
             // Create a shopping list object from the list data
             final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
@@ -377,6 +465,7 @@ class _ListViewsState extends State<ListViews> {
 
   void activateBottomSheet() {
     showBottomSheet(
+      backgroundColor: globals.mainColor,
         context: context,
         builder: (context) => StreamBuilder(
               stream: docRef.snapshots(),
@@ -401,7 +490,7 @@ class _ListViewsState extends State<ListViews> {
                   indTotal = 0.0;
 
                   for (Item i in s.items) {
-                    if (i.users.contains(user)) {
+                    if (i.users.contains(user.name)) {
                       // The price for an individual user of an item is
                       // (total price * quantity) / (number of users of the item)
                       indTotal +=

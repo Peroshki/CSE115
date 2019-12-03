@@ -36,7 +36,7 @@ class _Settings extends State<Settings> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: globals.mainColor,
-        title: const Text('App Settings'),
+        title: const Text('Settings'),
         automaticallyImplyLeading: false,
       ),
 
@@ -56,82 +56,12 @@ class _Settings extends State<Settings> {
         SwitchListTile(
           value: _darkTheme,
           title: const Text('Dark Mode'),
+          activeColor: globals.mainColor,
           onChanged: (val) {
             setState(() {
               _darkTheme = val;
             });
             onThemeChanged(val, themeNotifier);
-          },
-        ),
-
-        //Notifications to the user
-        ListTile(
-          title: Text('Notifications',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                fontSize: 20,
-              )),
-          subtitle: Text('Enable the settings to recieve notifications.'),
-        ),
-        SwitchListTile(
-          value: false,
-          title: const Text('Push Notifications enabled:'),
-          onChanged: (value) {
-            createAlert(context);
-          },
-        ),
-        SwitchListTile(
-          value: false,
-          title: const Text('Email Notifications enabled:'),
-          onChanged: (value) {
-            createAlert(context);
-          },
-        ),
-        SwitchListTile(
-          value: false,
-          title: const Text('Reminder to go shopping:'),
-          onChanged: (value) {
-            createAlert(context);
-          },
-        ),
-
-        ListTile(
-          title: Text('Permissions',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                fontSize: 20,
-              )),
-          subtitle: const Text(
-              'Enable the settings to allow this app to access information on your device.'),
-        ),
-        SwitchListTile(
-          value: false,
-          title: const Text('Allow access to the Downloads Folder:'),
-          onChanged: (value) {
-            createAlert(context);
-          },
-        ),
-        SwitchListTile(
-          value: false,
-          title: const Text('Allow access to Venmo:'),
-          onChanged: (value) {
-            createAlert(context);
-          },
-        ),
-        SwitchListTile(
-          value: false,
-          title: const Text('Allow access to Facebook:'),
-          onChanged: (value) {
-            createAlert(context);
-          },
-        ),
-        SwitchListTile(
-          value: true,
-          title: const Text('Give devs your first born child:'),
-          onChanged: (value) {
-            createAlert(context);
           },
         ),
       ])),

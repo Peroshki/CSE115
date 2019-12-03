@@ -92,7 +92,7 @@ class _PaymentContent extends StatelessWidget {
             } else
               return Center(
                 child: const Text(
-                  'You don\'t have any payment apps (Venmo or Cash App).',
+                  'You don\'t have any payment apps, download Venmo or Cash.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20),
                 ),

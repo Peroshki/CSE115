@@ -269,7 +269,7 @@ class _MenuPageState extends State<MenuPage> {
 
         if (myLists.isEmpty) {
           return Center(
-            child: Text('Press + to add a new list.'),
+            child: Text('Press + to create a list.'),
           );
         }
 
@@ -325,13 +325,23 @@ class _MenuPageState extends State<MenuPage> {
           content: new Text("This will permanelty delete the list."),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Cancel"), // Cancel button
+              child: new Text(
+                "Cancel",
+                style: TextStyle(
+                    color: globals.mainColor
+                ),
+              ), // Cancel button
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("Accept"), // Deletes list
+              child: new Text(
+                "Accept",
+                style: TextStyle(
+                    color: globals.mainColor
+                ),
+              ), // Deletes list
               onPressed: () {
                 setState(() {
                   deleteList(index);
