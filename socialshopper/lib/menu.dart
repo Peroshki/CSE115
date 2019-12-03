@@ -46,11 +46,16 @@ class callUser {
 
     print(k);
 
-    var four = 4;
+    var holdWord = "";
     for (int i = 0; i < k.length; i++) {
-      if (i == four) {
-        userNames.add(k.elementAt(i));
-        four += 4;
+      if (k.elementAt(i).toString() == 'name') {
+        holdWord = k.elementAt(i + 1);
+
+        if (k.elementAt(i + 2).toString() !=  "uid") {
+          holdWord += " ";
+          holdWord += k.elementAt(i + 2);
+        }
+        userNames.add(holdWord);
       }
     }
   }
@@ -180,9 +185,9 @@ class _MenuPageState extends State<MenuPage> {
     for (int i = 0; i < s.items.length; i++) {
       totalVar += s.items[i].price * s.items[i].quantity;
     }
-    
+
     final double budget = s.metadata.budget;
-    
+
     if (budget > totalVar) {
       return TextSpan(
           text: '\$' + totalVar.toStringAsFixed(2),
