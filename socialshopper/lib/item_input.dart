@@ -16,7 +16,7 @@ import 'menu.dart' as globals;
 
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
-var test = '';
+var itemName = '';
 
 //Create a state for checkbox
 class UserCheckBox extends StatefulWidget {
@@ -103,7 +103,7 @@ Widget getNameAndPrice(BuildContext context) {
                 maxLengthEnforced: true,
                 textInputAction: TextInputAction.done,
                 onChanged: (String userItem) {
-                  test = userItem;
+                  itemName = userItem;
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Item Name',
@@ -122,8 +122,7 @@ Widget getNameAndPrice(BuildContext context) {
                 onChanged: (newPrice) {
                   price = double.parse(newPrice);
                 },
-                onSubmitted: (vt) {
-                },
+                onSubmitted: (vt) {},
                 decoration: InputDecoration(
                     hintText: 'Enter Price Of Item',
                     prefixIcon: Icon(Icons.monetization_on),
@@ -141,8 +140,7 @@ Widget getNameAndPrice(BuildContext context) {
                 onChanged: (Amount) {
                   quan = int.parse(Amount);
                 },
-                onSubmitted: (v) {
-                },
+                onSubmitted: (v) {},
                 decoration: InputDecoration(
                     hintText: 'Enter Quantity',
                     prefixIcon: Icon(Icons.add_box),
@@ -169,9 +167,14 @@ Widget getNameAndPrice(BuildContext context) {
                     print(globals.userNames.elementAt(i));
                   }
                 }
-                addItemsToList(
-                    globals.documentName, test, price, quan, shoppingUsers);
-                Navigator.of(context).pop();
+                if (itemName.isNotEmpty &&
+                    price.toString().isNotEmpty &&
+                    quan.toString().isNotEmpty &&
+                    shoppingUsers.isNotEmpty) {
+                  addItemsToList(globals.documentName, itemName, price, quan,
+                      shoppingUsers);
+                  Navigator.of(context).pop();
+                }
               },
               backgroundColor: Colors.green,
               shape: RoundedRectangleBorder(
