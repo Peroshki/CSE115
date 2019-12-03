@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-Color mainColor = const Color.fromARGB(255, 43, 190, 254);
+const Color mainColor = const Color.fromARGB(255, 43, 190, 254);
+
+const String anonPhoto = 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
 
 String userUID;
 

@@ -405,6 +405,7 @@ class _ListSetup extends State<ListSetup> {
                     return const Text('Loading user data...');
 
                   List<String> users = [];
+                  print(snapshot.data['displayName'].toString());
                   users.add(snapshot.data['displayName']);
 
                   for (String p in people) {

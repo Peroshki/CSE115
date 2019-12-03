@@ -374,6 +374,7 @@ class _MenuPageState extends State<MenuPage> {
     return Scaffold(
       body: _getBody(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: globals.mainColor,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
@@ -404,10 +405,6 @@ class _MenuPageState extends State<MenuPage> {
               centerTitle: true,
               title: const Text('Lists'),
               actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: null,
-                ),
                 IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () {
