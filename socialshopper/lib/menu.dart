@@ -7,9 +7,6 @@
 * Specifing the item name, price, and quanitity. 
 */
 
-// import 'dart:convert';
-// import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/page.dart';
@@ -21,7 +18,6 @@ import 'globals.dart' as globals;
 import 'list_views.dart';
 import 'profile.dart';
 
-//var documentId = '';
 List<String> numList = new List(); //Array to hold the list names
 List<String> userNames = new List();
 var darkModeOn;
@@ -57,7 +53,6 @@ class callUser {
         four += 4;
       }
     }
-    //print(userNames);
   }
 }
 
@@ -115,7 +110,6 @@ class _MenuPageState extends State<MenuPage> {
           numList.clear();
           while (i < docs.length) {
             val = docs.elementAt(i).documentID;
-            //documentId = docs.elementAt(i).documentID;
             _addNewList(val);
             i++;
           }
@@ -364,8 +358,6 @@ class _MenuPageState extends State<MenuPage> {
           body: TextField(
             autofocus: true,
             onSubmitted: (val) {
-              //_addNewList(val);
-              //putNamesOfListInAList();
               createRecord(val); // puts List in database
               Navigator.pop(context); // Close the add todo screen
             },

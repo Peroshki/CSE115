@@ -514,7 +514,6 @@ class _Produce extends State<Produce> {
             itemCount: p.produce_Names.length,
             itemBuilder: (BuildContext context, index) {
               return Card(
-                //color: Colors.blueAccent,
                 elevation: 2,
                 child: GestureDetector(
                   child: new Row(
@@ -637,9 +636,6 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //     home: DefaultTabController(
-    //         length: 5,
     return Scaffold(
       appBar: AppBar(
           backgroundColor: wth.mainColor,
@@ -689,54 +685,6 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
         ],
         controller: _tabController,
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: selectedIndex,
-      //   onTap: _onItemTapped,
-      //   type: BottomNavigationBarType.fixed,
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.favorite,
-      //         color: Colors.black,
-      //       ),
-      //       title: Text(
-      //         'Produce',
-      //         style: TextStyle(color: Colors.black),
-      //       ),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.cake,
-      //         color: Colors.black,
-      //       ),
-      //       title:
-      //           Text('Snacks', style: TextStyle(color: Colors.black)),
-      //     ),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(
-      //           Icons.free_breakfast,
-      //           color: Colors.black,
-      //         ),
-      //         title: Text('Drinks',
-      //             style: TextStyle(color: Colors.black))),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(
-      //           Icons.mood,
-      //           color: Colors.black,
-      //         ),
-      //         title: Text(
-      //           'Meat',
-      //           style: TextStyle(color: Colors.black),
-      //         )),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(
-      //           Icons.keyboard,
-      //           color: Colors.black,
-      //         ),
-      //         title: Text('Enter',
-      //             style: TextStyle(color: Colors.black)))
-      //   ],
-      // )
     );
   }
 
@@ -744,24 +692,16 @@ class _MockStore extends State<MockStore> with SingleTickerProviderStateMixin {
     var appBarVal;
     switch (index) {
       case 0:
-        //appBarVal = 'Select Produce';
-        //_onItemTapped(0);
         return Produce();
       case 1:
-        //appBarVal = 'Select Snacks';
-        //_onItemTapped(1);
         return Snacks();
       case 2:
-        //appBarVal = 'Select Drinks';
-        //_onItemTapped(2);
         return Drinks();
       case 3:
         appBarVal = 'Select Meat';
-        //_onItemTapped(3);
         return Meat();
       case 4:
         appBarVal = 'Enter Item Description';
-        //_onItemTapped(4);
         return UserItemInput();
     }
     throw 'Invalid selected index';

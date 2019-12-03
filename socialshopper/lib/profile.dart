@@ -20,12 +20,10 @@ class Profile extends StatefulWidget {
   // Constructor
   Profile({Key key, @required this.uid}) : super(key: key);
 
-  //@override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
-//class _Profile extends StatelessWidget{
   bool isSwitched = false;
 
   //Get and initialize currently logged in user.
@@ -41,7 +39,6 @@ class _ProfileState extends State<Profile> {
   //Get the user that is currently logged in.
   initUser() async {
     user = await _auth.currentUser();
-    //print(globals.userUID);
     return user;
   }
 
@@ -136,7 +133,6 @@ class _ProfileState extends State<Profile> {
               }
             },
           ),
-          // ),
         )
             //counter for how many lists have
             ));

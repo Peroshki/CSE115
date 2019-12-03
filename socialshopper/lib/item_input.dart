@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 
 import 'menu.dart' as globals;
 
-//List<String> userNames = new List();
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
 var test = '';
@@ -86,10 +85,6 @@ void addItemsToList(String name, String item, double price, int quantity,
 // Allows user to manually enter
 // Item name, Price, Quantity, and select shoppers
 Widget getNameAndPrice(BuildContext context) {
-  // final FocusNode nodeTwo = FocusNode();
-  // final FocusNode nodeThree = FocusNode();
-  // final FocusNode nodeFour = FocusNode();
-  //var user = 'item';
   var price = 0.0;
   var quan = 0;
   var p = 'Omar';
@@ -120,7 +115,6 @@ Widget getNameAndPrice(BuildContext context) {
               // Textfield for price
               child: TextField(
                 autofocus: false,
-                //focusNode: nodeTwo,
                 maxLength: 10,
                 maxLengthEnforced: true,
                 keyboardType: TextInputType.number,
@@ -129,7 +123,6 @@ Widget getNameAndPrice(BuildContext context) {
                   price = double.parse(newPrice);
                 },
                 onSubmitted: (vt) {
-                  //FocusScope.of(context).requestFocus(nodeThree);
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Price Of Item',
@@ -141,7 +134,6 @@ Widget getNameAndPrice(BuildContext context) {
               //Text field for quanity
               child: TextField(
                 autofocus: false,
-                //focusNode: nodeThree,
                 maxLength: 10,
                 maxLengthEnforced: true,
                 keyboardType: TextInputType.number,
@@ -150,7 +142,6 @@ Widget getNameAndPrice(BuildContext context) {
                   quan = int.parse(Amount);
                 },
                 onSubmitted: (v) {
-                  //FocusScope.of(context).requestFocus(FocusNode());
                 },
                 decoration: InputDecoration(
                     hintText: 'Enter Quantity',
