@@ -62,7 +62,12 @@ void generateSuccessDialog(String name, BuildContext context) {
         title: Text('$name was successfully added to your friends list.'),
         actions: <Widget>[
           FlatButton(
-              child: const Text('OK'),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                    color: globals.mainColor
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               }
@@ -84,7 +89,12 @@ void generateAlertDialog(data, BuildContext context) {
             'Would you like to add ${data['displayName']} to your friends list?'),
         actions: <Widget>[
           FlatButton(
-              child: const Text('Add'),
+              child: const Text(
+                'Add',
+                style: TextStyle(
+                    color: globals.mainColor
+                ),
+              ),
               onPressed: () async {
                 /// If the user selects 'YES', add the selected user to
                 /// your friends list and back out of the alert dialog
@@ -94,7 +104,12 @@ void generateAlertDialog(data, BuildContext context) {
               }
           ),
           FlatButton(
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                  color: globals.mainColor
+              ),
+            ),
             onPressed: () {
               Navigator.of(context).pop();
             },

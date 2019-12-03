@@ -26,29 +26,11 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool isSwitched = false;
 
-  //Get and initialize currently logged in user.
-
-  //If user data has an image then use that, else use some icon.
-  String imageInit() {
-    if (user.photoUrl == null) {
-      return 'https://cdn4.iconfinder.com/data/icons/forum-buttons-and-community-signs-1/794/profile-3-512.png';
-    } else
-      return user.photoUrl;
-  }
-
-  //Get the user that is currently logged in.
-  initUser() async {
-    user = await _auth.currentUser();
-    return user;
-  }
-
   //Now uses streambulder to get data from firestore based on the user's uid.
   //First streambuilder gets display name from database
   //Second streambuilder gets email from database
   @override
   Widget build(BuildContext context) {
-    initUser();
-    print(user.uid);
     return Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -64,7 +46,7 @@ class _ProfileState extends State<Profile> {
           child: StreamBuilder(
             stream: Firestore.instance
                 .collection('users')
-                .document(user.uid)
+                .document(globals.userUID)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -88,7 +70,7 @@ class _ProfileState extends State<Profile> {
                         child: CircleAvatar(
                             radius: 100,
                             backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(imageInit() ?? globals.anonPhoto))),
+                            backgroundImage: NetworkImage(userDocument['photoURL'] ?? globals.anonPhoto))),
                     Text(
                       (numLists == 1 && numFriends == 1) ? '$numFriends Friend, $numLists List'
                       : (numFriends == 1) ? '$numFriends Friend          $numLists Lists'
