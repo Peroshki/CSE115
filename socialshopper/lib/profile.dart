@@ -48,6 +48,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     initUser();
+    print(user.uid);
     return Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -63,7 +64,7 @@ class _ProfileState extends State<Profile> {
           child: StreamBuilder(
             stream: Firestore.instance
                 .collection('users')
-                .document(globals.userUID)
+                .document(user.uid)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {

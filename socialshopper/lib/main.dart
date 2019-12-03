@@ -62,6 +62,7 @@ class MaterialAppWTheme extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.hasData) {
             globals.userUID = snapshot.data.uid;
+            print('From main '+globals.userUID);
             return MenuPage();
           }
           return LoginPage();

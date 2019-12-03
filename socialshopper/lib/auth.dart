@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
+import 'globals.dart' as globals;
 
 class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -100,10 +101,12 @@ class AuthService {
   }
 
   void signOut() async {
+    globals.userUID = null;
     //Wait for Firebase signout
     await _auth.signOut();
     //Wait for Google Sign out
     await _googleSignIn.signOut();
+   
   }
 }
 
