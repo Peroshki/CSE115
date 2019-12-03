@@ -26,10 +26,10 @@ class AuthService {
     profile = user.switchMap((FirebaseUser u) {
       if (u != null) {
         return _db
-            .collection('users')
-            .document(u.uid)
-            .snapshots()
-            .map((snap) => snap.data);
+          .collection('users')
+          .document(u.uid)
+          .snapshots()
+          .map((snap) => snap.data);
       } else {
         return Observable.empty();
       }
@@ -46,13 +46,17 @@ class AuthService {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+
     //Use credentials from before to login to Firebase
     //Store result of sign-in in result
     final AuthResult result = await _auth.signInWithCredential(credential);
+
     //Create Firebase user with the result.
     final FirebaseUser user = result.user;
+
     //Check result's additional returned user of isNewUser
     final bool isNew = result.additionalUserInfo.isNewUser;
+
     //Make sure fields entered/returned are not null
     assert(user.email != null);
     assert(user.displayName != null);
@@ -61,6 +65,7 @@ class AuthService {
 
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
+
     //Update user data
     updateUserData(user, isNew);
     print('Signed in ' + user.displayName);
@@ -106,7 +111,6 @@ class AuthService {
     await _auth.signOut();
     //Wait for Google Sign out
     await _googleSignIn.signOut();
-   
   }
 }
 

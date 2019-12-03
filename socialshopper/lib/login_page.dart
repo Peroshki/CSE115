@@ -49,14 +49,16 @@ class _LoginPageState extends State<LoginPage> {
       child: Text('Sign Up', style: TextStyle(color: Colors.white)),
     );
     final image = Container(
-        width: 200.0,
-        height: 200.0,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              fit: BoxFit.fill,
-              image: const AssetImage('assets/images/Logo(1).png'),
-            )));
+      width: 200.0,
+      height: 200.0,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(
+          fit: BoxFit.fill,
+          image: const AssetImage('assets/images/Logo(1).png'),
+        )
+      )
+    );
 
     return Scaffold(
       body: Center(
@@ -164,19 +166,19 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     return Form(
       key: _formKey,
       child: _success == true
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                email,
-                SizedBox(height: 10.0),
-                password,
-                SizedBox(height: 20.0),
-                loginButton,
-              ],
-            ),
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              email,
+              SizedBox(height: 10.0),
+              password,
+              SizedBox(height: 20.0),
+              loginButton,
+            ],
+          ),
     );
   }
 

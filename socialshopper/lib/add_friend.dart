@@ -19,11 +19,11 @@ class AddFriend extends StatefulWidget {
 /// Add a user to your friend list and update the database accordingly
 void addFriend(data, BuildContext context) {
   Firestore.instance.runTransaction((Transaction tx) async {
-    // Grab the users document from the 'users' collection
-    final DocumentReference postRef =
-      Firestore.instance.collection('users').document(globals.userUID);
+  // Grab the users document from the 'users' collection
+  final DocumentReference postRef =
+    Firestore.instance.collection('users').document(globals.userUID);
 
-    final DocumentSnapshot postSnapshot = await tx.get(postRef);
+  final DocumentSnapshot postSnapshot = await tx.get(postRef);
     if (postSnapshot.exists) {
       var doc = postSnapshot.data;
 
@@ -62,15 +62,15 @@ void generateSuccessDialog(String name, BuildContext context) {
         title: Text('$name was successfully added to your friends list.'),
         actions: <Widget>[
           FlatButton(
-              child: const Text(
-                'OK',
-                style: TextStyle(
-                    color: globals.mainColor
-                ),
+            child: const Text(
+              'OK',
+              style: TextStyle(
+                color: globals.mainColor
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }
           ),
         ],
       );
@@ -86,28 +86,28 @@ void generateAlertDialog(data, BuildContext context) {
       return AlertDialog(
         title: Text('Add Friend'),
         content: Text(
-            'Would you like to add ${data['displayName']} to your friends list?'),
+          'Would you like to add ${data['displayName']} to your friends list?'),
         actions: <Widget>[
           FlatButton(
-              child: const Text(
-                'Add',
-                style: TextStyle(
-                    color: globals.mainColor
-                ),
+            child: const Text(
+              'Add',
+              style: TextStyle(
+                color: globals.mainColor
               ),
-              onPressed: () async {
-                /// If the user selects 'YES', add the selected user to
-                /// your friends list and back out of the alert dialog
-                addFriend(data, context);
-                Navigator.of(context).pop();
-                generateSuccessDialog(data['displayName'], context);
-              }
+            ),
+            onPressed: () async {
+              /// If the user selects 'YES', add the selected user to
+              /// your friends list and back out of the alert dialog
+              addFriend(data, context);
+              Navigator.of(context).pop();
+              generateSuccessDialog(data['displayName'], context);
+            }
           ),
           FlatButton(
             child: const Text(
               'Cancel',
               style: TextStyle(
-                  color: globals.mainColor
+                color: globals.mainColor
               ),
             ),
             onPressed: () {

@@ -25,9 +25,10 @@ class _PaymentState extends State<Payment> {
         backgroundColor: globals.mainColor,
       ),
       body: _PaymentContent(
-          includeSystemApps: _showSystemApps,
-          onlyAppsWithLaunchIntent: _onlyLaunchableApps,
-          key: GlobalKey()),
+        includeSystemApps: _showSystemApps,
+        onlyAppsWithLaunchIntent: _onlyLaunchableApps,
+        key: GlobalKey()
+      ),
     );
   }
 }
@@ -69,26 +70,27 @@ class _PaymentContent extends StatelessWidget {
             if (apps.isNotEmpty) {
               return ListView.builder(
                   itemBuilder: (context, position) {
-                    Application app = apps[position];
-                    return Column(
-                      children: <Widget>[
-                        ListTile(
-                          leading: app is ApplicationWithIcon
-                              ? CircleAvatar(
-                                  backgroundImage: MemoryImage(app.icon),
-                                  backgroundColor: Colors.white,
-                                )
-                              : null,
-                          onTap: () => DeviceApps.openApp(app.packageName),
-                          title: Text('${app.appName}'),
-                        ),
-                        Divider(
-                          height: 1.0,
-                        )
-                      ],
-                    );
-                  },
-                  itemCount: apps.length);
+                  Application app = apps[position];
+                  return Column(
+                    children: <Widget>[
+                      ListTile(
+                        leading: app is ApplicationWithIcon
+                            ? CircleAvatar(
+                                backgroundImage: MemoryImage(app.icon),
+                                backgroundColor: Colors.white,
+                              )
+                            : null,
+                        onTap: () => DeviceApps.openApp(app.packageName),
+                        title: Text('${app.appName}'),
+                      ),
+                      Divider(
+                        height: 1.0,
+                      )
+                    ],
+                  );
+                },
+                itemCount: apps.length
+              );
             } else
               return Center(
                 child: const Text(

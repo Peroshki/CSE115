@@ -19,13 +19,14 @@ class _StoreSelectState extends State<StoreSelect> {
   //Creates an alert to the user saying that these buttons aren't implemented.
   Future<void> createAlert(BuildContext context) {
     return showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Not Implemented'),
-            content: const Text('Coming Soon!'),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Not Implemented'),
+          content: const Text('Coming Soon!'),
+        );
+      }
+    );
   }
 
   @override
@@ -98,18 +99,19 @@ class _StoreSelectState extends State<StoreSelect> {
     //Starts the desplay to the screen
     return Scaffold(
       appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: globals.mainColor,
-          title: const Text(
-            'Store Select Screen',
-          ),
+        centerTitle: true,
+        backgroundColor: globals.mainColor,
+        title: const Text(
+          'Store Select Screen',
+        ),
 
-          //Allows for the page to have a "go back" button
-          automaticallyImplyLeading: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context, false),
-          )),
+        //Allows for the page to have a "go back" button
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, false),
+        )
+      ),
 
       //Creates the grid of buttons
       body: Center(

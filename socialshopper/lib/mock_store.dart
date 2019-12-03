@@ -156,31 +156,32 @@ class _UserCheckBox extends State<UserCheckBox> {
 
   Widget build(BuildContext context) {
     return new Container(
-        height: 300,
-        width: 300,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: globals.userNames.length,
-          itemBuilder: (BuildContext context, int index) {
-            return new Container(
-                child: new Column(
-              children: <Widget>[
-                new CheckboxListTile(
-                  activeColor: wth.mainColor,
-                  value: inputs[index],
-                  title: new Text(
-                    '${globals.userNames.elementAt(index)}',
-                    textAlign: TextAlign.center,
-                  ),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  onChanged: (bool val) {
-                    ChangeVal(val, index);
-                  },
-                )
-              ],
-            ));
-          },
-        ));
+      height: 300,
+      width: 300,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: globals.userNames.length,
+        itemBuilder: (BuildContext context, int index) {
+          return new Container(
+              child: new Column(
+            children: <Widget>[
+              new CheckboxListTile(
+                activeColor: wth.mainColor,
+                value: inputs[index],
+                title: new Text(
+                  '${globals.userNames.elementAt(index)}',
+                  textAlign: TextAlign.center,
+                ),
+                controlAffinity: ListTileControlAffinity.platform,
+                onChanged: (bool val) {
+                  ChangeVal(val, index);
+                },
+              )
+            ],
+          ));
+        },
+      )
+    );
   }
 }
 
