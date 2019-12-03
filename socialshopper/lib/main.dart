@@ -17,36 +17,28 @@ import 'mock_store.dart';
 import 'signup_page.dart';
 import 'store_select.dart';
 
+var darkModeOn = false;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseUser user;
-var prefs;
-
-class ThemeNotifier with ChangeNotifier {
-  ThemeData _themeData;
-
-  ThemeNotifier(this._themeData);
-
-  getTheme() => _themeData;
-
-  setTheme(ThemeData themeData) async {
-    _themeData = themeData;
-    notifyListeners();
-  }
-}
 
 void main() {
   SharedPreferences.getInstance().then((prefs) {
-    var darkModeOn = prefs.getBool('dark') ?? true;
-    runApp(
-      ChangeNotifierProvider<ThemeNotifier>(
-        create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
-        child: MaterialApp(home: MyApp()),
-      ),
-    );
+    darkModeOn = prefs.getBool('dark') ?? true;
+    runApp(MyApp());
   });
 }
 
 class MyApp extends StatelessWidget with ChangeNotifier {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<ThemeNotifier>(
+      create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+      child: MaterialAppWTheme(),
+    );
+  }
+}
+
+class MaterialAppWTheme extends StatelessWidget {
   final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
     MenuPage.tag: (context) => MenuPage(),
@@ -59,12 +51,11 @@ class MyApp extends StatelessWidget with ChangeNotifier {
     AddFriend.tag: (context) => AddFriend(),
     Payment.tag: (context) => Payment(),
   };
-
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final theme = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
-      theme: themeNotifier.getTheme(),
+      theme: theme.getTheme(),
       title: 'SocialShopper',
       home: FutureBuilder(
         future: FirebaseAuth.instance.currentUser(),
