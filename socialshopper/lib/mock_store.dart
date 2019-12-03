@@ -67,6 +67,35 @@ void populateDataBase(String itemName, double price, int quantity) async {
   if (users == Null) {
     users = [];
   }
+
+  int getIndex = 0;
+  bool found = false;
+  if (tags.isNotEmpty) {
+    print('omar');
+    for (int i = 0; i < tags.length; i++) {
+      if (tags.elementAt(i)['name'] == itemName) {
+        if (tags.elementAt(i)['users'].toString() == users.toString()) {
+          getIndex = i;
+          found = true;
+        }
+      }
+    }
+
+    if (found) {
+      print('entered');
+      quantity += tags.elementAt(getIndex)['quantity'];
+      ref.updateData({
+        'items': FieldValue.arrayRemove([
+          {
+            'name': itemName,
+            'price': tags.elementAt(getIndex)['price'],
+            'quantity': tags.elementAt(getIndex)['quantity'],
+            'users': tags.elementAt(getIndex)['users']
+          }
+        ])
+      });
+    }
+  }
   ref.updateData({
     'items': FieldValue.arrayUnion([
       {'name': itemName, 'price': price, 'quantity': quantity, 'users': users}
