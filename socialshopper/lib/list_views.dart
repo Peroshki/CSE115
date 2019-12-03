@@ -173,9 +173,22 @@ Widget createFinishWidget(BuildContext context, double groupTotal,
 List<Widget> createUserWidget(List<String> users) {
   List<Widget> widgets = List();
 
+  widgets.add(
+    Divider(
+      thickness: 1.0,
+    )
+  );
+
+  widgets.add(
+    Text('Shoppers:')
+  );
+
   for (String user in users) {
     widgets.add(
-      Text('$user')
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Text('$user'),
+      )
     );
   }
 
