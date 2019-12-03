@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushNamed(SignupPage.tag);
       },
       padding: EdgeInsets.all(12),
-      color: Colors.green,
+      color: globals.mainColor,
       child: Text('Sign Up', style: TextStyle(color: Colors.white)),
     );
     final image = Container(
@@ -70,8 +70,9 @@ class _LoginPageState extends State<LoginPage> {
                 image,
                 SizedBox(height: 40.0),
                 _EmailPasswordForm(),
-                googleButton,
                 signUpButton,
+                SizedBox(height: 40.0,),
+                googleButton,
               ],
             ),
           ),
@@ -116,12 +117,18 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
             }
           },
           padding: EdgeInsets.all(12),
-          color: Colors.blue,
+          color: globals.mainColor,
           child: Text('Login', style: TextStyle(color: Colors.white)),
         ));
     final email = TextFormField(
       controller: _emailController,
-      decoration: const InputDecoration(labelText: 'Email'),
+      decoration: const InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: globals.mainColor, width: 2.0),
+        ),
+        labelText: 'Email',
+        labelStyle: TextStyle(color: Colors.grey)
+      ),
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
@@ -138,7 +145,13 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     final password = TextFormField(
       controller: _passwordController,
       focusNode: focusPassword,
-      decoration: const InputDecoration(labelText: 'Password'),
+      decoration: const InputDecoration(
+        labelStyle: TextStyle(color: Colors.grey),
+        labelText: 'Password',
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: globals.mainColor, width: 2.0),
+        ),
+      ),
       obscureText: true,
       validator: (String value) {
         if (value.isEmpty) {
@@ -158,6 +171,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 email,
+                SizedBox(height: 10.0),
                 password,
                 SizedBox(height: 20.0),
                 loginButton,
