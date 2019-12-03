@@ -51,6 +51,7 @@ class MaterialAppWTheme extends StatelessWidget {
     AddFriend.tag: (context) => AddFriend(),
     Payment.tag: (context) => Payment(),
   };
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeNotifier>(context);

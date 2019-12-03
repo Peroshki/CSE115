@@ -40,40 +40,40 @@ Widget generateFriendWidget(String name, String photo, BuildContext context) {
     child: ListTile(
       onLongPress: () {
         return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              //ensures user wants to delete this
-              return AlertDialog(
-                title: Text('Delete Friend'),
-                content: Text('Are you sure you want to remove $name from your friend list?'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      'Delete',
-                      style: TextStyle(
-                          color: globals.mainColor
-                      ),
+          context: context,
+          builder: (BuildContext context) {
+            //ensures user wants to delete this
+            return AlertDialog(
+              title: Text('Delete Friend'),
+              content: Text('Are you sure you want to remove $name from your friend list?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: globals.mainColor
                     ),
-                    onPressed: () {
-                      //removes from database
-                      removeFriend(name);
-                      Navigator.of(context).pop();
-                    },
                   ),
-                  FlatButton(
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                          color: globals.mainColor
-                      ),
+                  onPressed: () {
+                    //removes from database
+                    removeFriend(name);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: globals.mainColor
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            }
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          }
         );
       },
       leading: CircleAvatar(

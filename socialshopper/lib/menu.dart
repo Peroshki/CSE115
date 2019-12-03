@@ -21,6 +21,7 @@ import 'profile.dart';
 List<String> numList = new List(); //Array to hold the list names
 List<String> userNames = new List();
 var darkModeOn;
+
 //FireBase stuff
 final databaseRef = Firestore.instance; //creating an instance of database
 var documentName = '';
@@ -176,9 +177,10 @@ class _MenuPageState extends State<MenuPage> {
     globals.ShoppingList s = globals.ShoppingList.fromSnapshot(myList);
     if (items.isEmpty) {
       return TextSpan(
-          text: '\$0.00',
-          style: TextStyle(
-              color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold));
+        text: '\$0.00',
+        style: TextStyle(
+        color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold)
+      );
     }
 
     double totalVar = 0;
@@ -190,14 +192,16 @@ class _MenuPageState extends State<MenuPage> {
 
     if (budget > totalVar) {
       return TextSpan(
-          text: '\$' + totalVar.toStringAsFixed(2),
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.green));
+        text: '\$' + totalVar.toStringAsFixed(2),
+        style: TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 30, color: Colors.green)
+      );
     } else {
       return TextSpan(
-          text: '\$' + totalVar.toStringAsFixed(2),
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.red));
+        text: '\$' + totalVar.toStringAsFixed(2),
+        style: TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 30, color: Colors.red)
+      );
     }
   }
 
@@ -212,8 +216,9 @@ class _MenuPageState extends State<MenuPage> {
         height: 50,
         width: 50,
         decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: const BorderRadius.all(Radius.circular(100))),
+          color: Colors.red,
+          borderRadius: const BorderRadius.all(Radius.circular(100))
+        ),
         child: Center(
           child: const Text(
             'S',
@@ -227,12 +232,14 @@ class _MenuPageState extends State<MenuPage> {
         height: 50,
         width: 50,
         decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: const BorderRadius.all(Radius.circular(100))),
+          color: Colors.blue,
+          borderRadius: const BorderRadius.all(Radius.circular(100))
+        ),
         child: Center(
           child: const Text('BB',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 30, color: Colors.white)),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 30, color: Colors.white)
+          ),
         ),
       );
     }
@@ -287,8 +294,9 @@ class _MenuPageState extends State<MenuPage> {
                     ListTile(
                       leading: storeType(myLists[index]),
                       trailing: RichText(
-                          text: TextSpan(
-                              children: <TextSpan>[getTotal(myLists[index])])),
+                      text: TextSpan(
+                        children: <TextSpan>[getTotal(myLists[index])])
+                      ),
                       title: RichText(
                         text: TextSpan(children: [
                           TextSpan(
@@ -306,7 +314,7 @@ class _MenuPageState extends State<MenuPage> {
                       ),
                       onTap: () {
                         _openList(
-                            index, myLists[index].data['metadata']['uid']);
+                          index, myLists[index].data['metadata']['uid']);
                       },
                       onLongPress: () {
                         alertBoxForList(index);
@@ -333,7 +341,7 @@ class _MenuPageState extends State<MenuPage> {
               child: new Text(
                 "Cancel",
                 style: TextStyle(
-                    color: globals.mainColor
+                  color: globals.mainColor
                 ),
               ), // Cancel button
               onPressed: () {

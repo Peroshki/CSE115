@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'menu.dart' as globals;
+import 'globals.dart' as globals2;
 
 List<bool> inputs = new List<bool>(); // dynamic list for checkboxes
 List<String> userVal = globals.numList;
@@ -106,7 +107,11 @@ Widget getNameAndPrice(BuildContext context) {
                   itemName = userItem;
                 },
                 decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.grey),
                     hintText: 'Enter Item Name',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: globals2.mainColor, width: 2.0),
+                    ),
                     prefixIcon: Icon(Icons.add_shopping_cart),
                     contentPadding: const EdgeInsets.all(16.0)),
               ),
@@ -124,9 +129,13 @@ Widget getNameAndPrice(BuildContext context) {
                 },
                 onSubmitted: (vt) {},
                 decoration: InputDecoration(
-                    hintText: 'Enter Price Of Item',
-                    prefixIcon: Icon(Icons.monetization_on),
-                    contentPadding: const EdgeInsets.all(16.0)),
+                  labelStyle: TextStyle(color: Colors.grey),
+                  hintText: 'Enter Item Price',
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: globals2.mainColor, width: 2.0),
+                  ),
+                  prefixIcon: Icon(Icons.monetization_on),
+                  contentPadding: const EdgeInsets.all(16.0)),
               ),
             ),
             Flexible(
@@ -136,13 +145,17 @@ Widget getNameAndPrice(BuildContext context) {
                 maxLength: 10,
                 maxLengthEnforced: true,
                 keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
                 onChanged: (Amount) {
                   quan = int.parse(Amount);
                 },
                 onSubmitted: (v) {},
                 decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.grey),
                     hintText: 'Enter Quantity',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: globals2.mainColor, width: 2.0),
+                    ),
                     prefixIcon: Icon(Icons.add_box),
                     contentPadding: const EdgeInsets.all(16.0)),
               ),

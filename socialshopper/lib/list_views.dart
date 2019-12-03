@@ -445,87 +445,89 @@ class _ListViewsState extends State<ListViews> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-          child: FlatButton(
-        color: globals.mainColor,
-        highlightColor: Colors.transparent,
-        onPressed: activateBottomSheet,
-        child: StreamBuilder(
-          stream: docRef.snapshots(),
-          builder: (context, snapshot) {
-            // If the list has no data, return an error message
-            if (snapshot.data == null) return Text("Error");
+        child: FlatButton(
+          color: globals.mainColor,
+          highlightColor: Colors.transparent,
+          onPressed: activateBottomSheet,
+          child: StreamBuilder(
+            stream: docRef.snapshots(),
+            builder: (context, snapshot) {
+              // If the list has no data, return an error message
+              if (snapshot.data == null) return Text("Error");
 
-            // Create a shopping list object from the list data
-            final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
+              // Create a shopping list object from the list data
+              final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
-            // Calculate the total price for the list
-            double total = 0.0;
-            for (Item i in s.items) {
-              total += i.price * i.quantity;
-            }
+              // Calculate the total price for the list
+              double total = 0.0;
+              for (Item i in s.items) {
+                total += i.price * i.quantity;
+              }
 
-            // Compare it to the budget to get the difference
-            final double budget = s.metadata.budget;
-            final double difference = budget - total;
+              // Compare it to the budget to get the difference
+              final double budget = s.metadata.budget;
+              final double difference = budget - total;
 
-            // Create a widget to display the total, budget and difference
-            return createDetailsWidget(total, budget, difference);
-          },
-        ),
-      )),
+              // Create a widget to display the total, budget and difference
+              return createDetailsWidget(total, budget, difference);
+            },
+          ),
+        )
+      ),
     );
   }
 
   void activateBottomSheet() {
     showBottomSheet(
       backgroundColor: globals.mainColor,
-        context: context,
-        builder: (context) => StreamBuilder(
-              stream: docRef.snapshots(),
-              builder: (context, snapshot) {
-                // If there is no data in the shopping list,
-                // return an empty container with 0 height
-                if (snapshot?.data == null) return Container(height: 0);
+      context: context,
+      builder: (context) => StreamBuilder(
+        stream: docRef.snapshots(),
+        builder: (context, snapshot) {
+          // If there is no data in the shopping list,
+          // return an empty container with 0 height
+          if (snapshot?.data == null) return Container(height: 0);
 
-                // If the list has no items, notify the user that the list is empty
-                if (snapshot.data['items'].length == 0)
-                  return createFinishWidget(context, 0, {}, 0);
+          // If the list has no items, notify the user that the list is empty
+          if (snapshot.data['items'].length == 0)
+            return createFinishWidget(context, 0, {}, 0);
 
-                // Create a shopping list object from the list data
-                final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
+          // Create a shopping list object from the list data
+          final ShoppingList s = ShoppingList.fromSnapshot(snapshot.data);
 
-                double groupTotal = 0.0;
-                double indTotal = 0.0;
-                Map<String, double> indTotals = <String, double>{};
+          double groupTotal = 0.0;
+          double indTotal = 0.0;
+          Map<String, double> indTotals = <String, double>{};
 
-                // Calculate every users individual total
-                for (ListUser user in s.metadata.users) {
-                  indTotal = 0.0;
+          // Calculate every users individual total
+          for (ListUser user in s.metadata.users) {
+            indTotal = 0.0;
 
-                  for (Item i in s.items) {
-                    if (i.users.contains(user.name)) {
-                      // The price for an individual user of an item is
-                      // (total price * quantity) / (number of users of the item)
-                      indTotal +=
-                          (i.price.toDouble() * i.quantity) / i.users.length;
-                    }
-                  }
+            for (Item i in s.items) {
+              if (i.users.contains(user.name)) {
+                // The price for an individual user of an item is
+                // (total price * quantity) / (number of users of the item)
+                indTotal +=
+                    (i.price.toDouble() * i.quantity) / i.users.length;
+              }
+            }
 
-                  indTotals[user.name] = indTotal;
-                }
+            indTotals[user.name] = indTotal;
+          }
 
-                // Calculate the group total
-                for (Item i in s.items) {
-                  groupTotal += i.price * i.quantity;
-                }
+          // Calculate the group total
+          for (Item i in s.items) {
+            groupTotal += i.price * i.quantity;
+          }
 
-                final double budget = s.metadata.budget;
+          final double budget = s.metadata.budget;
 
-                // Create a final display widget which shows the group and
-                // individual totals, and provides a button to initiate payment
-                return createFinishWidget(
-                    context, groupTotal, indTotals, budget);
-              },
-            ));
+          // Create a final display widget which shows the group and
+          // individual totals, and provides a button to initiate payment
+          return createFinishWidget(
+              context, groupTotal, indTotals, budget);
+        },
+      )
+    );
   }
 }

@@ -156,30 +156,32 @@ class _UserCheckBox extends State<UserCheckBox> {
 
   Widget build(BuildContext context) {
     return new Container(
-        height: 300,
-        width: 300,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: globals.userNames.length,
-          itemBuilder: (BuildContext context, int index) {
-            return new Container(
-                child: new Column(
-              children: <Widget>[
-                new CheckboxListTile(
-                  value: inputs[index],
-                  title: new Text(
-                    '${globals.userNames.elementAt(index)}',
-                    textAlign: TextAlign.center,
-                  ),
-                  controlAffinity: ListTileControlAffinity.platform,
-                  onChanged: (bool val) {
-                    ChangeVal(val, index);
-                  },
-                )
-              ],
-            ));
-          },
-        ));
+      height: 300,
+      width: 300,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: globals.userNames.length,
+        itemBuilder: (BuildContext context, int index) {
+          return new Container(
+              child: new Column(
+            children: <Widget>[
+              new CheckboxListTile(
+                activeColor: wth.mainColor,
+                value: inputs[index],
+                title: new Text(
+                  '${globals.userNames.elementAt(index)}',
+                  textAlign: TextAlign.center,
+                ),
+                controlAffinity: ListTileControlAffinity.platform,
+                onChanged: (bool val) {
+                  ChangeVal(val, index);
+                },
+              )
+            ],
+          ));
+        },
+      )
+    );
   }
 }
 
@@ -218,12 +220,14 @@ class _Meat extends State<Meat> {
                         child: RichText(
                           text: TextSpan(children: <TextSpan>[
                             TextSpan(
-                                text: p.meat_Names.elementAt(index) + '\n',
+                                text: '\t' + p.meat_Names.elementAt(index) + '\n',
                                 style: TextStyle(
                                     fontSize: 25, color: Colors.black87)),
                             TextSpan(
                                 text: '\t\t\$' +
-                                    p.meat_Prices.elementAt(index).toString(),
+                                    p.meat_Prices
+                                        .elementAt(index)
+                                        .toString(),
                                 style: TextStyle(
                                   fontSize: 19,
                                   color: Colors.green,
@@ -233,19 +237,30 @@ class _Meat extends State<Meat> {
                       ),
                       Expanded(
                           flex: 1,
-                          child: TextField(
-                            autofocus: false,
-                            maxLength: 6,
-                            maxLengthEnforced: true,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.done,
-                            onChanged: (val) {
-                              quan = int.parse(val);
-                              priceString = p.meat_Prices[index];
-                              price = double.tryParse(priceString);
-                            },
-                            decoration: InputDecoration(labelText: 'Qty'),
-                          )),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              autofocus: false,
+                              maxLength: 6,
+                              maxLengthEnforced: true,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                              onChanged: (val) {
+                                quan = int.parse(val);
+                                priceString =
+                                    p.meat_Prices.elementAt(index).toString();
+                                price = double.tryParse(priceString);
+                              },
+                              decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(color: wth.mainColor, width: 2.0)
+                                  ),
+                                  labelText: 'Qty',
+                                  labelStyle: TextStyle(color: Colors.grey)
+                              ),
+                            ),
+                          )
+                      ),
                     ],
                   ),
                   onDoubleTap: () {
@@ -269,13 +284,19 @@ class _Meat extends State<Meat> {
           content: UserCheckBox(),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Cancel'),
+              child: new Text(
+                  'Cancel',
+                style: TextStyle(color: wth.mainColor),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("Done"),
+              child: new Text(
+                "Done",
+                style: TextStyle(color: wth.mainColor)
+              ),
               onPressed: () {
                 priceString = p.meat_Prices[index].toString();
                 price = double.tryParse(priceString);
@@ -327,12 +348,14 @@ class _Drinks extends State<Drinks> {
                       child: RichText(
                         text: TextSpan(children: <TextSpan>[
                           TextSpan(
-                              text: p.drink_Names.elementAt(index) + '\n',
+                              text: '\t' + p.drink_Names.elementAt(index) + '\n',
                               style: TextStyle(
                                   fontSize: 25, color: Colors.black87)),
                           TextSpan(
                               text: '\t\t\$' +
-                                  p.drink_Prices.elementAt(index).toString(),
+                                  p.drink_Prices
+                                      .elementAt(index)
+                                      .toString(),
                               style: TextStyle(
                                 fontSize: 19,
                                 color: Colors.green,
@@ -342,20 +365,30 @@ class _Drinks extends State<Drinks> {
                     ),
                     Expanded(
                         flex: 1,
-                        child: TextField(
-                          autofocus: false,
-                          maxLength: 6,
-                          maxLengthEnforced: true,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.done,
-                          onChanged: (val) {
-                            quan = int.parse(val);
-                            priceString =
-                                p.drink_Prices.elementAt(index).toString();
-                            price = double.tryParse(priceString);
-                          },
-                          decoration: InputDecoration(labelText: 'Qty'),
-                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: TextField(
+                            autofocus: false,
+                            maxLength: 6,
+                            maxLengthEnforced: true,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            onChanged: (val) {
+                              quan = int.parse(val);
+                              priceString =
+                                  p.drink_Prices.elementAt(index).toString();
+                              price = double.tryParse(priceString);
+                            },
+                            decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: wth.mainColor, width: 2.0)
+                                ),
+                                labelText: 'Qty',
+                                labelStyle: TextStyle(color: Colors.grey)
+                            ),
+                          ),
+                        )
+                    ),
                   ],
                 ),
                 onDoubleTap: () {
@@ -378,13 +411,19 @@ class _Drinks extends State<Drinks> {
           content: UserCheckBox(),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Cancel'),
+              child: new Text(
+                'Cancel',
+                style: TextStyle(color: wth.mainColor),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("Done"),
+              child: new Text(
+                  "Done",
+                  style: TextStyle(color: wth.mainColor)
+              ),
               onPressed: () {
                 priceString = p.drink_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -439,7 +478,7 @@ class _Snacks extends State<Snacks> {
                           child: RichText(
                             text: TextSpan(children: <TextSpan>[
                               TextSpan(
-                                  text: p.snack_Names.elementAt(index) + '\n',
+                                  text: '\t' + p.snack_Names.elementAt(index) + '\n',
                                   style: TextStyle(
                                       fontSize: 25, color: Colors.black87)),
                               TextSpan(
@@ -456,20 +495,30 @@ class _Snacks extends State<Snacks> {
                         ),
                         Expanded(
                             flex: 1,
-                            child: TextField(
-                              autofocus: false,
-                              maxLength: 6,
-                              maxLengthEnforced: true,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                              onChanged: (val) {
-                                quan = int.parse(val);
-                                priceString =
-                                    p.snack_Prices.elementAt(index).toString();
-                                price = double.tryParse(priceString);
-                              },
-                              decoration: InputDecoration(labelText: 'Qty'),
-                            )),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: TextField(
+                                autofocus: false,
+                                maxLength: 6,
+                                maxLengthEnforced: true,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.done,
+                                onChanged: (val) {
+                                  quan = int.parse(val);
+                                  priceString =
+                                      p.snack_Prices.elementAt(index).toString();
+                                  price = double.tryParse(priceString);
+                                },
+                                decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(color: wth.mainColor, width: 2.0)
+                                    ),
+                                    labelText: 'Qty',
+                                    labelStyle: TextStyle(color: Colors.grey)
+                                ),
+                              ),
+                            )
+                        ),
                       ],
                     ),
                     onDoubleTap: () {
@@ -492,13 +541,19 @@ class _Snacks extends State<Snacks> {
           content: UserCheckBox(),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Cancel'),
+              child: new Text(
+                'Cancel',
+                style: TextStyle(color: wth.mainColor),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("Done"), // Cancel button
+              child: new Text(
+                  "Done",
+                  style: TextStyle(color: wth.mainColor)
+              ),
               onPressed: () {
                 priceString = p.snack_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
@@ -553,7 +608,7 @@ class _Produce extends State<Produce> {
                         child: RichText(
                           text: TextSpan(children: <TextSpan>[
                             TextSpan(
-                                text: p.produce_Names.elementAt(index) + '\n',
+                                text: '\t' + p.produce_Names.elementAt(index) + '\n',
                                 style: TextStyle(
                                     fontSize: 25, color: Colors.black87)),
                             TextSpan(
@@ -570,20 +625,30 @@ class _Produce extends State<Produce> {
                       ),
                       Expanded(
                           flex: 1,
-                          child: TextField(
-                            autofocus: false,
-                            maxLength: 6,
-                            maxLengthEnforced: true,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.done,
-                            onChanged: (val) {
-                              quan = int.parse(val);
-                              priceString =
-                                  p.produce_Prices.elementAt(index).toString();
-                              price = double.tryParse(priceString);
-                            },
-                            decoration: InputDecoration(labelText: 'Qty'),
-                          )),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              autofocus: false,
+                              maxLength: 6,
+                              maxLengthEnforced: true,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                              onChanged: (val) {
+                                quan = int.parse(val);
+                                priceString =
+                                    p.produce_Prices.elementAt(index).toString();
+                                price = double.tryParse(priceString);
+                              },
+                              decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(color: wth.mainColor, width: 2.0)
+                                  ),
+                                  labelText: 'Qty',
+                                  labelStyle: TextStyle(color: Colors.grey)
+                              ),
+                            ),
+                          )
+                      ),
                     ],
                   ),
                   onDoubleTap: () {
@@ -607,13 +672,19 @@ class _Produce extends State<Produce> {
           content: UserCheckBox(),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Cancel'),
+              child: new Text(
+                'Cancel',
+                style: TextStyle(color: wth.mainColor),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text("Done"),
+              child: new Text(
+                  "Done",
+                  style: TextStyle(color: wth.mainColor)
+              ),
               onPressed: () {
                 priceString = p.produce_Prices.elementAt(index).toString();
                 price = double.tryParse(priceString);
